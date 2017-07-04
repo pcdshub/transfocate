@@ -1,0 +1,2 @@
+include versioneer.py
+include transfocate/_version.py
