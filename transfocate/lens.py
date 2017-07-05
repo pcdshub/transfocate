@@ -14,3 +14,13 @@ Basic Lens object handling
 # Module #
 ##########
 
+class Lens(object):
+	def __init__(self, radius, z, focus):
+		self.radius=radius
+		self.z=z
+		self.focus=focus
+	
+		
+
+
+
