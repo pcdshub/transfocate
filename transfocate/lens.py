@@ -60,4 +60,14 @@ class Lens(object):
         #print (z_im)
         return z_im
 
+class LensConnect(object):
+    def __init__(self, *args, **kwargs):
+        self.saved=args
+    
+    @property
+    def effective_radius(self):
 
+    def image(self, z_obj):
+        image=z_obj
+        for lens in self.lenses:
+            image=image_from_obj(image)
