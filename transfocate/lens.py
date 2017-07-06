@@ -34,6 +34,22 @@ class Lens(object):
         self.focus=focus
 
     def image_from_obj(self, z_obj):
+        """
+        Method calculates the image distance in meters along the beam
+        pipeline given the focal length of the lens, location of lens, and location of
+        object.
+
+        Parameters
+        ----------
+        z_obj
+            Location of object along the beamline in meters (m)
+
+        Returns
+        -------
+        float
+            Returns the distance z_im of the image along the beam pipeline in
+            meters (m)
+        """
         o=self.z-z_obj
         #print (o)
         i_inv=(1/self.focus)-(1/o)
