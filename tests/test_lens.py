@@ -19,3 +19,10 @@ def test_lens_properties():
     assert np.isclose(300.0, lens.z,      atol=0.1)
     assert np.isclose(50.0,  lens.focus,  atol=0.1)
 
+
+def test_image_from_obj():
+    lens = Lens(500.0, 100.0, 50.0)
+    #Real image
+    assert np.isclose(lens.image_from_obj(0.0),  200.0, atol=0.1)
+    #Imaginary image
+    assert np.isclose(lens.image_from_obj(75.0), 50.0, atol=0.1)
