@@ -72,17 +72,16 @@ class LensConnect(object):
     """
     
     def __init__(self, *args, **kwargs):
-    
-    """
-    Parameters
-    ----------
-    *args
-        Variable length argument list of the lenses in the system, their radii,
-        z position, and focal length.
-    **kwargs
-        Arbitraty keyword argumens.
-    """
-    self.saved=args
+        """
+        Parameters
+        ----------
+        *args
+            Variable length argument list of the lenses in the system, their radii,
+            z position, and focal length.
+        **kwargs
+            Arbitraty keyword argumens.
+        """
+        self.lenses=args
 
     @property
     def effective_radius(self):
@@ -95,7 +94,7 @@ class LensConnect(object):
             returns the effective radius of the lens array.
         """
         collect=0
-        for lens in self.saved:
+        for lens in self.lenses:
             collect+=(1/lens.radius)
             print (lens.radius)
         return 1/collect
@@ -117,9 +116,10 @@ class LensConnect(object):
             returns the location z of a system of lenses in meters (m).
         """
         image=z_obj
-        for lens in self.saved:
+        for lens in self.lenses:
             print (image)
             image=lens.image_from_obj(image)
             print (image)
         return image
+   
     
