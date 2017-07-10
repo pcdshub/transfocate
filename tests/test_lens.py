@@ -27,6 +27,7 @@ def test_lens_connect_effective_radius(array):
     assert np.isclose(array.effective_radius, 250, atol=0.1)
 
 def test_lens_connect_image(array):
-    assert np.isclose(array.image(0.0),  425,  atol=0.1)
-    assert np.isclose(array.image(75.0), 64.3, atol=0.1)
-
+    assert np.isclose(array.image(0.0),  312.5,   atol=0.1)
+    assert np.isclose(array.image(75.0), 303.125, atol=0.1)
+    assert np.isclose(array.image(80.0), 303.409, atol=0.1)
+    assert np.isclose(array.image(125.0), 304.6875, atol=0.1)

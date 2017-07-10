@@ -36,7 +36,7 @@ class Lens(object):
     def image_from_obj(self, z_obj):
         """
         Method calculates the image distance in meters along the beam
-        pipeline given the focal length of the lens, location of lens, and location of
+        pipeline from a point of origin given the focal length of the lens, location of lens, and location of
         object.
 
         Parameters
@@ -47,9 +47,15 @@ class Lens(object):
         Returns
         -------
         float
-            Returns the distance z_im of the image along the beam pipeline in
-            meters (m)
+            Returns the distance z_im of the image along the beam pipeline from
+            a point of origin in meters (m)
+        Note
+        ----
+        If the location of the object (z_obj) is equal to the focal length of
+        the lens, this function will return infinity.
         """
+        if z_obj==self.focus:
+            return np.inf
         o=self.z-z_obj
         #print (o)
         i_inv=(1/self.focus)-(1/o)
@@ -60,4 +66,60 @@ class Lens(object):
         #print (z_im)
         return z_im
 
+class LensConnect(object):
+    """
+    Data structure for a basic system of lenses
+    """
+    
+    def __init__(self, *args, **kwargs):
+    
+    """
+    Parameters
+    ----------
+    *args
+        Variable length argument list of the lenses in the system, their radii,
+        z position, and focal length.
+    **kwargs
+        Arbitraty keyword argumens.
+    """
+    self.saved=args
 
+    @property
+    def effective_radius(self):
+        """
+        Method calculates the effective radius of the lens array
+
+        Returns
+        -------
+        float
+            returns the effective radius of the lens array.
+        """
+        collect=0
+        for lens in self.saved:
+            collect+=(1/lens.radius)
+            print (lens.radius)
+        return 1/collect
+
+    def image(self, z_obj):
+        """
+        Method recursively calculates the z location of the image of a system of
+        lenses and returns it in meters (m)
+    
+        Parameters
+        ----------
+        z_obj
+            Location of the object along the beam pipline from a designated point
+            of origin in meters (m)
+        
+        Returns
+        -------
+        float
+            returns the location z of a system of lenses in meters (m).
+        """
+        image=z_obj
+        for lens in self.saved:
+            print (image)
+            image=lens.image_from_obj(image)
+            print (image)
+        return image
+    
