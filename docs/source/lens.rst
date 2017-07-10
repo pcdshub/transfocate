@@ -5,3 +5,7 @@ Lens Information
 
 .. autoclass:: transfocate.lens.Lens
    :members:
+
+
+.. autoclass:: transfocate.lens.LensConnect
+   :members:
