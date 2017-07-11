@@ -116,10 +116,11 @@ class LensConnect(object):
             returns the location z of a system of lenses in meters (m).
         """
         image=z_obj
-        for lens in self.lenses:
-            #print (image)
+        lens_list=self.z_based_sort
+        for lens in lens_list:
+            print (image)
             image=lens.image_from_obj(image)
-            #print (image)
+            print (image)
         return image
 
     @property
@@ -135,7 +136,7 @@ class LensConnect(object):
         """
         sorted_lenses=sorted(self.lenses, key=lambda lens: lens.z)
         for lens in sorted_lenses:
-            #print (lens.z)
+            print (lens.z)
         return sorted_lenses
 
     def end_lens(self):
