@@ -121,5 +121,34 @@ class LensConnect(object):
             image=lens.image_from_obj(image)
             print (image)
         return image
-   
-    
+
+    @property
+    def z_based_sort(self):
+        """
+        Method sorts the array of lenses into a new list based on their z
+        position along the beamline.  Lenses are sorted in ascending order.
+
+        Returns
+        -------
+        list
+            Returns the sorted list of lenses 
+        """
+        sorted_lenses=sorted(self.lenses, key=lambda lens: lens.z)
+        for lens in sorted_lenses:
+            print (lens.z)
+        return sorted_lenses
+
+    def end_lens(self):
+        """
+        Method calculates the total number of lenses in the Lens array.
+
+        Returns
+        -------
+        int
+            Returns the total number of lenses in the array.
+        """
+        count=0
+        for lens in self.lenses:
+            count+=1
+            print (count)
+        return count
