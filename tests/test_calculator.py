@@ -13,7 +13,7 @@ import pytest
 from transfocate.lens       import Lens
 from transfocate.calculator import Calculator
 
-@pytest.fixture(scope='module'):
+@pytest.fixture(scope='module')
 def calculator():
     #Define prefocus lenses
     prefocus = [Lens(300, 100, 100),
