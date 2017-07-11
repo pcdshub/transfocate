@@ -96,7 +96,7 @@ class LensConnect(object):
         collect=0
         for lens in self.lenses:
             collect+=(1/lens.radius)
-            print (lens.radius)
+            #print (lens.radius)
         return 1/collect
 
     def image(self, z_obj):
@@ -117,9 +117,9 @@ class LensConnect(object):
         """
         image=z_obj
         for lens in self.lenses:
-            print (image)
+            #print (image)
             image=lens.image_from_obj(image)
-            print (image)
+            #print (image)
         return image
 
     @property
@@ -135,7 +135,7 @@ class LensConnect(object):
         """
         sorted_lenses=sorted(self.lenses, key=lambda lens: lens.z)
         for lens in sorted_lenses:
-            print (lens.z)
+            #print (lens.z)
         return sorted_lenses
 
     def end_lens(self):
@@ -150,5 +150,5 @@ class LensConnect(object):
         count=0
         for lens in self.lenses:
             count+=1
-            print (count)
+            #print (count)
         return count
