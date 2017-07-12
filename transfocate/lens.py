@@ -139,7 +139,7 @@ class LensConnect(object):
             print (lens.z)
         return sorted_lenses
 
-    def end_lens(self):
+    def nlens(self):
         """
         Method calculates the total number of lenses in the Lens array.
 
@@ -148,8 +148,4 @@ class LensConnect(object):
         int
             Returns the total number of lenses in the array.
         """
-        count=0
-        for lens in self.lenses:
-            count+=1
-            #print (count)
-        return count
+        return len(self.lenses)
