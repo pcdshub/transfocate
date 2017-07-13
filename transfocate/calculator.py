@@ -1,8 +1,9 @@
 
 
-
+import numpy
 import itertools
-
+from transfocate.lens import Lens
+from transfocate.lens import LensConnect
 
 
 
@@ -55,3 +56,17 @@ class Calculator(object):
                 all_combo.append([prefocus,combo])
         #print (len(all_combo))
         return all_combo
+
+    def find_combination(self, target_image, z_obj=0.0, num_sol=1.0):
+        
+        image_diff=[]
+        closest_sols=[]
+            #total=LensConnect(combo[0].extend(combo[1])
+
+        image_diff=[np.abs(target_image-combo.image(z_obj) for combo in self.combinations if self.xrt_lenses.effective_radius()>self.xrt_limit and self.tfs_lenses.effective_radius()<self.tfs_limit]
+        
+        image_index=np.argsort(image_diff)
+        for i in num_sol:
+            closest_sols.append(total[image_index[i]])
+
+        return closets_sols

@@ -118,9 +118,9 @@ class LensConnect(object):
         image=z_obj
         lens_list=self.z_based_sort
         for lens in lens_list:
-            print (image)
+            #print (image)
             image=lens.image_from_obj(image)
-            print (image)
+            #print (image)
         return image
 
     @property
@@ -135,8 +135,8 @@ class LensConnect(object):
             Returns the sorted list of lenses 
         """
         sorted_lenses=sorted(self.lenses, key=lambda lens: lens.z)
-        for lens in sorted_lenses:
-            print (lens.z)
+        #for lens in sorted_lenses:
+            #print (lens.z)
         return sorted_lenses
 
     def nlens(self):
