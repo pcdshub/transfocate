@@ -36,6 +36,7 @@ class TransfocatorCombo(object):
         """
         xrt_image=self.xrt.image(z_obj)
         total_image=self.tfs.image(xrt_image)
+        logger.debug("the xrt image of the array is %s and the image of the combined xrt/tfs array is %s" %(xrt_image,total_image))
         return total_image
 
 
@@ -81,12 +82,11 @@ class Calculator(object):
             z=list(itertools.combinations(self.tfs_lenses,i))
             for index in range(len(z)):
                 tfs_combo.append(z[index])
-            #print (len(tfs_combo))
-            #print (tfs_combo)
+            logger.debug("length of the tfs combinations array %s"%(len(tfs_combo)))
         for prefocus in prefocus_combo:
             for combo in tfs_combo:
                 all_combo.append(TransfocatorCombo(prefocus,combo))
-        #print (len(all_combo))
+        logger.debug("Length of the list of all combinations %s"%(len(all_combo)))
         return all_combo 
         
     def find_combinations(self, target_image, z_obj=0.0, num_sol=1):
