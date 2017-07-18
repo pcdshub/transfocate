@@ -4,7 +4,7 @@ Basic Lens object handling
 ############
 # Standard #
 ############
-
+import logging
 ###############
 # Third Party #
 ###############
@@ -93,11 +93,21 @@ class LensConnect(object):
         float
             returns the effective radius of the lens array.
         """
-        collect=0
-        for lens in self.lenses:
-            collect+=(1/lens.radius)
-            #print (lens.radius)
-        return 1/collect
+       # print(self.lenses)
+        if not self.lenses or len(self.lenses)==0:
+            return 0
+
+        else:
+            collect=0
+            #print(len(self.lenses))
+            for lens in self.lenses:
+                collect+=(1/lens.radius)
+                #print (lens.radius)
+                #print (lens.radius)
+                #print(collect)
+                #print (len(self.lenses))
+            #print (collect)
+            return 1/collect
 
     def image(self, z_obj):
         """

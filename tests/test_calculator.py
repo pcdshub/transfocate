@@ -6,7 +6,7 @@
 # Third Party #
 ###############
 import pytest
-
+import numpy as np
 ##########
 # Module #
 ##########
@@ -16,21 +16,21 @@ from transfocate.calculator import Calculator
 @pytest.fixture(scope='module')
 def calculator():
     #Define prefocus lenses
-    prefocus = [Lens(500., 125.0, 100.),
-                Lens(500., 145.0, 200.)]
+    prefocus = [Lens(500., 100.0, 50.),
+                Lens(300., 100.0, 25.)]
     #Define transfocator
-    tfs = [Lens(500., 100., 50.),
-           Lens(500., 275., 25.)]
+    tfs = [Lens(500., 275., 25.),
+           Lens(500., 280., 55.)]
     #Define Calculator
     return Calculator(xrt_lenses = prefocus,
                       tfs_lenses = tfs,
-                      xrt_limit  = 75,
-                      tfs_limit  = 18)
+                      xrt_limit  = 400,
+                      tfs_limit  = 750)
 
 def test_calculator_combinations(calculator):
-    #Eight possible transfocator combinations
+    #Three possible transfocator combinations
     #Three possible prefocus lens choices
-    assert len(calculator.combinations) == 24
+    assert len(calculator.combinations) == 8
 
 def test_calculator_find_combinations(calculator):
     solutions = calculator.find_combinations(312.5, num_sol=1)
