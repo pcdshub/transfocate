@@ -34,4 +34,4 @@ def test_lens_connect_image(array):
 
 
 def test_number_of_lenses(array):
-    assert array.end_lens()== 2
+    assert array.nlens()== 2

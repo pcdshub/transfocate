@@ -6,3 +6,4 @@ Welcome to transfocate's documentation!
    :caption: Contents:
 
    lens.rst
+   calculator.rst

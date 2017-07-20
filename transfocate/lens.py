@@ -4,11 +4,12 @@ Basic Lens object handling
 ############
 # Standard #
 ############
-
+import logging
 ###############
 # Third Party #
 ###############
 
+logger = logging.getLogger(__name__)
 
 ##########
 # Module #
@@ -57,13 +58,11 @@ class Lens(object):
         if z_obj==self.focus:
             return np.inf
         o=self.z-z_obj
-        #print (o)
         i_inv=(1/self.focus)-(1/o)
-        #print (i_inv)
         i=1/i_inv
-        #print (i)
         z_im=i+self.z
-        #print (z_im)
+
+        logger.debug("object measurement: %s i_invers: %s i: %s z image:%s"%(o, i_inv, i, z_im))
         return z_im
 
 class LensConnect(object):
@@ -93,11 +92,15 @@ class LensConnect(object):
         float
             returns the effective radius of the lens array.
         """
-        collect=0
-        for lens in self.lenses:
-            collect+=(1/lens.radius)
-            #print (lens.radius)
-        return 1/collect
+        if not self.lenses or len(self.lenses)==0:
+            return 0 #this method is only used if we impliment the option of No xrt/tfs lenses
+
+        else:
+            collect=0
+            for lens in self.lenses:
+                collect+=(1/lens.radius)
+            logger.debug("lens radius: %s length of lens list: %s collect variable %s"%(lens.radius, len(self.lenses), collect)) 
+            return 1/collect
 
     def image(self, z_obj):
         """
@@ -118,9 +121,8 @@ class LensConnect(object):
         image=z_obj
         lens_list=self.z_based_sort
         for lens in lens_list:
-            print (image)
             image=lens.image_from_obj(image)
-            print (image)
+            logger.debug("image: %s" %(image))
         return image
 
     @property
@@ -134,9 +136,11 @@ class LensConnect(object):
         list
             Returns the sorted list of lenses 
         """
+        count=0
         sorted_lenses=sorted(self.lenses, key=lambda lens: lens.z)
         for lens in sorted_lenses:
-            print (lens.z)
+            count +=1
+            logger.debug("z position for lens number %s is %s" %(count,lens.z))
         return sorted_lenses
 
     def nlens(self):
@@ -148,4 +152,5 @@ class LensConnect(object):
         int
             Returns the total number of lenses in the array.
         """
+        logger.debug("number of lenses in list: %s" %(len(self.lenses)))
         return len(self.lenses)
