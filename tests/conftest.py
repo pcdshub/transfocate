@@ -13,6 +13,7 @@ from pypvserver import PypvServer, PyPV
 # Module #
 ##########
 from transfocate.lens import Lens, LensConnect
+from transfocate.calculator import Calculator
 
 #################
 # Logging Setup #
@@ -66,3 +67,18 @@ def pyioc():
     server.add_pv(PyPV("TFS:LENS:01:FOCUS",  50.0))
     yield server
     epics.ca.destroy_context()
+
+
+@pytest.fixture(scope='module')
+def calculator():
+    #Define prefocus lenses
+    prefocus = [TestLens(500., 100.0, 50.),
+                TestLens(300., 100.0, 25.)]
+    #Define transfocator
+    tfs = [TestLens(500., 275., 25.),
+           TestLens(500., 280., 55.)]
+    #Define Calculator
+    return Calculator(xrt_lenses = prefocus,
+                      tfs_lenses = tfs,
+                      xrt_limit  = 400,
+                      tfs_limit  = 750)
