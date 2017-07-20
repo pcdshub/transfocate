@@ -47,7 +47,7 @@ TestLens.image_from_obj = Lens.image_from_obj
 ############
 @pytest.fixture(scope='module')
 def lens():
-    return Lens("TST:TFS:LENS:01")
+    return Lens("TST:TFS:LENS:01:")
 
 @pytest.fixture(scope='module')
 def array():
