@@ -2,7 +2,7 @@
 # Standard #
 ############
 import logging
-
+from collections import namedtuple
 ###############
 # Third Party #
 ###############
@@ -38,6 +38,10 @@ def set_level(pytestconfig):
     logging.basicConfig(level=log_level,
                         filename=pytestconfig.getoption('--logfile'))
 
+#Basic class so not all tests require channel access
+TestLens = namedtuple('TestLens', ['radius', 'z', 'focus'])
+TestLens.image_from_obj = Lens.image_from_obj
+
 ############
 # Fixtures #
 ############
@@ -47,8 +51,8 @@ def lens():
 
 @pytest.fixture(scope='module')
 def array():
-    first  = Lens(500.0, 100.0, 50.0)
-    second = Lens(500.0, 275.0, 25.0)
+    first  = TestLens(500.0, 100.0, 50.0)
+    second = TestLens(500.0, 275.0, 25.0)
     return LensConnect(second, first)
 
 server = None
