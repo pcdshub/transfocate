@@ -6,8 +6,9 @@ import logging
 ###############
 # Third Party #
 ###############
+import epics
 import pytest
-
+from pypvserver import PypvServer, PyPV
 ##########
 # Module #
 ##########
@@ -42,10 +43,22 @@ def set_level(pytestconfig):
 ############
 @pytest.fixture(scope='module')
 def lens():
-    return Lens(500.0, 100.0, 50.0)
+    return Lens("TST:TFS:LENS:01")
 
 @pytest.fixture(scope='module')
 def array():
     first  = Lens(500.0, 100.0, 50.0)
     second = Lens(500.0, 275.0, 25.0)
     return LensConnect(second, first)
+
+server = None
+@pytest.fixture(scope='function')
+def pyioc():
+    #Create pyioc
+    global server
+    server = PypvServer('TST:')
+    server.add_pv(PyPV("TFS:LENS:01:RADIUS", 500.0))
+    server.add_pv(PyPV("TFS:LENS:01:Z",      100.0))
+    server.add_pv(PyPV("TFS:LENS:01:FOCUS",  50.0))
+    yield server
+    epics.ca.destroy_context()
