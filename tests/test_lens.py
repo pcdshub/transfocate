@@ -31,3 +31,7 @@ def test_lens_connect_image(array):
     assert np.isclose(array.image(75.0), 303.125, atol=0.1)
     assert np.isclose(array.image(80.0), 303.409, atol=0.1)
     assert np.isclose(array.image(125.0), 304.6875, atol=0.1)
+
+
+def test_number_of_lenses(array):
+    assert array.end_lens()== 2

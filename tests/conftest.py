@@ -48,4 +48,4 @@ def lens():
 def array():
     first  = Lens(500.0, 100.0, 50.0)
     second = Lens(500.0, 275.0, 25.0)
-    return LensConnect(first, second)
+    return LensConnect(second, first)
