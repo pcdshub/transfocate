@@ -42,39 +42,39 @@ class Lens(Device):
 
     @property
     def radius(self):
-    """
-    Method converts the EPICS lens radius signal into a float that can be used for
-    calculations.
-
-    Returns
-    -------
-    float
-        Returns the radius of the lens
-    """
+        """
+        Method converts the EPICS lens radius signal into a float that can be used for
+        calculations.
+        
+        Returns
+        -------
+        float
+            Returns the radius of the lens
+        """
         return self.sig_radius.value
     
     @property 
     def z (self):
-    """
-    Method converts the z position EPICS signal into a float.
-
-    Returns
-    -------
-    float
-        Returns the z position of the lens in meters along the beamline
-    """
+        """
+        Method converts the z position EPICS signal into a float.
+        
+        Returns
+        -------
+        float
+            Returns the z position of the lens in meters along the beamline
+        """
         return self.sig_z.value
     
     @property
     def focus (self):
-    """
-    Method converts the EPICS focal length signal of the lens into a float
-
-    Returns
-    -------
-    float
-        Returns the focal length of the lens in meters 
-    """
+        """
+        Method converts the EPICS focal length signal of the lens into a float
+        
+        Returns
+        -------
+        float
+            Returns the focal length of the lens in meters 
+        """
         return self.sig_focus.value
     
     def image_from_obj(self, z_obj):
