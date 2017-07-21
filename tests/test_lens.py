@@ -12,12 +12,12 @@ import numpy as np
 # Module #
 ##########
 
-def test_lens_properties(lens):
+def test_lens_properties(lens, pyioc):
     assert np.isclose(500.0, lens.radius, atol=0.1)
     assert np.isclose(100.0, lens.z,      atol=0.1)
     assert np.isclose(50.0,  lens.focus,  atol=0.1)
 
-def test_image_from_obj(lens):
+def test_image_from_obj(lens, pyioc):
     #Real image
     assert np.isclose(lens.image_from_obj(0.0),  200.0, atol=0.1)
     #Imaginary image

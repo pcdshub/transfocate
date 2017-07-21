@@ -40,8 +40,8 @@ def set_level(pytestconfig):
                         filename=pytestconfig.getoption('--logfile'))
 
 #Basic class so not all tests require channel access
-TestLens = namedtuple('TestLens', ['radius', 'z', 'focus'])
-TestLens.image_from_obj = Lens.image_from_obj
+FakeLens = namedtuple('FakeLens', ['radius', 'z', 'focus'])
+FakeLens.image_from_obj = Lens.image_from_obj
 
 ############
 # Fixtures #
@@ -52,12 +52,12 @@ def lens():
 
 @pytest.fixture(scope='module')
 def array():
-    first  = TestLens(500.0, 100.0, 50.0)
-    second = TestLens(500.0, 275.0, 25.0)
+    first  = FakeLens(500.0, 100.0, 50.0)
+    second = FakeLens(500.0, 275.0, 25.0)
     return LensConnect(second, first)
 
 server = None
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='module')
 def pyioc():
     #Create pyioc
     global server
@@ -66,17 +66,18 @@ def pyioc():
     server.add_pv(PyPV("TFS:LENS:01:Z",      100.0))
     server.add_pv(PyPV("TFS:LENS:01:FOCUS",  50.0))
     yield server
+    logging.debug("Cleaning up")
     epics.ca.destroy_context()
 
 
 @pytest.fixture(scope='module')
 def calculator():
     #Define prefocus lenses
-    prefocus = [TestLens(500., 100.0, 50.),
-                TestLens(300., 100.0, 25.)]
+    prefocus = [FakeLens(500., 100.0, 50.),
+                FakeLens(300., 100.0, 25.)]
     #Define transfocator
-    tfs = [TestLens(500., 275., 25.),
-           TestLens(500., 280., 55.)]
+    tfs = [FakeLens(500., 275., 25.),
+           FakeLens(500., 280., 55.)]
     #Define Calculator
     return Calculator(xrt_lenses = prefocus,
                       tfs_lenses = tfs,

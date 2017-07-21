@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 # Module #
 ##########
 
-class Lens(object):
+class Lens(Device):
     """
     Data structure for basic Lens object
     """
@@ -25,17 +25,58 @@ class Lens(object):
     """
     Parameters
     ----------
-    radius : float
+    sig_radius : EPICS Read Only signal
         Radius of beryllium lens measured in microns (um). Affects focus of lens  
-    z : float
+    sig_z : EPICS read only signal
         Lens position along beam pipelin measure in meters (m).
-    focus : float
+    sig_focus : EPICS read only signal
         Focal length of lens in meters (m). Is a function of radius
-    """
-    radius=Component(EpicsSignalRO, "RADIUS")
-    z = Component(EpicsSignalRO, "Z")
-    focus = Component(EpicsSignalRO, "FOCUS")
 
+    Note
+    ----
+    The variables radius, z, and focus are now EPICS signals for the lenses.
+    """
+    sig_radius=Component(EpicsSignalRO, "RADIUS")
+    sig_z = Component(EpicsSignalRO, "Z")
+    sig_focus = Component(EpicsSignalRO, "FOCUS")
+
+    @property
+    def radius(self):
+    """
+    Method converts the EPICS lens radius signal into a float that can be used for
+    calculations.
+
+    Returns
+    -------
+    float
+        Returns the radius of the lens
+    """
+        return self.sig_radius.value
+    
+    @property 
+    def z (self):
+    """
+    Method converts the z position EPICS signal into a float.
+
+    Returns
+    -------
+    float
+        Returns the z position of the lens in meters along the beamline
+    """
+        return self.sig_z.value
+    
+    @property
+    def focus (self):
+    """
+    Method converts the EPICS focal length signal of the lens into a float
+
+    Returns
+    -------
+    float
+        Returns the focal length of the lens in meters 
+    """
+        return self.sig_focus.value
+    
     def image_from_obj(self, z_obj):
         """
         Method calculates the image distance in meters along the beam

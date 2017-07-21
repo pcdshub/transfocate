@@ -10,7 +10,7 @@ import numpy as np
 ##########
 # Module #
 ##########
-from .conftest import TestLens
+from .conftest import FakeLens
 from transfocate.lens       import Lens
 from transfocate.calculator import TransfocatorCombo
 
@@ -27,9 +27,9 @@ def test_calculator_find_combinations(calculator):
 
 def test_TransfocatorCombo():
     #Define xrt and tfs lists
-    xrt=TestLens(300.0, 100., 25.)
-    tfs=[TestLens(500., 275., 25.),
-         TestLens(500., 280., 55.)]
+    xrt=FakeLens(300.0, 100., 25.)
+    tfs=[FakeLens(500., 275., 25.),
+         FakeLens(500., 280., 55.)]
     #Define TransfocatorCombo
     test_combo=TransfocatorCombo(xrt, tfs)
     assert np.isclose(test_combo.image(200.0), 297.18, atol=0.1)
