@@ -39,6 +39,7 @@ class Lens(Device):
     sig_radius=Component(EpicsSignalRO, "RADIUS")
     sig_z = Component(EpicsSignalRO, "Z")
     sig_focus = Component(EpicsSignalRO, "FOCUS")
+    state = Component(EpicsSignalRO, "STATE")
 
     @property
     def radius(self):
@@ -76,7 +77,14 @@ class Lens(Device):
             Returns the focal length of the lens in meters 
         """
         return self.sig_focus.value
-    
+
+    @property
+    def inserted(self):
+        if self.sig_state.value==1:
+            return True
+        else:
+            return False
+
     def image_from_obj(self, z_obj):
         """
         Method calculates the image distance in meters along the beam
