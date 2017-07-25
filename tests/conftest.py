@@ -1,17 +1,19 @@
 ############
 # Standard #
 ############
+import os
 import logging
+import subprocess
 from collections import namedtuple
 ###############
 # Third Party #
 ###############
 import epics
 import pytest
-from pypvserver import PypvServer, PyPV
 ##########
 # Module #
 ##########
+from .server import launch_server
 from transfocate.lens import Lens, LensConnect
 from transfocate.calculator import Calculator
 
@@ -56,18 +58,17 @@ def array():
     second = FakeLens(500.0, 275.0, 25.0)
     return LensConnect(second, first)
 
-server = None
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session', autouse=True)
 def pyioc():
-    #Create pyioc
-    global server
-    server = PypvServer('TST:')
-    server.add_pv(PyPV("TFS:LENS:01:RADIUS", 500.0))
-    server.add_pv(PyPV("TFS:LENS:01:Z",      100.0))
-    server.add_pv(PyPV("TFS:LENS:01:FOCUS",  50.0))
-    yield server
-    logging.debug("Cleaning up")
+    #Create full path to server file
+    server = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                          'server.py')
+    proc = subprocess.Popen(['python', server])
+    yield
+    logging.debug("Disconnecting EPICS variables")
     epics.ca.destroy_context()
+    logging.debug("Killing Python IOC thread ...")
+    proc.kill()
 
 
 @pytest.fixture(scope='module')
