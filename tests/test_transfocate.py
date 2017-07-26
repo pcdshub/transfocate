@@ -32,7 +32,7 @@ def transfocator():
 def test_transfocator_current_focus(transfocator):
     transfocator.xrt_lenses[1].insert()
     transfocator.tfs_lenses[0].insert()
-    assert transfocator.lenses == 312.5
+    assert transfocator.current_focus == 312.5
 
 
 def test_transfocator_focus_at(transfocator):
