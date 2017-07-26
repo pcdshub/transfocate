@@ -27,10 +27,17 @@ class Lens(Device):
     ----------
     sig_radius : EPICS Read Only signal
         Radius of beryllium lens measured in microns (um). Affects focus of lens  
-    sig_z : EPICS read only signal
+    sig_z : EPICS Read Only signal
         Lens position along beam pipelin measure in meters (m).
-    sig_focus : EPICS read only signal
+    sig_focus : EPICS Read Only signal
         Focal length of lens in meters (m). Is a function of radius
+    state : EPICS Raead Only signal
+        Position of the lens.  1 if it is inserted in the beamline and 0 if
+        it is removed
+    in_signal : EPICS signal
+        Signal that triggers EPICS to insert the lens from the beamline
+    out_signal : EPICS signal
+        Signal that triggers EPICS to remove the lens from the beamline
 
     Note
     ----
@@ -39,7 +46,9 @@ class Lens(Device):
     sig_radius=Component(EpicsSignalRO, "RADIUS")
     sig_z = Component(EpicsSignalRO, "Z")
     sig_focus = Component(EpicsSignalRO, "FOCUS")
-    state = Component(EpicsSignalRO, "STATE")
+    state = Component(EpicsSignalRO, "STATE") 
+    in_signal = Component(EpicsSignal, "INSERT")
+    out_signal = Component(EpicsSignal, "REMOVE")
 
     @property
     def radius(self):
@@ -55,7 +64,7 @@ class Lens(Device):
         return self.sig_radius.value
     
     @property 
-    def z (self):
+    def z(self):
         """
         Method converts the z position EPICS signal into a float.
         
@@ -67,7 +76,7 @@ class Lens(Device):
         return self.sig_z.value
     
     @property
-    def focus (self):
+    def focus(self):
         """
         Method converts the EPICS focal length signal of the lens into a float
         
@@ -80,10 +89,20 @@ class Lens(Device):
 
     @property
     def inserted(self):
-        if self.sig_state.value==1:
+        """
+        Method determines if the lens is inserted in 
+
+        """
+        if self.state.value==1:
             return True
         else:
             return False
+
+    def insert(self):
+        self.in_signal.put(1)
+    
+    def remove(self):
+        self.out_signal.put(1)
 
     def image_from_obj(self, z_obj):
         """
