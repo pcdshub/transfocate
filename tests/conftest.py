@@ -50,7 +50,7 @@ class FakeLens(object):
 
     def __init__(self, radius, z, focus):
         self.radius = radius
-        sef.z = z
+        self.z = z
         self.focus = focus
         self.inserted = False
 
