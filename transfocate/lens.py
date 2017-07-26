@@ -90,7 +90,13 @@ class Lens(Device):
     @property
     def inserted(self):
         """
-        Method determines if the lens is inserted in 
+        Method checks if the lens is inserted in the beam pipeline or not
+
+        Returns
+        -------
+        int
+            Returns 1 if the lens in inserted in the beam pipeline and 0 if it
+            has been removed.
 
         """
         if self.state.value==1:
@@ -99,9 +105,17 @@ class Lens(Device):
             return False
 
     def insert(self):
+        """
+        Method sets the EPICS insert signal to 1 which triggers the motor to
+        insert the lens from the beam pipeline
+        """
         self.in_signal.put(1)
     
     def remove(self):
+        """
+        Method sets the EPICS remove signal to 1 which triggers the motor to
+        remove the lens from the beam pipeline
+        """
         self.out_signal.put(1)
 
     def image_from_obj(self, z_obj):
