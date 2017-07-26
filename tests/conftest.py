@@ -41,9 +41,25 @@ def set_level(pytestconfig):
     logging.basicConfig(level=log_level,
                         filename=pytestconfig.getoption('--logfile'))
 
-#Basic class so not all tests require channel access
-FakeLens = namedtuple('FakeLens', ['radius', 'z', 'focus'])
-FakeLens.image_from_obj = Lens.image_from_obj
+################
+# Mock Classes #
+################
+class FakeLens(object):
+
+    image_from_obj = Lens.image_from_obj
+
+    def __init__(self, radius, z, focus):
+        self.radius = radius
+        sef.z = z
+        self.focus = focus
+        self.inserted = False
+
+    def insert(self):
+        self.inserted = True
+
+    def remove(self):
+        self.inserted = False
+
 
 ############
 # Fixtures #

@@ -25,7 +25,7 @@ def test_calculator_find_combinations(calculator):
     #Assert we found the accurate combination
     assert np.isclose(solutions[0].image(0.0), 312.5, atol=0.1)
 
-def test_TransfocatorCombo():
+def test_transfocator_combo():
     #Define xrt and tfs lists
     xrt=FakeLens(300.0, 100., 25.)
     tfs=[FakeLens(500., 275., 25.),
