@@ -23,9 +23,9 @@ def test_image_from_obj(lens):
     assert np.isclose(lens.image_from_obj(75.0), 50.0, atol=0.1)
 
 def test_lens_state_readback(lens):
-    lens.state.value = 0
+    lens.state.value=0
     assert lens.inserted == False
-    lens.state.value = 1
+    lens.state.value=1
     assert lens.inserted == True
 
 def test_lens_motion(lens):
