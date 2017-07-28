@@ -12,7 +12,7 @@ import pytest
 # Module #
 ##########
 from .conftest import FakeLens
-from transfocate.transfocate import Transfocator
+from transfocate.transfocator import Transfocator
 
 @pytest.fixture(scope='function')
 def transfocator():
@@ -30,12 +30,12 @@ def transfocator():
 
 
 def test_transfocator_current_focus(transfocator):
-    transfocator.xrt_lenses[1].insert()
+    transfocator.xrt_lenses[0].insert()
     transfocator.tfs_lenses[0].insert()
     assert transfocator.current_focus == 312.5
 
 
 def test_transfocator_focus_at(transfocator):
     transfocator.focus_at(312.5)
-    assert [lens.inserted for lens in transfocator.xrt_lenses] == [False, True]
-    assert [lens.inserted for lens in transfocator.tfs_lenses] == [True,  False]
+    assert [lens.inserted for lens in transfocator.xrt_lenses] == [True, False]
+    assert [lens.inserted for lens in transfocator.tfs_lenses] == [True, False]
