@@ -1,5 +1,5 @@
 
-
+import logging
 import numpy as np
 from transfocate.lens import Lens
 from transfocate.lens import LensConnect
@@ -9,6 +9,8 @@ import logging
 from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import Component
 from ophyd.utils import set_and_wait 
+
+logger = logging.getLogger(__name__)
 
 class Transfocator(Device):
     """Class to interface between the Transfocator and the calculator code
@@ -70,11 +72,12 @@ class Transfocator(Device):
         for lens in self.tfs_lenses:
             if lens.inserted==True:
                 already_in.append(lens)
-        #makr the list of already-inserted lenses a LensCOnnect 
+        logger.debug("There are %s lenses already inserted in the Transfocator"%(len(already_in)))
+        #makr the list of already-inserted lenses a LensCOnnect of arbitrary length
         already_in=LensConnect(*already_in)
         #get the current focal length/image
         focus=already_in.image(0.0)
-        print (focus)
+        logger.debug("The current focus of the inserted lenses is %s"%focus)
         return focus
 
     def focus_at(self, i, obj=0.0):
@@ -92,11 +95,17 @@ class Transfocator(Device):
             meters
         
         """
+        count_xrt=0
+        count_tfs=0
         #remove all the lenses so there is a clean slate
         for lens in self.xrt_lenses:
             lens.remove()
+            count_xrt+=1
+            logger.debug("XRT Lens %s was successfully removed" %count_xrt)
         for lens in self.tfs_lenses:
             lens.remove()
+            count_tfs+=1
+            logger.debug("TFS lens %s was successfully removed"%count_tfs)
         #Define calculator
         calc=Calculator(self.xrt_lenses, self.tfs_lenses, self.xrt_limit.value, self.tfs_limit.value)
         #fid the lens array with the smallest error(will be the first array in list)

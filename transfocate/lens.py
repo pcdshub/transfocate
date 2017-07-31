@@ -43,6 +43,8 @@ class Lens(Device):
     ----
     The variables radius, z, and focus are now EPICS signals for the lenses.
     """
+    #defining the EPICS variables (note: these are the signals and not the
+    #values of each variable)
     sig_radius=Component(EpicsSignalRO, "RADIUS")
     sig_z = Component(EpicsSignalRO, "Z")
     sig_focus = Component(EpicsSignalRO, "FOCUS")
@@ -50,6 +52,10 @@ class Lens(Device):
     in_signal = Component(EpicsSignal, "INSERT")
     out_signal = Component(EpicsSignal, "REMOVE")
 
+    #z, radius, and focus properties: these convert the EPICS signal into a
+    #value that can be interpreted by the other methods when the property is
+    #called.  Otherwise, the signal itself would be inputted
+    
     @property
     def radius(self):
         """
@@ -99,6 +105,7 @@ class Lens(Device):
             has been removed.
 
         """
+        #checks if the state value is 1 (inserted) or 0 (removed)
         if self.state.value==1:
             return True
         else:
@@ -109,6 +116,7 @@ class Lens(Device):
         Method sets the EPICS insert signal to 1 which triggers the motor to
         insert the lens from the beam pipeline
         """
+        #Changes in_signal to 1 which causes the lense to be inserted
         self.in_signal.put(1)
     
     def remove(self):
@@ -116,6 +124,7 @@ class Lens(Device):
         Method sets the EPICS remove signal to 1 which triggers the motor to
         remove the lens from the beam pipeline
         """
+        #changes out_signal to 1 which causes the lense to be removed
         self.out_signal.put(1)
 
     def image_from_obj(self, z_obj):
@@ -139,11 +148,20 @@ class Lens(Device):
         If the location of the object (z_obj) is equal to the focal length of
         the lens, this function will return infinity.
         """
+        #check if the lens object is at the focal length.  
+        #If this happens, then the image location will be infinity.
+        #Note, this should not effect the recursive calculations that occur
+        #later in the code
         if z_obj==self.focus:
             return np.inf
+        #find the object location for the lens
         o=self.z-z_obj
+        #calculate the inverse of i from the thin lens equation
         i_inv=(1/self.focus)-(1/o)
+        #take the inverse of 1/i to get i
         i=1/i_inv
+        #add the imsge to the lens z location aling the beam pipeline to get
+        #the z position of the image
         z_im=i+self.z
 
         logger.debug("object measurement: %s i_invers: %s i: %s z image:%s"%(o, i_inv, i, z_im))
@@ -153,7 +171,8 @@ class LensConnect(object):
     """
     Data structure for a basic system of lenses
     """
-    
+    #define the variables for lensconnect class
+    #the lenses list can be a list of arbitrary length
     def __init__(self, *args, **kwargs):
         """
         Parameters
@@ -180,10 +199,15 @@ class LensConnect(object):
             return 0 #this method is only used if we impliment the option of No xrt/tfs lenses
 
         else:
+            #set a collect variable to add the radii to
             collect=0
+            #loop through the lenses in the array and add 1/radius to the
+            #collect variable
             for lens in self.lenses:
                 collect+=(1/lens.radius)
             logger.debug("lens radius: %s length of lens list: %s collect variable %s"%(lens.radius, len(self.lenses), collect)) 
+            #take the inverse of collect to get the effective radius of the
+            #lens array
             return 1/collect
 
     def image(self, z_obj):
@@ -202,8 +226,14 @@ class LensConnect(object):
         float
             returns the location z of a system of lenses in meters (m).
         """
+        #set the initial image as the z object
         image=z_obj
+        #call z_based_sort to put the lenses in order from closest to furthest
+        #to the reference point on the beamline
+        #save this sorted array into a list
         lens_list=self.z_based_sort
+        #loop through the list and recursively calculate the image of the lens
+        #array
         for lens in lens_list:
             image=lens.image_from_obj(image)
             logger.debug("image: %s" %(image))
@@ -220,7 +250,9 @@ class LensConnect(object):
         list
             Returns the sorted list of lenses 
         """
+        #define variable to count the number of lenses
         count=0
+        #sort the lenses based on their z position
         sorted_lenses=sorted(self.lenses, key=lambda lens: lens.z)
         for lens in sorted_lenses:
             count +=1
@@ -237,4 +269,5 @@ class LensConnect(object):
             Returns the total number of lenses in the array.
         """
         logger.debug("number of lenses in list: %s" %(len(self.lenses)))
+        #find the length of the list of lenses
         return len(self.lenses)
