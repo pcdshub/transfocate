@@ -3,5 +3,5 @@ Transfocator Information
 
 .. automodule:: transfocate.transfocator
 
-.. automodule:: transfocate.transfocator.Transfocator
+.. autoclass:: transfocate.transfocator.Transfocator
    :members:
