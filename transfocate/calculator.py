@@ -132,6 +132,4 @@ class Calculator(object):
         combos = np.asarray(self.combinations)
         sorted_combos = combos[index]
         final_sols=[]
-        #for i in num_sol:
-        #    final_sols.extend(sorted_combos[i-1])
         return sorted_combos

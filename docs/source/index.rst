@@ -7,3 +7,4 @@ Welcome to transfocate's documentation!
 
    lens.rst
    calculator.rst
+   transfocator.rst
