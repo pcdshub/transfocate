@@ -108,7 +108,7 @@ class Transfocator(Device):
             logger.debug("TFS lens %s was successfully removed"%count_tfs)
         #Define calculator
         calc=Calculator(self.xrt_lenses, self.tfs_lenses, self.xrt_limit.value, self.tfs_limit.value)
-        #fid the lens array with the smallest error(will be the first array in list)
+        #find the lens array with the smallest error(will be the first array in list)
         best_combo = calc.find_combinations(i, obj, num_sol=1)[0]
         #Loop through the xrt lenses in the TransfocatorCombo and insert them into the beamline
         for lens in best_combo.xrt.lenses:
