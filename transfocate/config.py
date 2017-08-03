@@ -15,8 +15,8 @@ tfs=[Lens("MFX:LENS:TFS:02:"),
      Lens("MFX:LENS:TFS:06:"), 
      Lens("MFX:LENS:TFS:07:"),
      Lens("MFX:LENS:TFS:08:"), 
-     Lens("MFX:LENS;TFS:09:"), 
+     Lens("MFX:LENS:TFS:09:"), 
      Lens("MFX:LENS:TFS:10:")]
 
-mfx_transfocator=Transfocator("TST:TFS:LENS:", prefocus, tfs)
-
+mfx_transfocator=Transfocator("MFX:LENS:", prefocus, tfs)
+mfx_transfocator.nominal_sample = 378.9016

@@ -98,6 +98,7 @@ class Calculator(object):
             #of z 
             for index in range(len(z)):
                 #append the combinations into tfs_combo
+                #if len(z.lens)<=4:
                 tfs_combo.append(z[index])
             logger.debug("length of the tfs combinations array %s"%(len(tfs_combo)))
        
@@ -153,7 +154,7 @@ class Calculator(object):
                 #take the difference between the array image and the target
                 #image
                 diff=np.abs(combo.image(z_obj)-target_image)
-                logger.debug("Found a combination with image {} "
+                logger.info("Found a combination with image {} "
                              "from target {}.".format(diff, target_image))
                 #add the difference to the end of image diff
                 image_diff.append(diff)

@@ -97,6 +97,7 @@ class Transfocator(Device):
         """
         count_xrt=0
         count_tfs=0
+        #best_combo=[]
         #remove all the lenses so there is a clean slate
         for lens in self.xrt_lenses:
             lens.remove()
@@ -113,6 +114,8 @@ class Transfocator(Device):
         #Loop through the xrt lenses in the TransfocatorCombo and insert them into the beamline
         for lens in best_combo.xrt.lenses:
             lens.insert()
+            print (lens.name)
         #loop through the tfs lenses and insert them into the beamline.
         for lens in best_combo.tfs.lenses:
             lens.insert()
+            print (lens.name)
