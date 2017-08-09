@@ -93,13 +93,31 @@ class Transfocator(Device):
             meters.  Parameter will be set to 0 unles otherwise specified by
             the user
         """
-        best_combo=[]
+       
+        #create a calculator 
         calc=Calculator(self.xrt_lenses, self.tfs_lenses, self.xrt_limit.value,self.tfs_limit.value)
-        combo=calc.find_combinations(i, obj, num_sol=1)[0]
-        best_combo.extend(combo.xrt.lenses)
-        best_combo.extend(combo.tfs.lenses)
-        best_combo=LensConnect(*best_combo)
-        return best_combo
+        #create a list of all the possible combinations of the lenses in the
+        #calculator and puts them in order with the array with the image
+        #closest to the target image first and so on
+        combos=calc.find_combinations(i, obj, num_sol=1)
+        
+        #loop through the combinations in combos to find the closest and
+        #shortest list
+        for combo in combos:
+            #create a list for the best combination
+            best_combo=[]
+            #extend the list to add the xrt and tfs lenses as Lenses
+            best_combo.extend(combo.xrt.lenses)
+            best_combo.extend(combo.tfs.lenses)
+            #instantiate the best combo as a LensConnect objet
+            best_combo=LensConnect(*best_combo)
+            #check if the list uses 5 or fewer lenses
+            #note: fewer lenses means more efficiency and we will ideally never
+            #need more than 5 at a time
+            #if best_combo meets the parameter, return it as a LensConnect, otherwise the method
+            #will keep looping
+            if best_combo.nlens<=5:
+                return best_combo
         
     def focus_at(self, i, obj=0.0):
         """Method inserts the lenses in this array into the beam pipeline.
@@ -116,11 +134,14 @@ class Transfocator(Device):
         
         """
         
+        #find the best combination of lenses to match the target image
         best_combo = self.find_best_combo(i)
-        #Loop through the xrt lenses in the TransfocatorCombo and insert them into the beamline
         
+        #insert the lenses in the best combo LensConnect
         best_combo.apply_lenses()
         
+        #loop through all the lenses and, if they are not in best_combo, remove
+        #them.  If they are already removed, this should not affect them
         for lens in self.xrt_lenses:
             if lens not in best_combo.lenses:
                 lens.remove()
