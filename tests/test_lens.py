@@ -44,6 +44,16 @@ def test_lens_connect_image(array):
     assert np.isclose(array.image(125.0), 304.6875, atol=0.1)
 
 def test_number_of_lenses(array):
-    assert array.nlens()== 2
+    assert array.nlens== 2
+
+def test_show_info(lens_array):
+    pass
+    #assert [lens.show_info() for lens in lens_array.lenses] == [("TST:TFS:LENS:01:",500.0, 100.0), ("TST:TFS:LENS:02", 500.0, 100.0)]
+   
+
+def test_apply_lenses(lens_array):
+    lens_array.apply_lenses()
+    for lens in lens_array.lenses:
+        assert lens.in_signal.value == 1
 
 

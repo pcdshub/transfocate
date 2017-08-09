@@ -69,6 +69,13 @@ def lens():
     return Lens("TST:TFS:LENS:01:")
 
 @pytest.fixture(scope='module')
+def lens_array():
+    first = Lens("TST:TFS:LENS:01:")
+    second = Lens("TST:TFS:LENS:02:")
+    return LensConnect(first, second)
+    
+
+@pytest.fixture(scope='module')
 def array():
     first  = FakeLens(500.0, 100.0, 50.0)
     second = FakeLens(500.0, 275.0, 25.0)

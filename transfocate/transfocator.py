@@ -80,10 +80,29 @@ class Transfocator(Device):
         logger.debug("The current focus of the inserted lenses is %s"%focus)
         return focus
 
+    def find_best_combo(self, i, obj=0.0):
+        """Method calculates the best lens array to meet the user's target
+        image.
+
+        Parameters
+        ----------
+        i : float
+            The target image of the lens array
+        obj : float
+            location of the lens object along the beam pipeline measured in
+            meters.  Parameter will be set to 0 unles otherwise specified by
+            the user
+        """
+        best_combo=[]
+        calc=Calculator(self.xrt_lenses, self.tfs_lenses, self.xrt_limit.value,self.tfs_limit.value)
+        combo=calc.find_combinations(i, obj, num_sol=1)[0]
+        best_combo.extend(combo.xrt.lenses)
+        best_combo.extend(combo.tfs.lenses)
+        best_combo=LensConnect(*best_combo)
+        return best_combo
+        
     def focus_at(self, i, obj=0.0):
-        """Method calculates the best lens combination to meet the user's
-        target image and inserts the lenses in this array into the beam
-        pipeline.
+        """Method inserts the lenses in this array into the beam pipeline.
 
         Parameters
         ----------
@@ -92,30 +111,22 @@ class Transfocator(Device):
             user would ideally like to achieve
         obj : float
             Location of the lens object along the beam pipeline measured in
-            meters
+            meters.  Note: this parameter will be automatically set to 0 unless
+            the user specifies otherwise.
         
         """
-        count_xrt=0
-        count_tfs=0
-        #best_combo=[]
-        #remove all the lenses so there is a clean slate
-        for lens in self.xrt_lenses:
-            lens.remove()
-            count_xrt+=1
-            logger.debug("XRT Lens %s was successfully removed" %count_xrt)
-        for lens in self.tfs_lenses:
-            lens.remove()
-            count_tfs+=1
-            logger.debug("TFS lens %s was successfully removed"%count_tfs)
-        #Define calculator
-        calc=Calculator(self.xrt_lenses, self.tfs_lenses, self.xrt_limit.value, self.tfs_limit.value)
-        #find the lens array with the smallest error(will be the first array in list)
-        best_combo = calc.find_combinations(i, obj, num_sol=1)[0]
+        
+        best_combo = self.find_best_combo(i)
         #Loop through the xrt lenses in the TransfocatorCombo and insert them into the beamline
-        for lens in best_combo.xrt.lenses:
-            lens.insert()
-            print (lens.name)
-        #loop through the tfs lenses and insert them into the beamline.
-        for lens in best_combo.tfs.lenses:
-            lens.insert()
-            print (lens.name)
+        
+        best_combo.apply_lenses()
+        
+        for lens in self.xrt_lenses:
+            if lens not in best_combo.lenses:
+                lens.remove()
+        
+        for lens in self.tfs_lenses:
+            if lens not in best_combo.lenses:
+                lens.remove()
+        
+        

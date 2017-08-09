@@ -30,7 +30,14 @@ def launch_server():
     server.add_pv(PyPV("TFS:LENS:XRT_ONLY",  400.0))
     server.add_pv(PyPV("TFS:LENS:MFX_ONLY",  750.0))
     server.add_pv(PyPV("LENS:BEAM:FAULTED",  0))
-
+    
+    server.add_pv(PyPV("TFS:LENS:02:RADIUS",  500.0))
+    server.add_pv(PyPV("TFS:LENS:02:Z",       100.0))
+    server.add_pv(PyPV("TFS:LENS:02:FOCUS",   50.0))
+    server.add_pv(PyPV("TFS:LENS:02:STATE",   0))
+    server.add_pv(PyPV("TFS:LENS:02:INSERT",  0))
+    server.add_pv(PyPV("TFS:LENS:02:REMOVE",  0))
+   
     #Run until process aborts
     logger.debug("Running server ...")
     while True:
