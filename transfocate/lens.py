@@ -276,9 +276,13 @@ class LensConnect(Device):
         return len(self.lenses)
     
     def show_info(self):
+        """
+        Method prints the information for each lens in the LensConnect. Listed
+        information includes: name, radius, and, z position
+        """
         for lens in self.lenses:
-            print ("name: %s radius: %s z value: %s"%(lens.name, lens.radius, lens.z))
-        #return 4
+            logging.info("name: %s radius: %s z-value: %s"%(lens.name, lens.radius, lens.z))
+            print("name: %s radius: %s z-value: %s"%(lens.name, lens.radius, lens.z))
 
     def apply_lenses(self):
         """

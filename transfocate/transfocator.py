@@ -80,7 +80,7 @@ class Transfocator(Device):
         logger.debug("The current focus of the inserted lenses is %s"%focus)
         return focus
 
-    def find_best_combo(self, i, obj=0.0):
+    def find_best_combo(self, i, n=5, obj=0.0):
         """Method calculates the best lens array to meet the user's target
         image.
 
@@ -116,10 +116,10 @@ class Transfocator(Device):
             #need more than 5 at a time
             #if best_combo meets the parameter, return it as a LensConnect, otherwise the method
             #will keep looping
-            if best_combo.nlens<=5:
+            if best_combo.nlens<=n:
                 return best_combo
         
-    def focus_at(self, i, obj=0.0):
+    def focus_at(self, i, n=5, obj=0.0):
         """Method inserts the lenses in this array into the beam pipeline.
 
         Parameters
@@ -135,7 +135,7 @@ class Transfocator(Device):
         """
         
         #find the best combination of lenses to match the target image
-        best_combo = self.find_best_combo(i)
+        best_combo = self.find_best_combo(i, n)
         
         #insert the lenses in the best combo LensConnect
         best_combo.apply_lenses()

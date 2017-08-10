@@ -58,18 +58,18 @@ def test_transfocator_find_best_combo(transfocator):
     assert np.isclose(250.0, transfocator.find_best_combo(312.5).effective_radius, atol=0.1)
     assert np.isclose(312.5, transfocator.find_best_combo(312.5).image(0.0), atol=0.1)
     
-    #assert transfocator.find_best_combo(300.4).nlens==3
-    #assert np.isclose(166.667, transfocator.find_best_combo(300.4).effective_radius, atol=0.1)
-    assert np.isclose(300.4, transfocator.find_best_combo(300.4).image(0.0), atol=0.1)
+    assert transfocator.find_best_combo(300.4, 3).nlens==3
+    assert np.isclose(166.667, transfocator.find_best_combo(300.4, 3).effective_radius, atol=0.1)
+    assert np.isclose(300.4, transfocator.find_best_combo(300.4, 3).image(0.0), atol=0.1)
 
 def test_transfocator_focus_at(transfocator):
     transfocator.focus_at(312.5)
     assert [lens.inserted for lens in transfocator.xrt_lenses] == [True, False]
     assert [lens.inserted for lens in transfocator.tfs_lenses] == [True, False, False, False]
     
-    transfocator.focus_at(300.4)
+    transfocator.focus_at(300.4, 3)
     assert [lens.inserted for lens in transfocator.xrt_lenses] == [True, False]
-    assert [lens.inserted for lens in transfocator.tfs_lenses] == [True, True, True, False]
+    assert [lens.inserted for lens in transfocator.tfs_lenses] == [True, True, False, False]
 
     transfocator.focus_at(295.7)
     assert [lens.inserted for lens in transfocator.xrt_lenses] == [True, False]
