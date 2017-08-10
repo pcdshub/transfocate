@@ -88,8 +88,11 @@ class Transfocator(Device):
         ----------
         i : float
             The target image of the lens array
+        n : int
+            The maximum number of lenses in the array. Note: will automatically
+            be set to 5 unless otherwise specified by the user.
         obj : float
-            location of the lens object along the beam pipeline measured in
+            Location of the lens object along the beam pipeline measured in
             meters.  Parameter will be set to 0 unles otherwise specified by
             the user
         """
@@ -127,6 +130,9 @@ class Transfocator(Device):
         i : float
             The target image of the lens array (i.e. the image/focal length the
             user would ideally like to achieve
+        n : int
+            The maximum number od lenses in the array. Note: will automatically
+            be set to 5 unless otherwise specified by the user
         obj : float
             Location of the lens object along the beam pipeline measured in
             meters.  Note: this parameter will be automatically set to 0 unless
