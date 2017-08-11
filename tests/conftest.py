@@ -72,7 +72,8 @@ def lens():
 def lens_array():
     first = Lens("TST:TFS:LENS:01:")
     second = Lens("TST:TFS:LENS:02:")
-    return LensConnect(first, second)
+    third = Lens("TST:TFS:LENS:03:")
+    return LensConnect(first, second, third)
     
 
 @pytest.fixture(scope='module')

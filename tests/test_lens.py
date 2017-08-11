@@ -48,10 +48,12 @@ def test_number_of_lenses(array):
 
 def test_show_info(lens_array):
     print(lens_array.show_info())
-   
+    #comment this out when not testng code
+    #assert False
 
 def test_apply_lenses(lens_array):
     lens_array.apply_lenses()
+    #loop through the lenses and make sure their in_signal vlaue =1
     for lens in lens_array.lenses:
         assert lens.in_signal.value == 1
 
