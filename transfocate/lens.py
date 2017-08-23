@@ -31,7 +31,7 @@ class Lens(Device):
         Lens position along beam pipelin measure in meters (m).
     sig_focus : EPICS Read Only signal
         Focal length of lens in meters (m). Is a function of radius
-    state : EPICS Raead Only signal
+    state : EPICS Read Only signal
         Position of the lens.  1 if it is inserted in the beamline and 0 if
         it is removed
     in_signal : EPICS signal
@@ -165,9 +165,11 @@ class Lens(Device):
         z_im=i+self.z
 
         logger.debug("object measurement: %s i_invers: %s i: %s z image:%s"%(o, i_inv, i, z_im))
+        
         return z_im
 
-class LensConnect(object):
+
+class LensConnect(Device):
     """
     Data structure for a basic system of lenses
     """
@@ -258,7 +260,8 @@ class LensConnect(object):
             count +=1
             logger.debug("z position for lens number %s is %s" %(count,lens.z))
         return sorted_lenses
-
+    
+    @property
     def nlens(self):
         """
         Method calculates the total number of lenses in the Lens array.
@@ -271,3 +274,24 @@ class LensConnect(object):
         logger.debug("number of lenses in list: %s" %(len(self.lenses)))
         #find the length of the list of lenses
         return len(self.lenses)
+    
+    def show_info(self):
+        """
+        Method prints the information for each lens in the LensConnect. Listed
+        information includes: name, radius, and, z position
+        """
+        for lens in self.lenses:
+            logging.info("name: %s radius: %s z-value: %s"%(lens.name, lens.radius, lens.z))
+            print("name: %s radius: %s z-value: %s"%(lens.name, lens.radius, lens.z))
+
+    def apply_lenses(self):
+        """
+        Method inserts the lenses in a LensConnect into the transfocator by
+        setting the individual lens' insert EPICS signals to 1 which triggers
+        them to be inserted into the beamline
+        """
+        #loop through lenses in the LensConnect
+        for lens in self.lenses:
+            #insert the lenses into the transfocator
+            lens.insert()
+            #logger.info("in signal value is %s"%(lens.in_signal.value))

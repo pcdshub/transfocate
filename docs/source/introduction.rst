@@ -1,0 +1,4 @@
+Introduction
+============
+
+.. automodule:: transfocate.introduction
