@@ -108,7 +108,7 @@ def test_transfocator_focus_at(transfocator):
     assert [lens.inserted for lens in transfocator.tfs_lenses] == [True, False, False, False]
     
     #test with xrt[0] and tfs[0,1]
-    transfocator.focus_at(300.4, 2)
+    transfocator.focus_at(300.4)
     assert [lens.inserted for lens in transfocator.xrt_lenses] == [True, False]
     assert [lens.inserted for lens in transfocator.tfs_lenses] == [True, True, False, False]
 

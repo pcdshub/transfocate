@@ -182,10 +182,10 @@ class Calculator(object):
                 x=combo.tfs.nlens-n
                 #logger.debug("dropped combo that had %s lenses over limit "
                 #             "%s"%combo.tfs.nlens, n)
-            #sort the list based from lowest image diff to highest
-            #note: argsort sorts so that the index list is a list if indeces in
-            #order of their coresponding values in image diff
-            index=np.argsort(image_diff)
+        #sort the list based from lowest image diff to highest
+        #note: argsort sorts so that the index list is a list if indeces in
+        #order of their coresponding values in image diff
+        index=np.argsort(image_diff)
         #make an array out of the combinations list
         combos = np.asarray(self.combinations)
         #make the sorted list where the lens combos are sorted based on
