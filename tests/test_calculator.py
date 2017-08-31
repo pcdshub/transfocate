@@ -21,7 +21,7 @@ def test_calculator_combinations(calculator):
     assert len(calculator.combinations) == 8
 
 def test_calculator_find_combinations(calculator):
-    solutions = calculator.find_combinations(312.5, num_sol=1)
+    solutions = calculator.find_combinations(312.5)
     #Assert we found the accurate combination
     assert np.isclose(solutions[0].image(0.0), 312.5, atol=0.1)
 

@@ -45,9 +45,9 @@ class Lens(Device):
     """
     #defining the EPICS variables (note: these are the signals and not the
     #values of each variable)
-    sig_radius=Component(EpicsSignalRO, "RADIUS")
-    sig_z = Component(EpicsSignalRO, "Z")
-    sig_focus = Component(EpicsSignalRO, "FOCUS")
+    sig_radius=Component(EpicsSignalRO, "RADIUS", auto_monitor=True)
+    sig_z = Component(EpicsSignalRO, "Z", auto_monitor=True)
+    sig_focus = Component(EpicsSignalRO, "FOCUS", auto_monitor=True)
     state = Component(EpicsSignalRO, "STATE") 
     in_signal = Component(EpicsSignal, "INSERT")
     out_signal = Component(EpicsSignal, "REMOVE")
