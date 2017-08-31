@@ -35,7 +35,7 @@ from the testsso the tutorial does not affect the real Transfocator in MFX.
     
 
 
-    mfx_transfocator=Transfocator("MFX:LENS:", prefocus, tfs)
+    mfx_transfocator=transfocate.tests.transfocator()
 
 
 
@@ -56,11 +56,14 @@ Transfocator. To do this, use :meth:`.Transfocator.current_focus`
 This command will find the current focus of the Transfocator.  This may be
 helpful if you want to see which lenses are currently inserted in the beamline
 or to make sure that your previous settings have not been tampered with.  
-To find and apply your desired array of lenses, use :meth:`.Transfocator.focus_at`.
+
+To find your optimal array of lenses, use :meth:`.Transfocator.find_best_combo` and to find and apply your desired array of lenses, use :meth:`.Transfocator.focus_at`.
 
 .. ipython:: python
 
-    mfx_transfocator.focus_at(300.4, 2, 0.0)
+    combo=mfx_transfocator.find_best_combo(312.5, 0.0)
+
+    mfx_transfocator.focus_at(312.5, 0.0)
 
 
 As entered, this command will return all possible combinations of the lenses
@@ -71,6 +74,10 @@ we assume there will always be 1 prefocus lens, so this amounts to a ax total
 of 5 lenses which is ideally, the most that will ever be required.
 After finding the optimal lens combination, this command will automatically
 trigger EPICS signals to insert and remove the appropriate lenses.
+
+Note: To find information on the lens array, you must use
+:meth:`.Transfocator.find_best_combo` because this method returns a LensConnect
+type.
 
 Accessing Lens Information
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -85,7 +92,7 @@ of each lens in the array.  To view a readout of information for each lens, use
 
 .. ipython:: python
 
-    mfx_transfocator.show_info()
+    combo.show_info()
 
 
 This command will print the radius, z position, and focus of each lens.
@@ -94,7 +101,8 @@ Additionally, you amy want to find the number of lenses in your array.  To do
 this, use :meth:`.LensConnect.nlens`
 
 .. ipython:: python
-    mfx_transfocator.nlens
+    
+    combo.nlens
 
 This command will return and print the number of lenses currently in the array
 
@@ -104,4 +112,4 @@ sits within hutch safety limits.  To do this, use
 
 .. ipython:: python
 
-    mfx_transfocator.effectiver_radius
+    combo.effective_radius
