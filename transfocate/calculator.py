@@ -113,7 +113,7 @@ class Calculator(object):
         logger.debug("Length of the list of all combinations %s"%(len(all_combo)))
         return all_combo 
         
-    def find_combinations(self, target_image, n=4, z_obj=0.0, num_sol=1, use_limits=True):
+    def find_combinations(self, target_image, n=4, z_obj=0.0, use_limits=True):
         """Method finds all possible xrt/tfs lens combinations and calculates the xrt/tfs lens arrays with the smallest error
         from the user's desired setting (i.e. the image of the lens array is
         closest to the target image of the array the user requires.
@@ -130,9 +130,6 @@ class Calculator(object):
             arrays.
         z_obj : float
             location of the lens object along the beam pipline in meters (m)
-        num_sol : int
-            The desired number of solutions that are closest to the
-            target_image (i.e. the solutions with the smallest error)
         
         Returns
         -------
@@ -182,10 +179,10 @@ class Calculator(object):
                 x=combo.tfs.nlens-n
                 #logger.debug("dropped combo that had %s lenses over limit "
                 #             "%s"%combo.tfs.nlens, n)
-            #sort the list based from lowest image diff to highest
-            #note: argsort sorts so that the index list is a list if indeces in
-            #order of their coresponding values in image diff
-            index=np.argsort(image_diff)
+        #sort the list based from lowest image diff to highest
+        #note: argsort sorts so that the index list is a list if indeces in
+        #order of their coresponding values in image diff
+        index=np.argsort(image_diff)
         #make an array out of the combinations list
         combos = np.asarray(self.combinations)
         #make the sorted list where the lens combos are sorted based on

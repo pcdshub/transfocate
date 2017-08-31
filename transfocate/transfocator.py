@@ -102,19 +102,16 @@ class Transfocator(Device):
         #create a list of all the possible combinations of the lenses in the
         #calculator and puts them in order with the array with the image
         #closest to the target image first and so on
-        combos=calc.find_combinations(i, n, obj, num_sol=1)
+        combos=calc.find_combinations(i, n, obj)
         
-        #loop through the combinations in combos to find the closest and
-        #shortest list
-        for combo in combos:
-            #create a list for the best combination of lenses
-            best_combo=[]
-            #extend the list to add the xrt and tfs lenses as Lenses
-            best_combo.extend(combo.xrt.lenses)
-            best_combo.extend(combo.tfs.lenses)
-            #instantiate the best combo as a LensConnect objet
-            best_combo=LensConnect(*best_combo)
-            return best_combo
+        #create a list for the best combination of lenses
+        best_combo=[]
+        #extend the list to add the xrt and tfs lenses as Lenses
+        best_combo.extend(combos[0].xrt.lenses)
+        best_combo.extend(combos[0].tfs.lenses)
+        #instantiate the best combo as a LensConnect objet
+        best_combo=LensConnect(*best_combo)
+        return best_combo
 
     def focus_at(self, i, n=4, obj=0.0):
         """Method inserts the lenses in this array into the beam pipeline.
