@@ -1,0 +1,3 @@
+pyepics
+pcaspy
+git+https://github.com/teddyrendahl/pypvserver#egg=pypvserver
