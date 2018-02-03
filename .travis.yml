@@ -1,4 +1,9 @@
 language: python
+
+env:
+  global:
+    - OFFICIAL_REPO='pcdshub/transfocate'
+
 python:
   # We don't actually use the Travis Python, but this keeps it organized.
   - "3.6"
@@ -29,3 +34,13 @@ script:
 
 after_success:
   - codecov
+  - |
+    if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == $TRAVIS_TAG  && $TRAVIS_TAG != '' ]]; then
+      export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN_TAG
+      anaconda upload bld-dir/linux-64/*.tar.bz2
+    fi
+  - |
+    if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == 'master' && $TRAVIS_TAG == '' ]]; then
+      export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN_DEV
+      anaconda upload bld-dir/linux-64/*.tar.bz2
+    fi
