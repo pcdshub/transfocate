@@ -8,14 +8,14 @@ from collections import namedtuple
 ###############
 # Third Party #
 ###############
-import epics
 import pytest
 ##########
 # Module #
 ##########
-from .server import launch_server
 from transfocate.lens import Lens, LensConnect
 from transfocate.calculator import Calculator
+from pcdsdevices.sim.pv import using_fake_epics_pv
+
 
 #################
 # Logging Setup #
@@ -64,35 +64,30 @@ class FakeLens(object):
 ############
 # Fixtures #
 ############
-@pytest.fixture(scope='module')
-def lens():
-    return Lens("TST:TFS:LENS:01:")
 
 @pytest.fixture(scope='module')
+@using_fake_epics_pv
+def lens():
+    l =  Lens("TST:TFS:LENS:01:", name='Lens')
+    l.sig_radius._read_pv.put(500.0)
+    l.sig_z._read_pv.put(100.0)
+    l.sig_focus._read_pv.put(50.0)
+    return l
+
+@pytest.fixture(scope='module')
+@using_fake_epics_pv
 def lens_array():
-    first = Lens("TST:TFS:LENS:01:")
-    second = Lens("TST:TFS:LENS:02:")
-    third = Lens("TST:TFS:LENS:03:")
+    first = Lens("TST:TFS:LENS:01:", name='Lens 1')
+    second = Lens("TST:TFS:LENS:02:", name='Lens 2')
+    third = Lens("TST:TFS:LENS:03:", name='Lens 3')
     return LensConnect(first, second, third)
-    
+
 
 @pytest.fixture(scope='module')
 def array():
     first  = FakeLens(500.0, 100.0, 50.0)
     second = FakeLens(500.0, 275.0, 25.0)
     return LensConnect(second, first)
-
-@pytest.fixture(scope='session', autouse=True)
-def pyioc():
-    #Create full path to server file
-    server = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                          'server.py')
-    proc = subprocess.Popen(['python', server])
-    yield
-    logging.debug("Disconnecting EPICS variables")
-    epics.ca.destroy_context()
-    logging.debug("Killing Python IOC thread ...")
-    proc.kill()
 
 
 @pytest.fixture(scope='module')
