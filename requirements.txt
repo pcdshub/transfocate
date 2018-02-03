@@ -1,2 +1,3 @@
 ophyd
 numpy
+pcdsdevices
