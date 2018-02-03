@@ -7,6 +7,7 @@ import logging
 # Third Party #
 ###############
 import pytest
+from pcdsdevices.sim.pv import using_fake_epics_pv
 
 ##########
 # Module #
@@ -16,6 +17,7 @@ from transfocate.transfocator import Transfocator
 import numpy as np
 
 @pytest.fixture(scope='function')
+@using_fake_epics_pv
 def transfocator():
     #Prefocus lenses
     prefocus = [FakeLens(500., 100.0, 50.),
@@ -27,10 +29,13 @@ def transfocator():
            FakeLens(500., 300., 75.),
            FakeLens(200., 310., 10.)]
 
-    return Transfocator("TST:TFS:LENS:",
-                        xrt_lenses=prefocus,
-                        tfs_lenses=tfs)
-
+    trans = Transfocator("TST:TFS:LENS:",
+                         xrt_lenses=prefocus,
+                         tfs_lenses=tfs,
+                         name='Transfocator')
+    trans.xrt_limit._read_pv.put(200.0)
+    trans.tfs_limit._read_pv.put(750.0)
+    return trans
 
 def test_transfocator_current_focus(transfocator):
     #test with tfs[0] and xrt[0]

@@ -1,0 +1,31 @@
+{% set data = load_setup_py_data() %}
+
+package:
+  name: transfocate
+  version : {{ data.get('version') }}
+
+source:
+  path: ..
+
+build:
+  number: 1
+
+requirements:
+  build:
+    - python {{PY_VER}}*,>=3.6
+    - setuptools
+
+  run:
+    - python {{PY_VER}}*,>=3.6
+    - ophyd
+    - numpy
+    - pcdsdevices
+
+test:
+  imports:
+    - transfocate
+
+about:
+  home: https://github.com/pcdshub/transfocate
+  license: SLAC Open License
+  summary: Devices abstractions and utlitiies for the MFX Transfocator 
