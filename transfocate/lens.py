@@ -25,6 +25,14 @@ logger = logging.getLogger(__name__)
 class Lens(InOutRecordPositioner):
     """
     Data structure for basic Lens object
+
+    Parameters
+    ----------
+    prefix : str
+        Name of the state record that controls the PV
+
+    prefix_lens : str
+        Prefix for the PVs that contain focusing information
     """
     _sig_radius = FC(EpicsSignalRO, "{self.prefix_lens}:RADIUS",
                      auto_monitor=True)
@@ -115,6 +123,11 @@ class Lens(InOutRecordPositioner):
 class LensConnect:
     """
     Data structure for a basic system of lenses
+
+    Parameters
+    ----------
+    args : Lens
+        Lens objects
     """
     def __init__(self, *args):
         """
