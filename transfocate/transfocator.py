@@ -134,17 +134,17 @@ class Transfocator(Device):
         #find the best combination of lenses to match the target image
         best_combo = self.find_best_combo(i, n, obj)
         
-        #insert the lenses in the best combo LensConnect
-        best_combo.apply_lenses()
-        
         #loop through all the lenses and, if they are not in best_combo, remove
         #them.  If they are already removed, this should not affect them
         for lens in self.xrt_lenses:
             if lens not in best_combo.lenses:
                 lens.remove()
-        
+            else:
+                lens.insert()
         for lens in self.tfs_lenses:
             if lens not in best_combo.lenses:
                 lens.remove()
+            else:
+                lens.insert()
         
         
