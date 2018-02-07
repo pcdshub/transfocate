@@ -14,44 +14,19 @@ class Calculator:
     """
     Class for the transfocator beryllium lens calculator.
 
-
-class Calculator(object):
-    """Class for the transfocator beryllium lens calculator.
-
-    Attributes
+    Parameters
     ----------
     xrt_lenses : list
         A list of the xrt prefocus lenses
+
     tfs_lenses : list
-        A list of the beryllium transfocator lenses
-    xrt_limit : float 
-        The hard limit i.e. minimum effective radius that the xrt lens array can safely
-        have
-    tfs : float
-        The hard limit i.e. maximum effective radius that tfs lense array can
-        safely have
+        A list of the transfocator lenses
     """
-    #Define calculator variables
-    #There are not xtr or tfs limits unless they are set by the signals
-    def __init__(self, xrt_lenses, tfs_lenses, xrt_limit=None, tfs_limit=None):
-        self.xrt_lenses=xrt_lenses
-        self.tfs_lenses=tfs_lenses
-        self.xrt_limit=xrt_limit
-        self.tfs_limit=tfs_limit
+    def __init__(self, xrt_lenses, tfs_lenses):
+        self.xrt_lenses = xrt_lenses
+        self.tfs_lenses = tfs_lenses
 
-    @property
-    def combinations(self):
-        #Note: all lens arrays will consist of one prefocus lens and an array
-        #of tfs lenses
-        
-        """Method calculates and returns all possible combinations of the xrt
-        and tfs lense arrays
-
-        Returns
-        -------
-        list
-            Returns a list of all possible combinations of the xrt and tfs
-            lense arrays
+    def combinations(self, include_prefocus=True):
         """
         
         #create empty lists for all possible xrt and tfs combos and all possible tfs combos
