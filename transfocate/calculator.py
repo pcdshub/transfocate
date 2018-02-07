@@ -9,39 +9,10 @@ from transfocate.lens import LensConnect
 
 logger = logging.getLogger(__name__)
 
-class TransfocatorCombo(object):
-    """Class creates and keeps track of the lens array lists and calculates the
-    image of the combined xrt/tfs beryllium lens array
 
-    Attributes
-    ----------
-    xrt : list
-        A list of the xrt lenses with all the attributes of the LensConnect
-        class
-    tfs : list
-        A list of the tfs lenses with all the attributes of the LensConnect
-        class
+class Calculator:
     """
-    #define TransfocatorCombo attributes
-    #Note: onely one xrt can be entered for this but multiple tfs lenses can be
-    #entered
-    def __init__(self, xrt, tfs):
-        self.xrt=LensConnect(xrt)
-        self.tfs=LensConnect(*tfs)
-
-    def image(self, z_obj):
-        """Method calculates the image of the combined tfs and xrt lens array
-        
-        Returns
-        -------
-        float
-            Returns the image of the xrt/tfs lens array
-        """
-        #
-        xrt_image=self.xrt.image(z_obj)
-        total_image=self.tfs.image(xrt_image)
-        logger.debug("the xrt image of the array is %s and the image of the combined xrt/tfs array is %s" %(xrt_image,total_image))
-        return total_image
+    Class for the transfocator beryllium lens calculator.
 
 
 class Calculator(object):

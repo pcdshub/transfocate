@@ -4,7 +4,6 @@ import numpy as np
 from transfocate.lens import Lens
 from transfocate.lens import LensConnect
 from transfocate.calculator import Calculator
-from transfocate.calculator import TransfocatorCombo
 import logging 
 from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import Component
