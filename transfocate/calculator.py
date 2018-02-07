@@ -1,9 +1,8 @@
-
-
-import numpy as np
 import itertools
 import logging
-from transfocate.lens import Lens
+
+import numpy as np
+
 from transfocate.lens import LensConnect
 
 
@@ -28,111 +27,83 @@ class Calculator:
 
     def combinations(self, include_prefocus=True):
         """
-        
-        #create empty lists for all possible xrt and tfs combos and all possible tfs combos
-        #xrt lenses put into prefocus
-        all_combo=[]
-        prefocus_combo=self.xrt_lenses
-        tfs_combo=[]
-
-        #loop through tfs lenses from i=0 to i=length of tfs list +1
-        for i in range(len(self.tfs_lenses)+1):
-            #create a list z of all possile tfs lens combinations using
-            #itertools
-            z=list(itertools.combinations(self.tfs_lenses,i))
-            #loop through the combinations in z from index=0 to index= length
-            #of z 
-            for index in range(len(z)):
-                #append the combinations into tfs_combo
-                #if len(z.lens)<=4:
-                tfs_combo.append(z[index])
-            logger.debug("length of the tfs combinations array %s"%(len(tfs_combo)))
-       
-        #loop through all the prefocus lenses
-        for prefocus in prefocus_combo:
-            #loop through the combinations of tfs and prefocus lenses
-            for combo in tfs_combo:
-                #add the lens combinations as TransfocatorCombos so that we are
-                #keeping track of lists of lenses instead of lists of lists
-                all_combo.append(TransfocatorCombo(prefocus,combo))
-        
-        logger.debug("Length of the list of all combinations %s"%(len(all_combo)))
-        return all_combo 
-        
-    def find_combinations(self, target_image, n=4, z_obj=0.0, use_limits=True):
-        """Method finds all possible xrt/tfs lens combinations and calculates the xrt/tfs lens arrays with the smallest error
-        from the user's desired setting (i.e. the image of the lens array is
-        closest to the target image of the array the user requires.
+        All possible combinations of the given lenses
 
         Parameters
         ----------
-        target_image : float
-            The deasired image of the lens array
-        n : int
-            The maximum number of lenses in the array. If unspecified by the
-            user, it will be set to 4.  Note: this does not take the xrt lens
-            into account; however, there will always be at least 1 prefocus
-            lens in the beam so we only need to worry about the tfs lens
-            arrays.
-        z_obj : float
-            location of the lens object along the beam pipline in meters (m)
-        
+        include_prefocus : bool
+            Use only combinations that include a prefocusing lens. If False,
+            only combinations of Transfocator lenses are returned
+
         Returns
         -------
-        array
-            Returns an array of lens combinations with the closest possible
-            image to the target_image
-
-        Note
-        ----
-        This mehtod does not currently take into account the case in which
-        there is no tfs or xrt arrays.
-
+        combos: list
+            List of LensConnect objects
         """
-        #create list of the image differences
-        image_diff=[]
-        #create list for the solutions with images closest to the target
-        #image(i.e. with the lowest error
-        closest_sols=[]
-        
-        #loop through all possible tfs/xrt combinations
-        for combo in self.combinations:
-            logger.debug("number of allowed lenses: %s"%n)
+        combos = list()
+        tfs_combos = list()
+        # Initially only consider transfocator lenses
+        for i in range(1, len(self.tfs_lenses)+1):
+            list_combos = list(itertools.combinations(self.tfs_lenses, i))
+            # Create LensConnect objects from all of our possible combinations
+            tfs_combos.extend([LensConnect(*combo) for combo in list_combos])
+        logger.debug("Found %s combinations of Transfocator lenses",
+                     len(tfs_combos))
+        # If we don't want to prefocus return only Transfocator lenses
+        if not include_prefocus:
+            return tfs_combos
+        # Loop through all the prefocusing lenses
+        for prefocus in self.xrt_lenses:
+            c = LensConnect(prefocus)
+            for combo in tfs_combos:
+                # Create combinations of prefocusing and transfocating lenses
+                combos.append(LensConnect.connect(c, combo))
+        logger.debug("Found %s total combinations of lenses", len(combos))
+        return combos
 
-            #check if the effective radius of the array is less than the tfs
-            #safety limit and greater than the xrt safety limit
-            #also check to see if the number of lenses in the array is less
-            #than or equal to the efficiency limit
-            #if it is more than n, the array is disregarded
-            if combo.tfs.nlens<=n:
-                if use_limits==True and combo.xrt.effective_radius>self.xrt_limit and combo.tfs.effective_radius<self.tfs_limit:
-                    #take the difference between the array image and the target
-                    #image
-                    diff=np.abs(combo.image(z_obj)-target_image)
-                    logger.info("Found a combination with image {}, and difference {} "
-                                "from target {}.".format(combo.image(z_obj), diff, target_image))
-                    #add the difference to the end of image diff
-                    image_diff.append(diff)
-                    closest_sols.append(combo)
-                elif use_limits==False:
-                    diff=np.abs(combo.image(z_obj)-target_image)
-                    image_diff.append(diff)
-                    closes_sols.append(combo)
-                
-                else:
-                    logger.debug("Dropping combination that does not meet radius "
-                                "requirements")
+    def find_solution(self, target, n=4, z_obj=0.0,
+                      include_prefocus=True):
+        """
+        Find a combination to reach a specific focus
+
+        Parameters
+        ----------
+        target: float
+            The desired position of the focal plane in accelerator coordinates
+
+        n : int, optional
+            The maximum number of lenses in a valid combination. This saves
+            time by avoiding calculating the focal plane of combinations with a
+            large number of lenses
+
+        z_obj : float, optional
+            The source point of the beam
+
+        include_prefocus: bool, optional
+            Use only combinations that include a prefocusing lens. If False,
+            only combinations of Transfocator lenses are returned
+
+        Returns
+        -------
+        array: LensConnect
+            An array of lens combinations with the closest possible image to
+            the target_image
+        """
+        solution = None
+        solution_diff = np.inf
+        # Loop through all possible tfs/xrt combinations
+        for combo in self.combinations(include_prefocus=include_prefocus):
+            # Check to see if the number of lenses is less than the limit
+            if combo.nlens <= n:
+                image = combo.image(z_obj)
+                diff = np.abs(image - target)
+                # See if we have found a better solution
+                if diff < solution_diff:
+                    logger.debug("Found a combination with image %s, %s "
+                                 "from target %s", image, diff, target)
+                    solution = combo
+                    solution_diff = diff
             else:
-                x=combo.tfs.nlens-n
-                #logger.debug("dropped combo that had %s lenses over limit "
-                #             "%s"%combo.tfs.nlens, n)
-        #sort the list based from lowest image diff to highest
-        #note: argsort sorts so that the index list is a list if indeces in
-        #order of their coresponding values in image diff
-        index=np.argsort(image_diff)
-        #make an array out of the combinations list
-        combos = np.asarray(closest_sols)
-        #make the sorted list where the lens combos are sorted based on
-        #smallest error
-        sorted_combos = combos[index]
-        return sorted_combos
+                logger.debug("Dropping combination that does not meet radius "
+                             "requirements")
+        return solution
