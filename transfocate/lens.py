@@ -206,3 +206,10 @@ class LensConnect:
         Show a table of information on the lens
         """
         print(self._info())
+
+    @classmethod
+    def connect(cls, array1, array2):
+        """
+        Create a new LensConnect from the combination of multiple
+        """
+        return cls(*array1.lenses, *array2.lenses)
