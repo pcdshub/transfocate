@@ -31,9 +31,9 @@ def test_image_from_obj(lens):
 @using_fake_epics_pv
 def test_lens_motion(lens):
     lens.insert()
-    assert lens.in_signal.value == 1
+    assert lens.state._write_pv.get() == 'IN'
     lens.remove()
-    assert lens.out_signal.value == 1
+    assert lens.state._write_pv.get() == 'OUT'
 
 def test_lens_connect_effective_radius(array):
     assert np.isclose(array.effective_radius, 250, atol=0.1)
@@ -46,3 +46,6 @@ def test_lens_connect_image(array):
 
 def test_number_of_lenses(array):
     assert array.nlens== 2
+
+def test_lens_sorting(array):
+    assert array.lenses[0].z < array.lenses[1].z

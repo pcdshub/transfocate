@@ -68,10 +68,10 @@ class FakeLens(object):
 @pytest.fixture(scope='module')
 @using_fake_epics_pv
 def lens():
-    l =  Lens("TST:TFS:LENS:01:", name='Lens')
-    l.sig_radius._read_pv.put(500.0)
-    l.sig_z._read_pv.put(100.0)
-    l.sig_focus._read_pv.put(50.0)
+    l =  Lens("TST:TFS:LENS:01:", 'TST:XFLS:01', name='Lens')
+    l._sig_radius._read_pv.put(500.0)
+    l._sig_z._read_pv.put(100.0)
+    l._sig_focus._read_pv.put(50.0)
     return l
 
 @pytest.fixture(scope='module')

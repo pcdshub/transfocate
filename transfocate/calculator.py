@@ -167,10 +167,11 @@ class Calculator(object):
                                 "from target {}.".format(combo.image(z_obj), diff, target_image))
                     #add the difference to the end of image diff
                     image_diff.append(diff)
-            
+                    closest_sols.append(combo)
                 elif use_limits==False:
                     diff=np.abs(combo.image(z_obj)-target_image)
                     image_diff.append(diff)
+                    closes_sols.append(combo)
                 
                 else:
                     logger.debug("Dropping combination that does not meet radius "
@@ -184,7 +185,7 @@ class Calculator(object):
         #order of their coresponding values in image diff
         index=np.argsort(image_diff)
         #make an array out of the combinations list
-        combos = np.asarray(self.combinations)
+        combos = np.asarray(closest_sols)
         #make the sorted list where the lens combos are sorted based on
         #smallest error
         sorted_combos = combos[index]
