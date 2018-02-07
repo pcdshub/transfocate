@@ -4,7 +4,6 @@ import numpy as np
 from transfocate.lens import Lens
 from transfocate.lens import LensConnect
 from transfocate.calculator import Calculator
-from transfocate.calculator import TransfocatorCombo
 import logging 
 from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import Component
@@ -96,22 +95,10 @@ class Transfocator(Device):
             meters.  Parameter will be set to 0 unles otherwise specified by
             the user
         """
-       
-        #create a calculator 
-        calc=Calculator(self.xrt_lenses, self.tfs_lenses, self.xrt_limit.value, self.tfs_limit.value)
-        #create a list of all the possible combinations of the lenses in the
-        #calculator and puts them in order with the array with the image
-        #closest to the target image first and so on
-        combos=calc.find_combinations(i, n, obj)
-        
-        #create a list for the best combination of lenses
-        best_combo=[]
-        #extend the list to add the xrt and tfs lenses as Lenses
-        best_combo.extend(combos[0].xrt.lenses)
-        best_combo.extend(combos[0].tfs.lenses)
-        #instantiate the best combo as a LensConnect objet
-        best_combo=LensConnect(*best_combo)
-        return best_combo
+        # Create a calculator 
+        calc = Calculator(self.xrt_lenses, self.tfs_lenses)
+        # Return the solution
+        return calc.find_solution(i, n, obj)
 
     def focus_at(self, i, n=4, obj=0.0):
         """Method inserts the lenses in this array into the beam pipeline.

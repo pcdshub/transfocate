@@ -100,6 +100,4 @@ def calculator():
            FakeLens(500., 280., 55.)]
     #Define Calculator
     return Calculator(xrt_lenses = prefocus,
-                      tfs_lenses = tfs,
-                      xrt_limit  = 400,
-                      tfs_limit  = 750)
+                      tfs_lenses = tfs)

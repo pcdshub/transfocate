@@ -1,7 +1,6 @@
 from transfocate.lens import Lens
 from transfocate.lens import LensConnect
 from transfocate.calculator import Calculator
-from transfocate.calculator import TransfocatorCombo
 from transfocate.transfocator import Transfocator
 
 prefocus=[Lens("MFX:LENS:DIA:01:"), 
