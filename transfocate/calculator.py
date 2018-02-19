@@ -100,8 +100,12 @@ class Calculator:
         for combo in self.combinations(include_prefocus=include_prefocus):
             # Check to see if the number of lenses is less than the limit
             if combo.nlens <= n:
-                image = combo.image(z_obj)
-                diff = np.abs(image - target)
+                try:
+                    image = combo.image(z_obj)
+                    diff = np.abs(image - target)
+                except Exception as exc:
+                    logger.exception("Unable to calculate image position")
+                    diff = np.inf
                 # See if we have found a better solution
                 if diff < solution_diff:
                     logger.debug("Found a combination with image %s, %s "
