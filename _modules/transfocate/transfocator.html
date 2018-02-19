@@ -1,0 +1,363 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>transfocate.transfocator &mdash; transfocate 0.2.0+25.gea7e752 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="transfocate 0.2.0+25.gea7e752 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> transfocate
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.0+25.gea7e752
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lens.html">Lens Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../calculator.html">Calculator Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../transfocator.html">Transfocator Information</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">transfocate</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>transfocate.transfocator</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for transfocate.transfocator</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">transfocate.lens</span> <span class="k">import</span> <span class="n">Lens</span>
+<span class="kn">from</span> <span class="nn">transfocate.lens</span> <span class="k">import</span> <span class="n">LensConnect</span>
+<span class="kn">from</span> <span class="nn">transfocate.calculator</span> <span class="k">import</span> <span class="n">Calculator</span>
+<span class="kn">import</span> <span class="nn">logging</span> 
+<span class="kn">from</span> <span class="nn">ophyd</span> <span class="k">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">EpicsSignal</span><span class="p">,</span> <span class="n">EpicsSignalRO</span>
+<span class="kn">from</span> <span class="nn">ophyd</span> <span class="k">import</span> <span class="n">Component</span>
+<span class="kn">from</span> <span class="nn">ophyd.utils</span> <span class="k">import</span> <span class="n">set_and_wait</span> 
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Transfocator"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator">[docs]</a><span class="k">class</span> <span class="nc">Transfocator</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class to interface between the Transfocator and the calculator code</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    xrt_limit : EPICS Read Only signal</span>
+<span class="sd">        The signal for the minimum effective radius that the xrt lens array can</span>
+<span class="sd">        safely have</span>
+<span class="sd">    tfs_limit : EPICS Read Only signal</span>
+<span class="sd">        The signal for the maximum effective radius the tfs lens array can</span>
+<span class="sd">        safely have</span>
+<span class="sd">    faulted : EPICS Read Only signal</span>
+<span class="sd">        This signal is triggered if one of the lens arrays is not in its</span>
+<span class="sd">        inserted or removed position</span>
+<span class="sd">    prefix : string</span>
+<span class="sd">        The prefix for the whole transfocator</span>
+<span class="sd">    xrt_lenses : list</span>
+<span class="sd">        A list of the prefocus lenses</span>
+<span class="sd">    tfs_lenses : list</span>
+<span class="sd">        A list of the beryllium lens stack in the transfocator</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    The xrt_limit, tfs_limit, and faulted variables are EPICS Read Only signals</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#define the EPICS signals</span>
+    <span class="n">xrt_limit</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;XRT_ONLY&quot;</span><span class="p">)</span>
+    <span class="n">tfs_limit</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;MFX_ONLY&quot;</span><span class="p">)</span>
+    <span class="n">faulted</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;BEAM:FAULTED&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">xrt_lenses</span><span class="p">,</span> <span class="n">tfs_lenses</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1">#define user-entered parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xrt_lenses</span><span class="o">=</span><span class="n">xrt_lenses</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tfs_lenses</span><span class="o">=</span><span class="n">tfs_lenses</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">current_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method calculates the focus of the lenses array currently inserted</span>
+<span class="sd">        in the transfocator</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Returns the current focus of the beryllium lens array already</span>
+<span class="sd">            inserted in the transfocator.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#makeing a list of lenses already in the transfocator, looping through</span>
+        <span class="c1">#and adding them to the list if they are</span>
+        <span class="n">already_in</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">xrt_lenses</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lens</span><span class="o">.</span><span class="n">inserted</span><span class="p">:</span>
+                <span class="n">already_in</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lens</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tfs_lenses</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lens</span><span class="o">.</span><span class="n">inserted</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+                <span class="n">already_in</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lens</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;There are </span><span class="si">%s</span><span class="s2"> lenses already inserted in the Transfocator&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">already_in</span><span class="p">)))</span>
+        <span class="c1">#makr the list of already-inserted lenses a LensCOnnect of arbitrary length</span>
+        <span class="n">already_in</span><span class="o">=</span><span class="n">LensConnect</span><span class="p">(</span><span class="o">*</span><span class="n">already_in</span><span class="p">)</span>
+        <span class="c1">#get the current focal length/image</span>
+        <span class="n">focus</span><span class="o">=</span><span class="n">already_in</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;The current focus of the inserted lenses is </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">focus</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">focus</span>
+
+<div class="viewcode-block" id="Transfocator.find_best_combo"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator.find_best_combo">[docs]</a>    <span class="k">def</span> <span class="nf">find_best_combo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method calculates the best lens array to meet the user&#39;s target</span>
+<span class="sd">        image.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        i : float</span>
+<span class="sd">            The target image of the lens array</span>
+<span class="sd">        n : int</span>
+<span class="sd">            The maximum number of lenses in the array. Note: will automatically</span>
+<span class="sd">            be set to 5 unless otherwise specified by the user.</span>
+<span class="sd">        obj : float</span>
+<span class="sd">            Location of the lens object along the beam pipeline measured in</span>
+<span class="sd">            meters.  Parameter will be set to 0 unles otherwise specified by</span>
+<span class="sd">            the user</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Create a calculator </span>
+        <span class="n">calc</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xrt_lenses</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tfs_lenses</span><span class="p">)</span>
+        <span class="c1"># Return the solution</span>
+        <span class="k">return</span> <span class="n">calc</span><span class="o">.</span><span class="n">find_solution</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Transfocator.focus_at"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator.focus_at">[docs]</a>    <span class="k">def</span> <span class="nf">focus_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method inserts the lenses in this array into the beam pipeline.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        i : float</span>
+<span class="sd">            The target image of the lens array (i.e. the image/focal length the</span>
+<span class="sd">            user would ideally like to achieve</span>
+<span class="sd">        n : int</span>
+<span class="sd">            The maximum number od lenses in the array. Note: will automatically</span>
+<span class="sd">            be set to 5 unless otherwise specified by the user</span>
+<span class="sd">        obj : float</span>
+<span class="sd">            Location of the lens object along the beam pipeline measured in</span>
+<span class="sd">            meters.  Note: this parameter will be automatically set to 0 unless</span>
+<span class="sd">            the user specifies otherwise.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1">#find the best combination of lenses to match the target image</span>
+        <span class="n">best_combo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_best_combo</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+        
+        <span class="c1">#loop through all the lenses and, if they are not in best_combo, remove</span>
+        <span class="c1">#them.  If they are already removed, this should not affect them</span>
+        <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">xrt_lenses</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lens</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">best_combo</span><span class="o">.</span><span class="n">lenses</span><span class="p">:</span>
+                <span class="n">lens</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lens</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tfs_lenses</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lens</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">best_combo</span><span class="o">.</span><span class="n">lenses</span><span class="p">:</span>
+                <span class="n">lens</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lens</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span></div></div>
+        
+        
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, SLAC National Accelerator Laboratory.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.2.0+25.gea7e752',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,375 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Transfocator Information &mdash; transfocate 0.2.0+25.gea7e752 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="transfocate 0.2.0+25.gea7e752 documentation" href="index.html"/>
+        <link rel="prev" title="Calculator Information" href="calculator.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> transfocate
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.0+25.gea7e752
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lens.html">Lens Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calculator.html">Calculator Information</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Transfocator Information</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">transfocate</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Transfocator Information</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/transfocator.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-transfocate.transfocator">
+<span id="transfocator-information"></span><h1>Transfocator Information<a class="headerlink" href="#module-transfocate.transfocator" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="transfocate.transfocator.Transfocator">
+<em class="property">class </em><code class="descclassname">transfocate.transfocator.</code><code class="descname">Transfocator</code><span class="sig-paren">(</span><em>prefix</em>, <em>xrt_lenses</em>, <em>tfs_lenses</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/transfocator.html#Transfocator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#transfocate.transfocator.Transfocator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to interface between the Transfocator and the calculator code</p>
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.xrt_limit">
+<code class="descname">xrt_limit</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.xrt_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>EPICS Read Only signal</em> – The signal for the minimum effective radius that the xrt lens array can
+safely have</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.tfs_limit">
+<code class="descname">tfs_limit</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>EPICS Read Only signal</em> – The signal for the maximum effective radius the tfs lens array can
+safely have</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.faulted">
+<code class="descname">faulted</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.faulted" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>EPICS Read Only signal</em> – This signal is triggered if one of the lens arrays is not in its
+inserted or removed position</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.prefix">
+<code class="descname">prefix</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.prefix" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>string</em> – The prefix for the whole transfocator</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.xrt_lenses">
+<code class="descname">xrt_lenses</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.xrt_lenses" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list</em> – A list of the prefocus lenses</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.tfs_lenses">
+<code class="descname">tfs_lenses</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_lenses" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list</em> – A list of the beryllium lens stack in the transfocator</p>
+</dd></dl>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The xrt_limit, tfs_limit, and faulted variables are EPICS Read Only signals</p>
+</div>
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.current_focus">
+<code class="descname">current_focus</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.current_focus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method calculates the focus of the lenses array currently inserted
+in the transfocator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Returns the current focus of the beryllium lens array already
+inserted in the transfocator.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">faulted</code></dt>
+<dd><p>Component attribute</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s1">&#39;BEAM:FAULTED&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="transfocate.transfocator.Transfocator.find_best_combo">
+<code class="descname">find_best_combo</code><span class="sig-paren">(</span><em>i</em>, <em>n=4</em>, <em>obj=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/transfocator.html#Transfocator.find_best_combo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#transfocate.transfocator.Transfocator.find_best_combo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method calculates the best lens array to meet the user’s target
+image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>i</strong> (<em>float</em>) – The target image of the lens array</li>
+<li><strong>n</strong> (<em>int</em>) – The maximum number of lenses in the array. Note: will automatically
+be set to 5 unless otherwise specified by the user.</li>
+<li><strong>obj</strong> (<em>float</em>) – Location of the lens object along the beam pipeline measured in
+meters.  Parameter will be set to 0 unles otherwise specified by
+the user</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="transfocate.transfocator.Transfocator.focus_at">
+<code class="descname">focus_at</code><span class="sig-paren">(</span><em>i</em>, <em>n=4</em>, <em>obj=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/transfocator.html#Transfocator.focus_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#transfocate.transfocator.Transfocator.focus_at" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method inserts the lenses in this array into the beam pipeline.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>i</strong> (<em>float</em>) – The target image of the lens array (i.e. the image/focal length the
+user would ideally like to achieve</li>
+<li><strong>n</strong> (<em>int</em>) – The maximum number od lenses in the array. Note: will automatically
+be set to 5 unless otherwise specified by the user</li>
+<li><strong>obj</strong> (<em>float</em>) – Location of the lens object along the beam pipeline measured in
+meters.  Note: this parameter will be automatically set to 0 unless
+the user specifies otherwise.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">tfs_limit</code></dt>
+<dd><p>Component attribute</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s1">&#39;MFX_ONLY&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">xrt_limit</code></dt>
+<dd><p>Component attribute</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s1">&#39;XRT_ONLY&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="calculator.html" class="btn btn-neutral" title="Calculator Information" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, SLAC National Accelerator Laboratory.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.2.0+25.gea7e752',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

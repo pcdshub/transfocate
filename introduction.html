@@ -1,0 +1,361 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Introduction &mdash; transfocate 0.2.0+25.gea7e752 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="transfocate 0.2.0+25.gea7e752 documentation" href="index.html"/>
+        <link rel="next" title="Lens Information" href="lens.html"/>
+        <link rel="prev" title="Welcome to transfocate’s documentation!" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> transfocate
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.0+25.gea7e752
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#creating-a-new-transfocator">Creating a New Transfocator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#finding-and-applying-optimal-combination">Finding and Applying Optimal Combination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#accessing-lens-information">Accessing Lens Information</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lens.html">Lens Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calculator.html">Calculator Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="transfocator.html">Transfocator Information</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">transfocate</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Introduction</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/introduction.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="introduction">
+<span id="introduction-label"></span><h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>In the MFX experimentation hutch, the Transfocator is a tunable apparatus that
+focuses X-rays through the application of compound refractive Beryllium lenses.
+Normally, to operate the Transfocator, users must know the location of lenses
+within the device and their information, perform the math necessary to
+calculate the ideal focal length, and apply the lenses manually.  This code
+automates this entire process and requires only the sample location to
+calculate the optimal combniation of xrt and tfs lenses.  Additionally, this
+code automatically takes hutch safety limits into account when applying lenses
+and will not apply a lens array with a an effective radius that is outside the
+safety limits.</p>
+<p>Users will interact with the Transfocator Calculator database through :class:
+<cite>transfocate.Transfocator</cite> That will handle the information for individual
+lenses and systems of lenses, perform operations to find combinations, and
+apply appropriate lens systems. Information for the lenses include the radius,
+focal length, and z position along the beam and are all EPICS Read Only
+signals.  Additionally, all units of length are measured in meters.</p>
+<div class="section" id="creating-a-new-transfocator">
+<h2>Creating a New Transfocator<a class="headerlink" href="#creating-a-new-transfocator" title="Permalink to this headline">¶</a></h2>
+<p>The lens arrays in Transfocator will be handled as <a class="reference internal" href="lens.html#transfocate.lens.LensConnect" title="transfocate.lens.LensConnect"><code class="xref py py-class docutils literal"><span class="pre">LensConnect</span></code></a> to provide
+more functionality. The examples below use a simulation called <code class="docutils literal"><span class="pre">transfocaotr</span></code>
+from the testsso the tutorial does not affect the real Transfocator in MFX.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">transfocate</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">transfocate.tests</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">mfx_transfocator</span><span class="o">=</span><span class="n">transfocate</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">transfocator</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="finding-and-applying-optimal-combination">
+<h2>Finding and Applying Optimal Combination<a class="headerlink" href="#finding-and-applying-optimal-combination" title="Permalink to this headline">¶</a></h2>
+<p>Although the functions opperate separately in <cite>transfocate.Transfocator</cite>, only
+one function has to be called to both calculate the optimal combination of xrt
+and tfs lenses to match a target image and apply those lenses in the beamline.</p>
+<p>First, you may want to fing the current focus of the lenses inserted in the
+Transfocator. To do this, use <code class="xref py py-meth docutils literal"><span class="pre">Transfocator.current_focus()</span></code></p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">mfx_transfocator</span><span class="o">.</span><span class="n">current_focus</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="mf">0.0</span>
+</pre></div>
+</div>
+<p>This command will find the current focus of the Transfocator.  This may be
+helpful if you want to see which lenses are currently inserted in the beamline
+or to make sure that your previous settings have not been tampered with.</p>
+<p>To find your optimal array of lenses, use <a class="reference internal" href="transfocator.html#transfocate.transfocator.Transfocator.find_best_combo" title="transfocate.transfocator.Transfocator.find_best_combo"><code class="xref py py-meth docutils literal"><span class="pre">Transfocator.find_best_combo()</span></code></a> and to find and apply your desired array of lenses, use <a class="reference internal" href="transfocator.html#transfocate.transfocator.Transfocator.focus_at" title="transfocate.transfocator.Transfocator.focus_at"><code class="xref py py-meth docutils literal"><span class="pre">Transfocator.focus_at()</span></code></a>.</p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">combo</span><span class="o">=</span><span class="n">mfx_transfocator</span><span class="o">.</span><span class="n">find_best_combo</span><span class="p">(</span><span class="mf">312.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="n">mfx_transfocator</span><span class="o">.</span><span class="n">focus_at</span><span class="p">(</span><span class="mf">312.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="o">---------------------------------------------------------------------------</span>
+<span class="ne">AttributeError</span>                            <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">6</span><span class="o">-</span><span class="mo">04</span><span class="n">ed0ef6e8dc</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="o">----&gt;</span> <span class="mi">1</span> <span class="n">mfx_transfocator</span><span class="o">.</span><span class="n">focus_at</span><span class="p">(</span><span class="mf">312.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+<span class="o">~/</span><span class="n">build</span><span class="o">/</span><span class="n">pcdshub</span><span class="o">/</span><span class="n">transfocate</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">source</span><span class="o">/../../</span><span class="n">transfocate</span><span class="o">/</span><span class="n">transfocator</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">focus_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+    <span class="mi">125</span>         <span class="c1">#them.  If they are already removed, this should not affect them</span>
+    <span class="mi">126</span>         <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">xrt_lenses</span><span class="p">:</span>
+<span class="o">--&gt;</span> <span class="mi">127</span>             <span class="k">if</span> <span class="n">lens</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">best_combo</span><span class="o">.</span><span class="n">lenses</span><span class="p">:</span>
+    <span class="mi">128</span>                 <span class="n">lens</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+    <span class="mi">129</span>             <span class="k">else</span><span class="p">:</span>
+
+<span class="ne">AttributeError</span><span class="p">:</span> <span class="s1">&#39;NoneType&#39;</span> <span class="nb">object</span> <span class="n">has</span> <span class="n">no</span> <span class="n">attribute</span> <span class="s1">&#39;lenses&#39;</span>
+</pre></div>
+</div>
+<p>As entered, this command will return all possible combinations of the lenses
+whose focal length will be 300.4 and whose length is 3 lenses or less and whose
+image object distance is 0 meters.  Unless altered in this step, the onject
+will always be set to 0.0 and the max number of tfs lenses will be 4. Remember
+we assume there will always be 1 prefocus lens, so this amounts to a ax total
+of 5 lenses which is ideally, the most that will ever be required.
+After finding the optimal lens combination, this command will automatically
+trigger EPICS signals to insert and remove the appropriate lenses.</p>
+<p>Note: To find information on the lens array, you must use
+<a class="reference internal" href="transfocator.html#transfocate.transfocator.Transfocator.find_best_combo" title="transfocate.transfocator.Transfocator.find_best_combo"><code class="xref py py-meth docutils literal"><span class="pre">Transfocator.find_best_combo()</span></code></a> because this method returns a LensConnect
+type.</p>
+</div>
+<div class="section" id="accessing-lens-information">
+<h2>Accessing Lens Information<a class="headerlink" href="#accessing-lens-information" title="Permalink to this headline">¶</a></h2>
+<p>After you have found your optimal combination, you may want to get access to
+some of the lens information. Because the arrays are saved as
+<a class="reference internal" href="lens.html#transfocate.lens.LensConnect" title="transfocate.lens.LensConnect"><code class="xref py py-class docutils literal"><span class="pre">LensConnect</span></code></a>, this information and several operations are easily
+accessible.</p>
+<p>When handleing the lens arrays, you may want to see a readout of the properties
+of each lens in the array.  To view a readout of information for each lens, use
+<a class="reference internal" href="lens.html#transfocate.lens.LensConnect.show_info" title="transfocate.lens.LensConnect.show_info"><code class="xref py py-meth docutils literal"><span class="pre">LensConnect.show_info()</span></code></a></p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">combo</span><span class="o">.</span><span class="n">show_info</span><span class="p">()</span>
+<span class="o">---------------------------------------------------------------------------</span>
+<span class="ne">AttributeError</span>                            <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">7</span><span class="o">-</span><span class="n">ea4a004a0f6e</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="o">----&gt;</span> <span class="mi">1</span> <span class="n">combo</span><span class="o">.</span><span class="n">show_info</span><span class="p">()</span>
+
+<span class="ne">AttributeError</span><span class="p">:</span> <span class="s1">&#39;NoneType&#39;</span> <span class="nb">object</span> <span class="n">has</span> <span class="n">no</span> <span class="n">attribute</span> <span class="s1">&#39;show_info&#39;</span>
+</pre></div>
+</div>
+<p>This command will print the radius, z position, and focus of each lens.</p>
+<p>Additionally, you amy want to find the number of lenses in your array.  To do
+this, use <code class="xref py py-meth docutils literal"><span class="pre">LensConnect.nlens()</span></code></p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="n">combo</span><span class="o">.</span><span class="n">nlens</span>
+<span class="o">---------------------------------------------------------------------------</span>
+<span class="ne">AttributeError</span>                            <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">8</span><span class="o">-</span><span class="n">ac97ea499d6c</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="o">----&gt;</span> <span class="mi">1</span> <span class="n">combo</span><span class="o">.</span><span class="n">nlens</span>
+
+<span class="ne">AttributeError</span><span class="p">:</span> <span class="s1">&#39;NoneType&#39;</span> <span class="nb">object</span> <span class="n">has</span> <span class="n">no</span> <span class="n">attribute</span> <span class="s1">&#39;nlens&#39;</span>
+</pre></div>
+</div>
+<p>This command will return and print the number of lenses currently in the array</p>
+<p>Finally, you may want to see the effective radius of your array to see how it
+sits within hutch safety limits.  To do this, use
+<code class="xref py py-meth docutils literal"><span class="pre">LensConnect.effective_radius()</span></code></p>
+<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">9</span><span class="p">]:</span> <span class="n">combo</span><span class="o">.</span><span class="n">effective_radius</span>
+<span class="o">---------------------------------------------------------------------------</span>
+<span class="ne">AttributeError</span>                            <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">9</span><span class="o">-</span><span class="mi">0</span><span class="n">bd75178a4dc</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="o">----&gt;</span> <span class="mi">1</span> <span class="n">combo</span><span class="o">.</span><span class="n">effective_radius</span>
+
+<span class="ne">AttributeError</span><span class="p">:</span> <span class="s1">&#39;NoneType&#39;</span> <span class="nb">object</span> <span class="n">has</span> <span class="n">no</span> <span class="n">attribute</span> <span class="s1">&#39;effective_radius&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="lens.html" class="btn btn-neutral float-right" title="Lens Information" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome to transfocate’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, SLAC National Accelerator Laboratory.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.2.0+25.gea7e752',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
