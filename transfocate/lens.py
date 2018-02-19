@@ -106,14 +106,14 @@ class Lens(InOutPVStatePositioner):
         If the location of the object (z_obj) is equal to the focal length of
         the lens, this function will return infinity.
         """
+        # Find the object location for the lens
+        obj = self.z - z_obj
         # Check if the lens object is at the focal length
         # If this happens, then the image location will be infinity.
         # Note, this should not effect the recursive calculations that occur
         # later in the code
-        if z_obj == self.focus:
+        if obj == self.focus:
             return np.inf
-        # Find the object location for the lens
-        obj = self.z - z_obj
         # Calculate the location of the focal plane
         plane = 1/(1/self.focus - 1/obj)
         # Find the position in accelerator coordinates
