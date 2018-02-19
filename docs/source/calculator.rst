@@ -5,6 +5,3 @@ Calculator Information
 
 .. autoclass:: transfocate.calculator.Calculator
    :members:
-
-.. autoclass:: transfocate.calculator.TransfocatorCombo
-   :members:
