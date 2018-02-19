@@ -42,6 +42,11 @@ class Calculator:
         """
         combos = list()
         tfs_combos = list()
+        # Warn operators if we received no transfocator lenses
+        if include_prefocus and not self.xrt_lenses:
+            logger.warning("No XRT lens given to calculator, but prefocusing "
+                           "was requested")
+            include_prefocus = False
         # Initially only consider transfocator lenses
         for i in range(1, len(self.tfs_lenses)+1):
             list_combos = list(itertools.combinations(self.tfs_lenses, i))
