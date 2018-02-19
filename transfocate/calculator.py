@@ -112,7 +112,4 @@ class Calculator:
                                  "from target %s", image, diff, target)
                     solution = combo
                     solution_diff = diff
-            else:
-                logger.debug("Dropping combination that does not meet radius "
-                             "requirements")
         return solution
