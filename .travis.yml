@@ -3,10 +3,12 @@ language: python
 env:
   global:
     - OFFICIAL_REPO='pcdshub/transfocate'
+    - secure: "1zZZJ9PM3c0EcDQ4zejcwg1SAJqIPw+LQzcl6ZwW4KbO/9v3j+X2fVozGJ5J1IGPZSwYt/fGIZm8C8IXfwdfon6w76tBJaxdXPChnhRQLLTtlVmecBTQbzTxE2JSTA1uBbNw+SWBFXNCNykhWZqJP2M+/C4TUIrLgFwc6vPEc3sJg+Ffl4CEhFO5aDWc9xO2G5hMK/qgVwzGeN1oHhoGtpE0ZnL4gtOQOMWfghQ5pMQwnVIqlCECJUZrKTqr7Uj78SbbJuBVs2ErTDP1GMaorlRO5CbtWtG9Hbr3OnvvNixMHFCHBG7pD5zrETfbFZr8vNODADFrDYTTIOsRECusPr6LLYEvA0pbw3Mgq3RLzhep3Hl/yn9zgpf+3zZTEee/oYWKeEq/ZX3E4UgqzpMLjQXqx9QPYaStQHZzztx74DOuRSnWsOqZqU+jJNaBlDnR/flcogZUDlaOlwc3LhugoMqYMQjdiwFGlzQfsVgx0sNRIuB404QG+yeTemSGt3yJG32UCFeV6bTXT/I62uQiuc6H49KJnvH3TkjsVvwkXVQh38zZmQpUPplSi2epLCQs4Ckktb7wSP2OBLjdGwMpTAPP+qY/uRfgBjppcduoeZkpk9Xn7l7RokwwJ/ESHMgc0uDvy9UtvTAzjdgetSpqczLTGKFQw3HTug8+rIGzPuo="
 
-python:
-  # We don't actually use the Travis Python, but this keeps it organized.
-  - "3.6"
+matrix:
+  include:
+      - python: 3.6
+        env: BUILD_DOCS=1
 
 install:
   - sudo apt-get update
@@ -31,6 +33,14 @@ install:
 script:
   - coverage run run_tests.py
   - coverage report -m
+  - set -e
+  - |
+    if [[ -n "$DOCTR_DEPLOY_ENCRYPTION_KEY_PCDSHUB_TRANSFOCATE" && $BUILD_DOCS ]]; then
+      pushd docs
+      make html
+      popd
+      doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages
+    fi
 
 after_success:
   - codecov
