@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>transfocate.transfocator &mdash; transfocate 0.2.0+35.gb834352 documentation</title>
+  <title>transfocate.transfocator &mdash; transfocate 0.2.0+45.g471553c documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="transfocate 0.2.0+35.gb834352 documentation" href="../../index.html"/>
+    <link rel="top" title="transfocate 0.2.0+45.g471553c documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2.0+35.gb834352
+                0.2.0+45.g471553c
               </div>
             
           
@@ -159,143 +159,183 @@
            <div itemprop="articleBody">
             
   <h1>Source code for transfocate.transfocator</h1><div class="highlight"><pre>
-<span></span>
+<span></span><span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">transfocate.lens</span> <span class="k">import</span> <span class="n">Lens</span>
-<span class="kn">from</span> <span class="nn">transfocate.lens</span> <span class="k">import</span> <span class="n">LensConnect</span>
-<span class="kn">from</span> <span class="nn">transfocate.calculator</span> <span class="k">import</span> <span class="n">Calculator</span>
-<span class="kn">import</span> <span class="nn">logging</span> 
-<span class="kn">from</span> <span class="nn">ophyd</span> <span class="k">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">EpicsSignal</span><span class="p">,</span> <span class="n">EpicsSignalRO</span>
-<span class="kn">from</span> <span class="nn">ophyd</span> <span class="k">import</span> <span class="n">Component</span>
-<span class="kn">from</span> <span class="nn">ophyd.utils</span> <span class="k">import</span> <span class="n">set_and_wait</span> 
+
+<span class="kn">from</span> <span class="nn">pcdsdevices.device_types</span> <span class="k">import</span> <span class="n">EpicsMotor</span>
+<span class="kn">from</span> <span class="nn">ophyd</span> <span class="k">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="n">Component</span><span class="p">,</span> <span class="n">FormattedComponent</span>
+<span class="kn">from</span> <span class="nn">ophyd.status</span> <span class="k">import</span> <span class="n">wait</span> <span class="k">as</span> <span class="n">status_wait</span>
+
+<span class="kn">from</span> <span class="nn">.lens</span> <span class="k">import</span> <span class="n">Lens</span><span class="p">,</span> <span class="n">LensConnect</span>
+<span class="kn">from</span> <span class="nn">.calculator</span> <span class="k">import</span> <span class="n">Calculator</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
+
 <div class="viewcode-block" id="Transfocator"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator">[docs]</a><span class="k">class</span> <span class="nc">Transfocator</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Class to interface between the Transfocator and the calculator code</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-
-<span class="sd">    xrt_limit : EPICS Read Only signal</span>
-<span class="sd">        The signal for the minimum effective radius that the xrt lens array can</span>
-<span class="sd">        safely have</span>
-<span class="sd">    tfs_limit : EPICS Read Only signal</span>
-<span class="sd">        The signal for the maximum effective radius the tfs lens array can</span>
-<span class="sd">        safely have</span>
-<span class="sd">    faulted : EPICS Read Only signal</span>
-<span class="sd">        This signal is triggered if one of the lens arrays is not in its</span>
-<span class="sd">        inserted or removed position</span>
-<span class="sd">    prefix : string</span>
-<span class="sd">        The prefix for the whole transfocator</span>
-<span class="sd">    xrt_lenses : list</span>
-<span class="sd">        A list of the prefocus lenses</span>
-<span class="sd">    tfs_lenses : list</span>
-<span class="sd">        A list of the beryllium lens stack in the transfocator</span>
-
-<span class="sd">    Note</span>
-<span class="sd">    ----</span>
-<span class="sd">    The xrt_limit, tfs_limit, and faulted variables are EPICS Read Only signals</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to represent the MFX Transfocator</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1">#define the EPICS signals</span>
-    <span class="n">xrt_limit</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;XRT_ONLY&quot;</span><span class="p">)</span>
-    <span class="n">tfs_limit</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;MFX_ONLY&quot;</span><span class="p">)</span>
-    <span class="n">faulted</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;BEAM:FAULTED&quot;</span><span class="p">)</span>
+    <span class="c1"># Define EPICS signals</span>
+    <span class="n">xrt_limit</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:XRT_ONLY&quot;</span><span class="p">)</span>
+    <span class="n">tfs_limit</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:MFX_ONLY&quot;</span><span class="p">)</span>
+    <span class="n">faulted</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:BEAM:FAULTED&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">xrt_lenses</span><span class="p">,</span> <span class="n">tfs_lenses</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="c1">#define user-entered parameters</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">xrt_lenses</span><span class="o">=</span><span class="n">xrt_lenses</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tfs_lenses</span><span class="o">=</span><span class="n">tfs_lenses</span>
+    <span class="c1"># XRT Lenses</span>
+    <span class="n">prefocus_top</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:DIA:03&quot;</span><span class="p">)</span>
+    <span class="n">prefocus_mid</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:DIA:02&quot;</span><span class="p">)</span>
+    <span class="n">prefocus_bot</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:DIA:01&quot;</span><span class="p">)</span>
+
+    <span class="c1"># TFS Lenses</span>
+    <span class="n">tfs_02</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:02&quot;</span><span class="p">)</span>
+    <span class="n">tfs_03</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:03&quot;</span><span class="p">)</span>
+    <span class="n">tfs_04</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:04&quot;</span><span class="p">)</span>
+    <span class="n">tfs_05</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:05&quot;</span><span class="p">)</span>
+    <span class="n">tfs_06</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:06&quot;</span><span class="p">)</span>
+    <span class="n">tfs_07</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:07&quot;</span><span class="p">)</span>
+    <span class="n">tfs_08</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:08&quot;</span><span class="p">)</span>
+    <span class="n">tfs_09</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:09&quot;</span><span class="p">)</span>
+    <span class="n">tfs_10</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:10&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Translation</span>
+    <span class="n">translation</span> <span class="o">=</span> <span class="n">FormattedComponent</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s2">&quot;MFX:TFS:MMS:21&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">nominal_sample</span><span class="o">=</span><span class="mf">399.88103</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nominal_sample</span> <span class="o">=</span> <span class="n">nominal_sample</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">lenses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Component lenses</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span> <span class="k">for</span> <span class="n">dev</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_devices</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">),</span> <span class="n">Lens</span><span class="p">)]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">xrt_lenses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Lenses in the XRT</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">lens</span> <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lenses</span> <span class="k">if</span> <span class="s1">&#39;DIA&#39;</span> <span class="ow">in</span> <span class="n">lens</span><span class="o">.</span><span class="n">prefix</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tfs_lenses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Transfocator lenses</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">lens</span> <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lenses</span> <span class="k">if</span> <span class="s1">&#39;TFS&#39;</span> <span class="ow">in</span> <span class="n">lens</span><span class="o">.</span><span class="n">prefix</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">current_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Method calculates the focus of the lenses array currently inserted</span>
-<span class="sd">        in the transfocator</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The distance from the focus of the Transfocator to nominal_sample</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        If no lenses are inserted this will retun NaN</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Find inserted lenses</span>
+        <span class="n">inserted</span> <span class="o">=</span> <span class="p">[</span><span class="n">lens</span> <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lenses</span> <span class="k">if</span> <span class="n">lens</span><span class="o">.</span><span class="n">inserted</span><span class="p">]</span>
+        <span class="c1"># Check that we have any inserted lenses at all</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">inserted</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No lenses are currently inserted&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">nan</span>
+        <span class="c1"># Calculate the image from this set of lenses</span>
+        <span class="k">return</span> <span class="n">LensConnect</span><span class="p">(</span><span class="o">*</span><span class="n">inserted</span><span class="p">)</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">nominal_sample</span>
+
+<div class="viewcode-block" id="Transfocator.find_best_combo"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator.find_best_combo">[docs]</a>    <span class="k">def</span> <span class="nf">find_best_combo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the best lens array to hit the nominal sample point</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        target : float, optional</span>
+<span class="sd">            The target image of the lens array. By default this is</span>
+<span class="sd">            `nominal_sample`</span>
+
+<span class="sd">        show : bool, optional</span>
+<span class="sd">            Print a table of the of the calculated lens combination</span>
+
+<span class="sd">        kwargs:</span>
+<span class="sd">            Passed to :meth:`.Calculator.find_solution`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">target</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">nominal_sample</span>
+        <span class="c1"># Only included allowed XRT lenses</span>
+        <span class="n">xrt_limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xrt_limit</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">allowed_xrt</span> <span class="o">=</span> <span class="p">[</span><span class="n">lens</span> <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">xrt_lenses</span>
+                       <span class="k">if</span> <span class="n">lens</span><span class="o">.</span><span class="n">radius</span> <span class="o">&gt;=</span> <span class="n">xrt_limit</span><span class="p">]</span>
+        <span class="c1"># Warn users if no XRT lenses are over the required radius</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">allowed_xrt</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Can not find a prefocusing lens that meets the &quot;</span>
+                           <span class="s2">&quot;safety requirements&quot;</span><span class="p">)</span>
+        <span class="c1"># Create a calculator</span>
+        <span class="n">calc</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">(</span><span class="n">allowed_xrt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tfs_lenses</span><span class="p">)</span>
+        <span class="c1"># Return the solution</span>
+        <span class="n">combo</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">find_solution</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">combo</span><span class="o">.</span><span class="n">show_info</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="n">combo</span>
+
+<div class="viewcode-block" id="Transfocator.set"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the Transfocator focus</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">focus_at</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Transfocator.focus_at"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator.focus_at">[docs]</a>    <span class="k">def</span> <span class="nf">focus_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate a combination and insert the lenses</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        value: float, optional</span>
+<span class="sd">            Chosen focal plane. Nominal sample by default</span>
+
+<span class="sd">        wait : bool, optional</span>
+<span class="sd">            Wait for the motion of the transfocator to complete</span>
+
+<span class="sd">        timeout: float, optional</span>
+<span class="sd">            Timeout for motion</span>
+
+<span class="sd">        kwargs:</span>
+<span class="sd">            All passed to :meth:`.find_best_combo`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        float</span>
-<span class="sd">            Returns the current focus of the beryllium lens array already</span>
-<span class="sd">            inserted in the transfocator.</span>
-
+<span class="sd">        StateStatus</span>
+<span class="sd">            Status that represents whether the move is complete</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1">#makeing a list of lenses already in the transfocator, looping through</span>
-        <span class="c1">#and adding them to the list if they are</span>
-        <span class="n">already_in</span><span class="o">=</span><span class="p">[]</span>
+        <span class="c1"># Find the best combination of lenses to match the target image</span>
+        <span class="n">plane</span> <span class="o">=</span> <span class="n">value</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">nominal_sample</span>
+        <span class="n">best_combo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_best_combo</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">plane</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># Collect status to combine</span>
+        <span class="n">statuses</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="c1"># Only tell one XRT lens to insert</span>
+        <span class="n">prefocused</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">xrt_lenses</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">lens</span><span class="o">.</span><span class="n">inserted</span><span class="p">:</span>
-                <span class="n">already_in</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lens</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">lens</span> <span class="ow">in</span> <span class="n">best_combo</span><span class="o">.</span><span class="n">lenses</span><span class="p">:</span>
+                <span class="n">statuses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lens</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">))</span>
+                <span class="n">prefocused</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">break</span>
+        <span class="c1"># If we have no XRT lenses one remove will do</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">prefocused</span><span class="p">:</span>
+            <span class="n">statuses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xrt_lenses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">))</span>
+        <span class="c1"># Ensure all Transfocator lenses are correct</span>
         <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tfs_lenses</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">lens</span><span class="o">.</span><span class="n">inserted</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
-                <span class="n">already_in</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lens</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;There are </span><span class="si">%s</span><span class="s2"> lenses already inserted in the Transfocator&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">already_in</span><span class="p">)))</span>
-        <span class="c1">#makr the list of already-inserted lenses a LensCOnnect of arbitrary length</span>
-        <span class="n">already_in</span><span class="o">=</span><span class="n">LensConnect</span><span class="p">(</span><span class="o">*</span><span class="n">already_in</span><span class="p">)</span>
-        <span class="c1">#get the current focal length/image</span>
-        <span class="n">focus</span><span class="o">=</span><span class="n">already_in</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;The current focus of the inserted lenses is </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">focus</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">focus</span>
-
-<div class="viewcode-block" id="Transfocator.find_best_combo"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator.find_best_combo">[docs]</a>    <span class="k">def</span> <span class="nf">find_best_combo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Method calculates the best lens array to meet the user&#39;s target</span>
-<span class="sd">        image.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        i : float</span>
-<span class="sd">            The target image of the lens array</span>
-<span class="sd">        n : int</span>
-<span class="sd">            The maximum number of lenses in the array. Note: will automatically</span>
-<span class="sd">            be set to 5 unless otherwise specified by the user.</span>
-<span class="sd">        obj : float</span>
-<span class="sd">            Location of the lens object along the beam pipeline measured in</span>
-<span class="sd">            meters.  Parameter will be set to 0 unles otherwise specified by</span>
-<span class="sd">            the user</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Create a calculator </span>
-        <span class="n">calc</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xrt_lenses</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tfs_lenses</span><span class="p">)</span>
-        <span class="c1"># Return the solution</span></div>
-        <span class="k">return</span> <span class="n">calc</span><span class="o">.</span><span class="n">find_solution</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
-
-<div class="viewcode-block" id="Transfocator.focus_at"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator.focus_at">[docs]</a>    <span class="k">def</span> <span class="nf">focus_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Method inserts the lenses in this array into the beam pipeline.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        i : float</span>
-<span class="sd">            The target image of the lens array (i.e. the image/focal length the</span>
-<span class="sd">            user would ideally like to achieve</span>
-<span class="sd">        n : int</span>
-<span class="sd">            The maximum number od lenses in the array. Note: will automatically</span>
-<span class="sd">            be set to 5 unless otherwise specified by the user</span>
-<span class="sd">        obj : float</span>
-<span class="sd">            Location of the lens object along the beam pipeline measured in</span>
-<span class="sd">            meters.  Note: this parameter will be automatically set to 0 unless</span>
-<span class="sd">            the user specifies otherwise.</span>
-<span class="sd">        </span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        
-        <span class="c1">#find the best combination of lenses to match the target image</span>
-        <span class="n">best_combo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_best_combo</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
-        
-        <span class="c1">#loop through all the lenses and, if they are not in best_combo, remove</span>
-        <span class="c1">#them.  If they are already removed, this should not affect them</span>
-        <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">xrt_lenses</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">lens</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">best_combo</span><span class="o">.</span><span class="n">lenses</span><span class="p">:</span>
-                <span class="n">lens</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">lens</span> <span class="ow">in</span> <span class="n">best_combo</span><span class="o">.</span><span class="n">lenses</span><span class="p">:</span>
+                <span class="n">statuses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lens</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">lens</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tfs_lenses</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">lens</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">best_combo</span><span class="o">.</span><span class="n">lenses</span><span class="p">:</span>
-                <span class="n">lens</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span></div></div>
-                <span class="n">lens</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span>
-        
-        
+                <span class="n">statuses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lens</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">))</span>
+        <span class="c1"># Conglomerate all status objects</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">statuses</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">statuses</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">status</span> <span class="o">&amp;</span> <span class="n">st</span>
+        <span class="c1"># Wait if necessary</span>
+        <span class="k">if</span> <span class="n">wait</span><span class="p">:</span>
+            <span class="n">status_wait</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">status</span>
 </pre></div>
 
            </div>
@@ -332,7 +372,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.2.0+35.gb834352',
+            VERSION:'0.2.0+45.g471553c',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

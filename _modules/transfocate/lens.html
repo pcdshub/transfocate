@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>transfocate.lens &mdash; transfocate 0.2.0+35.gb834352 documentation</title>
+  <title>transfocate.lens &mdash; transfocate 0.2.0+45.g471553c documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="transfocate 0.2.0+35.gb834352 documentation" href="../../index.html"/>
+    <link rel="top" title="transfocate 0.2.0+45.g471553c documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2.0+35.gb834352
+                0.2.0+45.g471553c
               </div>
             
           
@@ -267,14 +267,14 @@
 <span class="sd">        If the location of the object (z_obj) is equal to the focal length of</span>
 <span class="sd">        the lens, this function will return infinity.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Find the object location for the lens</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">-</span> <span class="n">z_obj</span>
         <span class="c1"># Check if the lens object is at the focal length</span>
         <span class="c1"># If this happens, then the image location will be infinity.</span>
         <span class="c1"># Note, this should not effect the recursive calculations that occur</span>
         <span class="c1"># later in the code</span>
-        <span class="k">if</span> <span class="n">z_obj</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">focus</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">obj</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">focus</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
-        <span class="c1"># Find the object location for the lens</span>
-        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">-</span> <span class="n">z_obj</span>
         <span class="c1"># Calculate the location of the focal plane</span>
         <span class="n">plane</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">focus</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="n">obj</span><span class="p">)</span>
         <span class="c1"># Find the position in accelerator coordinates</span></div>
@@ -421,7 +421,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.2.0+35.gb834352',
+            VERSION:'0.2.0+45.g471553c',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

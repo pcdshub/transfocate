@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Transfocator Information &mdash; transfocate 0.2.0+35.gb834352 documentation</title>
+  <title>Transfocator Information &mdash; transfocate 0.2.0+45.g471553c documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="transfocate 0.2.0+35.gb834352 documentation" href="index.html"/>
+    <link rel="top" title="transfocate 0.2.0+45.g471553c documentation" href="index.html"/>
         <link rel="prev" title="Calculator Information" href="calculator.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2.0+35.gb834352
+                0.2.0+45.g471553c
               </div>
             
           
@@ -162,94 +162,40 @@
 <span id="transfocator-information"></span><h1>Transfocator Information<a class="headerlink" href="#module-transfocate.transfocator" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="transfocate.transfocator.Transfocator">
-<em class="property">class </em><code class="descclassname">transfocate.transfocator.</code><code class="descname">Transfocator</code><span class="sig-paren">(</span><em>prefix</em>, <em>xrt_lenses</em>, <em>tfs_lenses</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/transfocator.html#Transfocator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#transfocate.transfocator.Transfocator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class to interface between the Transfocator and the calculator code</p>
+<em class="property">class </em><code class="descclassname">transfocate.transfocator.</code><code class="descname">Transfocator</code><span class="sig-paren">(</span><em>prefix</em>, <em>*</em>, <em>nominal_sample=399.88103</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/transfocator.html#Transfocator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#transfocate.transfocator.Transfocator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to represent the MFX Transfocator</p>
 <dl class="attribute">
-<dt id="transfocate.transfocator.Transfocator.xrt_limit">
-<code class="descname">xrt_limit</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.xrt_limit" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>EPICS Read Only signal</em> – The signal for the minimum effective radius that the xrt lens array can
-safely have</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="transfocate.transfocator.Transfocator.tfs_limit">
-<code class="descname">tfs_limit</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_limit" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>EPICS Read Only signal</em> – The signal for the maximum effective radius the tfs lens array can
-safely have</p>
+<dt id="transfocate.transfocator.Transfocator.current_focus">
+<code class="descname">current_focus</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.current_focus" title="Permalink to this definition">¶</a></dt>
+<dd><p>The distance from the focus of the Transfocator to nominal_sample</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If no lenses are inserted this will retun NaN</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="transfocate.transfocator.Transfocator.faulted">
 <code class="descname">faulted</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.faulted" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>EPICS Read Only signal</em> – This signal is triggered if one of the lens arrays is not in its
-inserted or removed position</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="transfocate.transfocator.Transfocator.prefix">
-<code class="descname">prefix</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.prefix" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>string</em> – The prefix for the whole transfocator</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="transfocate.transfocator.Transfocator.xrt_lenses">
-<code class="descname">xrt_lenses</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.xrt_lenses" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – A list of the prefocus lenses</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="transfocate.transfocator.Transfocator.tfs_lenses">
-<code class="descname">tfs_lenses</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_lenses" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – A list of the beryllium lens stack in the transfocator</p>
-</dd></dl>
-
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The xrt_limit, tfs_limit, and faulted variables are EPICS Read Only signals</p>
-</div>
-<dl class="attribute">
-<dt id="transfocate.transfocator.Transfocator.current_focus">
-<code class="descname">current_focus</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.current_focus" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method calculates the focus of the lenses array currently inserted
-in the transfocator</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Returns the current focus of the beryllium lens array already
-inserted in the transfocator.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">faulted</code></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s1">&#39;BEAM:FAULTED&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s1">&#39;:BEAM:FAULTED&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="transfocate.transfocator.Transfocator.find_best_combo">
-<code class="descname">find_best_combo</code><span class="sig-paren">(</span><em>i</em>, <em>n=4</em>, <em>obj=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/transfocator.html#Transfocator.find_best_combo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#transfocate.transfocator.Transfocator.find_best_combo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method calculates the best lens array to meet the user’s target
-image.</p>
+<code class="descname">find_best_combo</code><span class="sig-paren">(</span><em>target=None</em>, <em>show=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/transfocator.html#Transfocator.find_best_combo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#transfocate.transfocator.Transfocator.find_best_combo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the best lens array to hit the nominal sample point</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>i</strong> (<em>float</em>) – The target image of the lens array</li>
-<li><strong>n</strong> (<em>int</em>) – The maximum number of lenses in the array. Note: will automatically
-be set to 5 unless otherwise specified by the user.</li>
-<li><strong>obj</strong> (<em>float</em>) – Location of the lens object along the beam pipeline measured in
-meters.  Parameter will be set to 0 unles otherwise specified by
-the user</li>
+<li><strong>target</strong> (<em>float</em><em>, </em><em>optional</em>) – The target image of the lens array. By default this is
+<cite>nominal_sample</cite></li>
+<li><strong>show</strong> (<em>bool</em><em>, </em><em>optional</em>) – Print a table of the of the calculated lens combination</li>
+<li><strong>kwargs</strong> – Passed to <a class="reference internal" href="calculator.html#transfocate.calculator.Calculator.find_solution" title="transfocate.calculator.Calculator.find_solution"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Calculator.find_solution()</span></code></a></li>
 </ul>
 </td>
 </tr>
@@ -259,21 +205,24 @@ the user</li>
 
 <dl class="method">
 <dt id="transfocate.transfocator.Transfocator.focus_at">
-<code class="descname">focus_at</code><span class="sig-paren">(</span><em>i</em>, <em>n=4</em>, <em>obj=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/transfocator.html#Transfocator.focus_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#transfocate.transfocator.Transfocator.focus_at" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method inserts the lenses in this array into the beam pipeline.</p>
+<code class="descname">focus_at</code><span class="sig-paren">(</span><em>value=None</em>, <em>wait=False</em>, <em>timeout=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/transfocator.html#Transfocator.focus_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#transfocate.transfocator.Transfocator.focus_at" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate a combination and insert the lenses</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>i</strong> (<em>float</em>) – The target image of the lens array (i.e. the image/focal length the
-user would ideally like to achieve</li>
-<li><strong>n</strong> (<em>int</em>) – The maximum number od lenses in the array. Note: will automatically
-be set to 5 unless otherwise specified by the user</li>
-<li><strong>obj</strong> (<em>float</em>) – Location of the lens object along the beam pipeline measured in
-meters.  Note: this parameter will be automatically set to 0 unless
-the user specifies otherwise.</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>value</strong> (<em>float</em><em>, </em><em>optional</em>) – Chosen focal plane. Nominal sample by default</li>
+<li><strong>wait</strong> (<em>bool</em><em>, </em><em>optional</em>) – Wait for the motion of the transfocator to complete</li>
+<li><strong>timeout</strong> (<em>float</em><em>, </em><em>optional</em>) – Timeout for motion</li>
+<li><strong>kwargs</strong> – All passed to <a class="reference internal" href="#transfocate.transfocator.Transfocator.find_best_combo" title="transfocate.transfocator.Transfocator.find_best_combo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find_best_combo()</span></code></a></li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Status that represents whether the move is complete</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">StateStatus</p>
 </td>
 </tr>
 </tbody>
@@ -281,19 +230,161 @@ the user specifies otherwise.</li>
 </dd></dl>
 
 <dl class="attribute">
-<dt>
-<code class="descname">tfs_limit</code></dt>
+<dt id="transfocate.transfocator.Transfocator.lenses">
+<code class="descname">lenses</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.lenses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component lenses</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.prefocus_bot">
+<code class="descname">prefocus_bot</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.prefocus_bot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s1">&#39;MFX_ONLY&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:DIA:01&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="attribute">
-<dt>
-<code class="descname">xrt_limit</code></dt>
+<dt id="transfocate.transfocator.Transfocator.prefocus_mid">
+<code class="descname">prefocus_mid</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.prefocus_mid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s1">&#39;XRT_ONLY&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:DIA:02&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.prefocus_top">
+<code class="descname">prefocus_top</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.prefocus_top" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component attribute</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:DIA:03&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="transfocate.transfocator.Transfocator.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>value</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/transfocator.html#Transfocator.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#transfocate.transfocator.Transfocator.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the Transfocator focus</p>
+<p>Parameters</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.tfs_02">
+<code class="descname">tfs_02</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_02" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component attribute</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:02&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.tfs_03">
+<code class="descname">tfs_03</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_03" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component attribute</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:03&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.tfs_04">
+<code class="descname">tfs_04</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_04" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component attribute</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:04&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.tfs_05">
+<code class="descname">tfs_05</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_05" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component attribute</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:05&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.tfs_06">
+<code class="descname">tfs_06</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_06" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component attribute</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:06&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.tfs_07">
+<code class="descname">tfs_07</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_07" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component attribute</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:07&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.tfs_08">
+<code class="descname">tfs_08</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_08" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component attribute</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:08&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.tfs_09">
+<code class="descname">tfs_09</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_09" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component attribute</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:09&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.tfs_10">
+<code class="descname">tfs_10</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_10" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component attribute</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:10&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.tfs_lenses">
+<code class="descname">tfs_lenses</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_lenses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transfocator lenses</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.tfs_limit">
+<code class="descname">tfs_limit</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component attribute</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s1">&#39;:MFX_ONLY&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.translation">
+<code class="descname">translation</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.translation" title="Permalink to this definition">¶</a></dt>
+<dd><p>FormattedComponent attribute</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FormattedComponent</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s1">&#39;MFX:TFS:MMS:21&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.xrt_lenses">
+<code class="descname">xrt_lenses</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.xrt_lenses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lenses in the XRT</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.xrt_limit">
+<code class="descname">xrt_limit</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.xrt_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component attribute</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s1">&#39;:XRT_ONLY&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -344,7 +435,7 @@ the user specifies otherwise.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.2.0+35.gb834352',
+            VERSION:'0.2.0+45.g471553c',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
