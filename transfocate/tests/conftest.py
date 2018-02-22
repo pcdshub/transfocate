@@ -63,16 +63,3 @@ def array():
     first  = FakeLens(500.0, 100.0, 50.0)
     second = FakeLens(500.0, 275.0, 25.0)
     return LensConnect(second, first)
-
-
-@pytest.fixture(scope='module')
-def calculator():
-    #Define prefocus lenses
-    prefocus = [FakeLens(500., 100.0, 50.),
-                FakeLens(300., 100.0, 25.)]
-    #Define transfocator
-    tfs = [FakeLens(500., 275., 25.),
-           FakeLens(500., 280., 55.)]
-    #Define Calculator
-    return Calculator(xrt_lenses = prefocus,
-                      tfs_lenses = tfs)

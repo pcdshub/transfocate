@@ -42,6 +42,11 @@ class Calculator:
         """
         combos = list()
         tfs_combos = list()
+        # Warn operators if we received no transfocator lenses
+        if include_prefocus and not self.xrt_lenses:
+            logger.warning("No XRT lens given to calculator, but prefocusing "
+                           "was requested")
+            include_prefocus = False
         # Initially only consider transfocator lenses
         for i in range(1, len(self.tfs_lenses)+1):
             list_combos = list(itertools.combinations(self.tfs_lenses, i))
@@ -95,15 +100,18 @@ class Calculator:
         for combo in self.combinations(include_prefocus=include_prefocus):
             # Check to see if the number of lenses is less than the limit
             if combo.nlens <= n:
-                image = combo.image(z_obj)
-                diff = np.abs(image - target)
+                try:
+                    image = combo.image(z_obj)
+                    diff = np.abs(image - target)
+                except Exception as exc:
+                    logger.exception("Unable to calculate image position")
+                    diff = np.inf
                 # See if we have found a better solution
                 if diff < solution_diff:
                     logger.debug("Found a combination with image %s, %s "
                                  "from target %s", image, diff, target)
                     solution = combo
                     solution_diff = diff
-            else:
-                logger.debug("Dropping combination that does not meet radius "
-                             "requirements")
+        logger.info("Result found with a focal plane {} from the requested "
+                    "position".format(solution_diff))
         return solution
