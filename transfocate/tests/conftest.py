@@ -1,9 +1,3 @@
-############
-# Standard #
-############
-import os
-import subprocess
-from collections import namedtuple
 ###############
 # Third Party #
 ###############
@@ -12,7 +6,6 @@ import pytest
 # Module #
 ##########
 from transfocate.lens import Lens, LensConnect
-from transfocate.calculator import Calculator
 from pcdsdevices.sim.pv import using_fake_epics_pv
 
 
@@ -39,15 +32,15 @@ class FakeLens(object):
 ############
 # Fixtures #
 ############
-
 @pytest.fixture(scope='module')
 @using_fake_epics_pv
 def lens():
-    l =  Lens("TST:TFS:LENS:01:", name='Lens')
-    l._sig_radius._read_pv.put(500.0)
-    l._sig_z._read_pv.put(100.0)
-    l._sig_focus._read_pv.put(50.0)
-    return l
+    lens = Lens("TST:TFS:LENS:01:", name='Lens')
+    lens._sig_radius._read_pv.put(500.0)
+    lens._sig_z._read_pv.put(100.0)
+    lens._sig_focus._read_pv.put(50.0)
+    return lens
+
 
 @pytest.fixture(scope='module')
 @using_fake_epics_pv
@@ -60,6 +53,6 @@ def lens_array():
 
 @pytest.fixture(scope='module')
 def array():
-    first  = FakeLens(500.0, 100.0, 50.0)
+    first = FakeLens(500.0, 100.0, 50.0)
     second = FakeLens(500.0, 275.0, 25.0)
     return LensConnect(second, first)
