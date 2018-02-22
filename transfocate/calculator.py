@@ -112,4 +112,6 @@ class Calculator:
                                  "from target %s", image, diff, target)
                     solution = combo
                     solution_diff = diff
+        logger.info("Result found with a focal plane {} from the requested "
+                    "position".format(solution_diff))
         return solution
