@@ -11,9 +11,8 @@ import logging
 ###############
 import numpy as np
 import prettytable
-from ophyd import EpicsSignalRO
-from ophyd import FormattedComponent as FC
-from pcdsdevices.inout import InOutRecordPositioner
+from ophyd import EpicsSignalRO, EpicsSignal, Component as C
+from pcdsdevices.inout import InOutPVStatePositioner
 
 ##########
 # Module #
@@ -22,7 +21,7 @@ from pcdsdevices.inout import InOutRecordPositioner
 logger = logging.getLogger(__name__)
 
 
-class Lens(InOutRecordPositioner):
+class Lens(InOutPVStatePositioner):
     """
     Data structure for basic Lens object
 
@@ -34,19 +33,20 @@ class Lens(InOutRecordPositioner):
     prefix_lens : str
         Prefix for the PVs that contain focusing information
     """
-    _sig_radius = FC(EpicsSignalRO, "{self.prefix_lens}:RADIUS",
-                     auto_monitor=True)
-    _sig_z = FC(EpicsSignalRO, "{self.prefix_lens}:Z",
-                auto_monitor=True)
-    _sig_focus = FC(EpicsSignalRO, "{self.prefix_lens}:FOCUS",
-                    auto_monitor=True)
+    # StatePositioner information
+    _inserted = C(EpicsSignalRO, ':STATE')
+    _removed = C(EpicsSignalRO, ":OUT")
+    _insert = C(EpicsSignal, ':INSERT')
+    _remove = C(EpicsSignal, ':REMOVE')
+    _state_logic = {'_inserted': {0: 'defer',  1: 'IN'},
+                    '_removed': {0: 'defer', 1: 'OUT'}}
+    # Signals related to optical configuration
+    _sig_radius = C(EpicsSignalRO, ":RADIUS", auto_monitor=True)
+    _sig_z = C(EpicsSignalRO, ":Z", auto_monitor=True)
+    _sig_focus = C(EpicsSignalRO, ":FOCUS", auto_monitor=True)
     # Default configuration attributes. Read attributes are set correctly by
     # InOutRecordPositioner
     _default_configuration_attrs = ['_sig_radius', '_sig_z']
-
-    def __init__(self, prefix, prefix_lens, **kwargs):
-        self.prefix_lens = prefix_lens
-        super().__init__(prefix, **kwargs)
 
     @property
     def radius(self):
@@ -118,6 +118,17 @@ class Lens(InOutRecordPositioner):
         plane = 1/(1/self.focus - 1/obj)
         # Find the position in accelerator coordinates
         return plane + self.z
+
+    def _do_move(self, state):
+        if state.name == 'IN':
+            self._insert.put(1)
+        elif state.name == 'OUT':
+            self._remove.put(1)
+        # We shouldn't ever get to this line as most calls will have gone
+        # through check_value first. Just in case this is here to not fail
+        # silently
+        else:
+            raise ValueError("Invalid State {}".format(state))
 
 
 class LensConnect:
