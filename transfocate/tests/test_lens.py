@@ -26,11 +26,20 @@ def test_image_from_obj(lens):
     assert np.isclose(lens.image_from_obj(75.0), 50.0, atol=0.1)
 
 @using_fake_epics_pv
-def test_lens_motion(lens):
-    lens.state._read_pv.put(0)
-    assert lens.inserted == False
-    lens.state._read_pv.put(1)
+def test_lens_state(lens):
+    # Inserted Lens
+    lens._removed._read_pv.put(0)
+    lens._inserted._read_pv.put(1)
     assert lens.inserted == True
+    assert lens.removed == False
+    # Removed Lens
+    lens._removed._read_pv.put(1)
+    lens._inserted._read_pv.put(0)
+    assert lens.removed == True
+    assert lens.inserted == False
+
+@using_fake_epics_pv
+def test_lens_motion(lens):
     lens.insert()
     assert lens.state._write_pv.get() == 'IN'
     lens.remove()
