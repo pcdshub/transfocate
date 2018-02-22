@@ -72,7 +72,7 @@ def test_transfocator_find_best_combo(transfocator):
 
 @using_fake_epics_pv
 def test_transfocator_focus_at(transfocator):
-    #test with tfs[0] and xrt[0]
+    # test with tfs[0] and xrt[0]
     # Insert Transfocator lenses so we can test that they are properly removed
     for lens in transfocator.tfs_lenses:
         insert(lens)

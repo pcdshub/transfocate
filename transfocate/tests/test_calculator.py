@@ -26,8 +26,7 @@ def calculator():
            FakeLens(500., 300., 75.),
            FakeLens(200., 310., 10.)]
     # Define Calculator
-    return Calculator(xrt_lenses = prefocus,
-                      tfs_lenses = tfs)
+    return Calculator(xrt_lenses=prefocus, tfs_lenses=tfs)
 
 
 def test_calculator_combinations(calculator):
@@ -53,8 +52,8 @@ def test_calculator_find_combinations(calculator):
     # Test with xrt[1] and tfs[1]
     combo = calculator.find_solution(367.9)
     assert combo.nlens == 2
-    assert np.isclose(187.5, combo.effective_radius,atol=0.1)
-    assert np.isclose(367.9, combo.image(0.0),atol=0.1)
+    assert np.isclose(187.5, combo.effective_radius, atol=0.1)
+    assert np.isclose(367.9, combo.image(0.0), atol=0.1)
 
     # Test xrt[1] and tfs[0]
     combo = calculator.find_solution(305.35)
