@@ -5,7 +5,6 @@
 ./_modules/transfocate/transfocator.html
 ./_sources/calculator.rst.txt
 ./_sources/index.rst.txt
-./_sources/introduction.rst.txt
 ./_sources/lens.rst.txt
 ./_sources/transfocator.rst.txt
 ./_static/ajax-loader.gif
@@ -46,7 +45,6 @@
 ./calculator.html
 ./genindex.html
 ./index.html
-./introduction.html
 ./lens.html
 ./objects.inv
 ./py-modindex.html
