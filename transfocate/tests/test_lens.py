@@ -41,9 +41,9 @@ def test_lens_state(lens):
 @using_fake_epics_pv
 def test_lens_motion(lens):
     lens.insert()
-    assert lens.state._write_pv.get() == 'IN'
+    lens._insert._write_pv.get() == 1
     lens.remove()
-    assert lens.state._write_pv.get() == 'OUT'
+    lens._remove._write_pv.get() == 1
 
 def test_lens_connect_effective_radius(array):
     assert np.isclose(array.effective_radius, 250, atol=0.1)
