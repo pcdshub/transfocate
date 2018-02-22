@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>transfocate.lens &mdash; transfocate 0.2.0+25.gea7e752 documentation</title>
+  <title>transfocate.lens &mdash; transfocate 0.2.0+27.g9c9e33f documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="transfocate 0.2.0+25.gea7e752 documentation" href="../../index.html"/>
+    <link rel="top" title="transfocate 0.2.0+27.g9c9e33f documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2.0+25.gea7e752
+                0.2.0+27.g9c9e33f
               </div>
             
           
@@ -277,8 +277,8 @@
         <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">-</span> <span class="n">z_obj</span>
         <span class="c1"># Calculate the location of the focal plane</span>
         <span class="n">plane</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">focus</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="n">obj</span><span class="p">)</span>
-        <span class="c1"># Find the position in accelerator coordinates</span>
-        <span class="k">return</span> <span class="n">plane</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span></div></div>
+        <span class="c1"># Find the position in accelerator coordinates</span></div></div>
+        <span class="k">return</span> <span class="n">plane</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
 
 
 <div class="viewcode-block" id="LensConnect"><a class="viewcode-back" href="../../lens.html#transfocate.lens.LensConnect">[docs]</a><span class="k">class</span> <span class="nc">LensConnect</span><span class="p">:</span>
@@ -334,8 +334,8 @@
         <span class="n">image</span> <span class="o">=</span> <span class="n">z_obj</span>
         <span class="c1"># Determine the final output by looping through lenses</span>
         <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lenses</span><span class="p">:</span>
-            <span class="n">image</span> <span class="o">=</span> <span class="n">lens</span><span class="o">.</span><span class="n">image_from_obj</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">image</span></div>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">lens</span><span class="o">.</span><span class="n">image_from_obj</span><span class="p">(</span><span class="n">image</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">image</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">nlens</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -365,15 +365,15 @@
 <div class="viewcode-block" id="LensConnect.show_info"><a class="viewcode-back" href="../../lens.html#transfocate.lens.LensConnect.show_info">[docs]</a>    <span class="k">def</span> <span class="nf">show_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Show a table of information on the lens</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">())</span></div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">())</span>
 
 <div class="viewcode-block" id="LensConnect.connect"><a class="viewcode-back" href="../../lens.html#transfocate.lens.LensConnect.connect">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">array1</span><span class="p">,</span> <span class="n">array2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a new LensConnect from the combination of multiple</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">array1</span><span class="o">.</span><span class="n">lenses</span><span class="p">,</span> <span class="o">*</span><span class="n">array2</span><span class="o">.</span><span class="n">lenses</span><span class="p">)</span></div></div>
+<span class="sd">        &quot;&quot;&quot;</span></div></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">array1</span><span class="o">.</span><span class="n">lenses</span><span class="p">,</span> <span class="o">*</span><span class="n">array2</span><span class="o">.</span><span class="n">lenses</span><span class="p">)</span>
 </pre></div>
 
            </div>
@@ -410,7 +410,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.2.0+25.gea7e752',
+            VERSION:'0.2.0+27.g9c9e33f',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

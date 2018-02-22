@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Introduction &mdash; transfocate 0.2.0+25.gea7e752 documentation</title>
+  <title>Introduction &mdash; transfocate 0.2.0+27.g9c9e33f documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="transfocate 0.2.0+25.gea7e752 documentation" href="index.html"/>
+    <link rel="top" title="transfocate 0.2.0+27.g9c9e33f documentation" href="index.html"/>
         <link rel="next" title="Lens Information" href="lens.html"/>
         <link rel="prev" title="Welcome to transfocate’s documentation!" href="index.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.2.0+25.gea7e752
+                0.2.0+27.g9c9e33f
               </div>
             
           
@@ -184,10 +184,10 @@ focal length, and z position along the beam and are all EPICS Read Only
 signals.  Additionally, all units of length are measured in meters.</p>
 <div class="section" id="creating-a-new-transfocator">
 <h2>Creating a New Transfocator<a class="headerlink" href="#creating-a-new-transfocator" title="Permalink to this headline">¶</a></h2>
-<p>The lens arrays in Transfocator will be handled as <a class="reference internal" href="lens.html#transfocate.lens.LensConnect" title="transfocate.lens.LensConnect"><code class="xref py py-class docutils literal"><span class="pre">LensConnect</span></code></a> to provide
-more functionality. The examples below use a simulation called <code class="docutils literal"><span class="pre">transfocaotr</span></code>
+<p>The lens arrays in Transfocator will be handled as <a class="reference internal" href="lens.html#transfocate.lens.LensConnect" title="transfocate.lens.LensConnect"><code class="xref py py-class docutils literal notranslate"><span class="pre">LensConnect</span></code></a> to provide
+more functionality. The examples below use a simulation called <code class="docutils literal notranslate"><span class="pre">transfocaotr</span></code>
 from the testsso the tutorial does not affect the real Transfocator in MFX.</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">transfocate</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">transfocate</span>
 
 <span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">transfocate.tests</span>
 
@@ -201,16 +201,16 @@ from the testsso the tutorial does not affect the real Transfocator in MFX.</p>
 one function has to be called to both calculate the optimal combination of xrt
 and tfs lenses to match a target image and apply those lenses in the beamline.</p>
 <p>First, you may want to fing the current focus of the lenses inserted in the
-Transfocator. To do this, use <code class="xref py py-meth docutils literal"><span class="pre">Transfocator.current_focus()</span></code></p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">mfx_transfocator</span><span class="o">.</span><span class="n">current_focus</span>
+Transfocator. To do this, use <code class="xref py py-meth docutils literal notranslate"><span class="pre">Transfocator.current_focus()</span></code></p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">mfx_transfocator</span><span class="o">.</span><span class="n">current_focus</span>
 <span class="n">Out</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="mf">0.0</span>
 </pre></div>
 </div>
 <p>This command will find the current focus of the Transfocator.  This may be
 helpful if you want to see which lenses are currently inserted in the beamline
 or to make sure that your previous settings have not been tampered with.</p>
-<p>To find your optimal array of lenses, use <a class="reference internal" href="transfocator.html#transfocate.transfocator.Transfocator.find_best_combo" title="transfocate.transfocator.Transfocator.find_best_combo"><code class="xref py py-meth docutils literal"><span class="pre">Transfocator.find_best_combo()</span></code></a> and to find and apply your desired array of lenses, use <a class="reference internal" href="transfocator.html#transfocate.transfocator.Transfocator.focus_at" title="transfocate.transfocator.Transfocator.focus_at"><code class="xref py py-meth docutils literal"><span class="pre">Transfocator.focus_at()</span></code></a>.</p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">combo</span><span class="o">=</span><span class="n">mfx_transfocator</span><span class="o">.</span><span class="n">find_best_combo</span><span class="p">(</span><span class="mf">312.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+<p>To find your optimal array of lenses, use <a class="reference internal" href="transfocator.html#transfocate.transfocator.Transfocator.find_best_combo" title="transfocate.transfocator.Transfocator.find_best_combo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Transfocator.find_best_combo()</span></code></a> and to find and apply your desired array of lenses, use <a class="reference internal" href="transfocator.html#transfocate.transfocator.Transfocator.focus_at" title="transfocate.transfocator.Transfocator.focus_at"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Transfocator.focus_at()</span></code></a>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">combo</span><span class="o">=</span><span class="n">mfx_transfocator</span><span class="o">.</span><span class="n">find_best_combo</span><span class="p">(</span><span class="mf">312.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
 
 <span class="n">In</span> <span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="n">mfx_transfocator</span><span class="o">.</span><span class="n">focus_at</span><span class="p">(</span><span class="mf">312.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
 <span class="o">---------------------------------------------------------------------------</span>
@@ -237,19 +237,19 @@ of 5 lenses which is ideally, the most that will ever be required.
 After finding the optimal lens combination, this command will automatically
 trigger EPICS signals to insert and remove the appropriate lenses.</p>
 <p>Note: To find information on the lens array, you must use
-<a class="reference internal" href="transfocator.html#transfocate.transfocator.Transfocator.find_best_combo" title="transfocate.transfocator.Transfocator.find_best_combo"><code class="xref py py-meth docutils literal"><span class="pre">Transfocator.find_best_combo()</span></code></a> because this method returns a LensConnect
+<a class="reference internal" href="transfocator.html#transfocate.transfocator.Transfocator.find_best_combo" title="transfocate.transfocator.Transfocator.find_best_combo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Transfocator.find_best_combo()</span></code></a> because this method returns a LensConnect
 type.</p>
 </div>
 <div class="section" id="accessing-lens-information">
 <h2>Accessing Lens Information<a class="headerlink" href="#accessing-lens-information" title="Permalink to this headline">¶</a></h2>
 <p>After you have found your optimal combination, you may want to get access to
 some of the lens information. Because the arrays are saved as
-<a class="reference internal" href="lens.html#transfocate.lens.LensConnect" title="transfocate.lens.LensConnect"><code class="xref py py-class docutils literal"><span class="pre">LensConnect</span></code></a>, this information and several operations are easily
+<a class="reference internal" href="lens.html#transfocate.lens.LensConnect" title="transfocate.lens.LensConnect"><code class="xref py py-class docutils literal notranslate"><span class="pre">LensConnect</span></code></a>, this information and several operations are easily
 accessible.</p>
 <p>When handleing the lens arrays, you may want to see a readout of the properties
 of each lens in the array.  To view a readout of information for each lens, use
-<a class="reference internal" href="lens.html#transfocate.lens.LensConnect.show_info" title="transfocate.lens.LensConnect.show_info"><code class="xref py py-meth docutils literal"><span class="pre">LensConnect.show_info()</span></code></a></p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">combo</span><span class="o">.</span><span class="n">show_info</span><span class="p">()</span>
+<a class="reference internal" href="lens.html#transfocate.lens.LensConnect.show_info" title="transfocate.lens.LensConnect.show_info"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LensConnect.show_info()</span></code></a></p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">combo</span><span class="o">.</span><span class="n">show_info</span><span class="p">()</span>
 <span class="o">---------------------------------------------------------------------------</span>
 <span class="ne">AttributeError</span>                            <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
 <span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">7</span><span class="o">-</span><span class="n">ea4a004a0f6e</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
@@ -260,8 +260,8 @@ of each lens in the array.  To view a readout of information for each lens, use
 </div>
 <p>This command will print the radius, z position, and focus of each lens.</p>
 <p>Additionally, you amy want to find the number of lenses in your array.  To do
-this, use <code class="xref py py-meth docutils literal"><span class="pre">LensConnect.nlens()</span></code></p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="n">combo</span><span class="o">.</span><span class="n">nlens</span>
+this, use <code class="xref py py-meth docutils literal notranslate"><span class="pre">LensConnect.nlens()</span></code></p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="n">combo</span><span class="o">.</span><span class="n">nlens</span>
 <span class="o">---------------------------------------------------------------------------</span>
 <span class="ne">AttributeError</span>                            <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
 <span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">8</span><span class="o">-</span><span class="n">ac97ea499d6c</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
@@ -273,8 +273,8 @@ this, use <code class="xref py py-meth docutils literal"><span class="pre">LensC
 <p>This command will return and print the number of lenses currently in the array</p>
 <p>Finally, you may want to see the effective radius of your array to see how it
 sits within hutch safety limits.  To do this, use
-<code class="xref py py-meth docutils literal"><span class="pre">LensConnect.effective_radius()</span></code></p>
-<div class="highlight-ipython"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">9</span><span class="p">]:</span> <span class="n">combo</span><span class="o">.</span><span class="n">effective_radius</span>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">LensConnect.effective_radius()</span></code></p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">9</span><span class="p">]:</span> <span class="n">combo</span><span class="o">.</span><span class="n">effective_radius</span>
 <span class="o">---------------------------------------------------------------------------</span>
 <span class="ne">AttributeError</span>                            <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
 <span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">9</span><span class="o">-</span><span class="mi">0</span><span class="n">bd75178a4dc</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span><span class="p">()</span>
@@ -330,7 +330,7 @@ sits within hutch safety limits.  To do this, use
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.2.0+25.gea7e752',
+            VERSION:'0.2.0+27.g9c9e33f',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

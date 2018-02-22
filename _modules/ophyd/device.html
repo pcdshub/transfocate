@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ophyd.device &mdash; transfocate 0.2.0+25.gea7e752 documentation</title>
+  <title>ophyd.device &mdash; transfocate 0.2.0+27.g9c9e33f documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="transfocate 0.2.0+25.gea7e752 documentation" href="../../index.html"/>
+    <link rel="top" title="transfocate 0.2.0+27.g9c9e33f documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2.0+25.gea7e752
+                0.2.0+27.g9c9e33f
               </div>
             
           
@@ -398,14 +398,22 @@
 <span class="sd">        This defaults to {parent_name}{this_attribute_name.capitalize()}</span>
 <span class="sd">    doc : str, optional</span>
 <span class="sd">        The docstring to put on the dynamically generated class</span>
+<span class="sd">    default_read_attrs : list, optional</span>
+<span class="sd">        A class attribute to put on the dynamically generated class</span>
+<span class="sd">    default_configuration_attrs : list, optional</span>
+<span class="sd">        A class attribute to put on the dynamically generated class</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">defn</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">clsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">defn</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">clsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">default_read_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_configuration_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">defn</span> <span class="o">=</span> <span class="n">defn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clsname</span> <span class="o">=</span> <span class="n">clsname</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attr</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># attr is set later by the device when known</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lazy</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_read_attrs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">default_read_attrs</span> <span class="ow">or</span> <span class="p">[])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_configuration_attrs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">default_configuration_attrs</span>
+                                                 <span class="ow">or</span> <span class="p">[])</span>
 
         <span class="c1"># TODO: component compatibility</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trigger_value</span> <span class="o">=</span> <span class="kc">None</span>
@@ -467,7 +475,11 @@
         <span class="k">if</span> <span class="n">docstring</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">docstring</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> sub-device&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clsname</span><span class="p">)</span>
 
-        <span class="n">clsdict</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="vm">__doc__</span><span class="o">=</span><span class="n">docstring</span><span class="p">)</span>
+        <span class="n">clsdict</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span>
+            <span class="vm">__doc__</span><span class="o">=</span><span class="n">docstring</span><span class="p">,</span>
+            <span class="n">_default_read_attrs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_read_attrs</span> <span class="ow">or</span> <span class="p">(),</span> 
+            <span class="n">_default_configuration_attrs</span><span class="o">=</span>\
+                <span class="bp">self</span><span class="o">.</span><span class="n">default_configuration_attrs</span> <span class="ow">or</span> <span class="p">())</span>
 
         <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defn</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">clsdict</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_attr</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
@@ -535,6 +547,9 @@
                                 <span class="s2">&quot;name.&quot;</span> <span class="o">%</span> <span class="n">attr</span><span class="p">)</span>
 
         <span class="n">clsobj</span><span class="o">.</span><span class="n">_sig_attrs</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="c1"># this is so that the _sig_attrs class attribute includes the</span>
+        <span class="c1"># sigattrs from all of it&#39;s class-inheritance-parents so we do</span>
+        <span class="c1"># not have to do this look up everytime we look at it.</span>
         <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">bases</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s1">&#39;_sig_attrs&#39;</span><span class="p">):</span>
                 <span class="k">continue</span>
@@ -560,7 +575,8 @@
         <span class="n">clsobj</span><span class="o">.</span><span class="n">component_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">clsobj</span><span class="o">.</span><span class="n">_sig_attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
         <span class="c1"># The namedtuple associated with the device</span>
-        <span class="n">clsobj</span><span class="o">.</span><span class="n">_device_tuple</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;Tuple&#39;</span><span class="p">,</span> <span class="n">clsobj</span><span class="o">.</span><span class="n">component_names</span><span class="p">,</span>
+        <span class="n">clsobj</span><span class="o">.</span><span class="n">_device_tuple</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;Tuple&#39;</span><span class="p">,</span>
+                                          <span class="n">clsobj</span><span class="o">.</span><span class="n">component_names</span><span class="p">,</span>
                                           <span class="n">rename</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Finally, create all the component docstrings</span>
@@ -571,7 +587,7 @@
         <span class="c1"># This list is used by stage/unstage. Only Devices need to be staged.</span>
         <span class="n">clsobj</span><span class="o">.</span><span class="n">_sub_devices</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">cpt</span> <span class="ow">in</span> <span class="n">clsobj</span><span class="o">.</span><span class="n">_sig_attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">cpt</span><span class="p">,</span> <span class="n">Component</span><span class="p">)</span> <span class="ow">and</span> 
+            <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">cpt</span><span class="p">,</span> <span class="n">Component</span><span class="p">)</span> <span class="ow">and</span>
                     <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cpt</span><span class="o">.</span><span class="n">cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">or</span>  <span class="c1"># not a class</span>
                      <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">cpt</span><span class="o">.</span><span class="n">cls</span><span class="p">,</span> <span class="n">Device</span><span class="p">))):</span>  <span class="c1"># not a Device</span>
                 <span class="k">continue</span>
@@ -731,7 +747,8 @@
         <span class="n">devices_staged</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">sig</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">stage_sigs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%r</span><span class="s2"> (original value: </span><span class="si">%r</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%r</span><span class="s2"> (original value: </span><span class="si">%r</span><span class="s2">)&quot;</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                              <span class="n">val</span><span class="p">,</span> <span class="n">original_vals</span><span class="p">[</span><span class="n">sig</span><span class="p">])</span>
                 <span class="n">set_and_wait</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
                 <span class="c1"># It worked -- now add it to this list of sigs to unstage.</span>
@@ -786,7 +803,8 @@
 
         <span class="c1"># Restore original values.</span>
         <span class="k">for</span> <span class="n">sig</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_original_vals</span><span class="o">.</span><span class="n">items</span><span class="p">())):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting </span><span class="si">%s</span><span class="s2"> back to its original value: </span><span class="si">%r</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting </span><span class="si">%s</span><span class="s2"> back to its original value: </span><span class="si">%r</span><span class="s2">)&quot;</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                          <span class="n">val</span><span class="p">)</span>
             <span class="n">set_and_wait</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_original_vals</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">sig</span><span class="p">)</span>
@@ -899,7 +917,7 @@
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;&#39;signal_names&#39; has been renamed &#39;component_names&#39; for &quot;</span>
                       <span class="s2">&quot;clarity because it may include a mixture of Signals &quot;</span>
                       <span class="s2">&quot;and Devices -- any Components. This alias may be &quot;</span>
-                      <span class="s2">&quot;removed in a future release of ophyd.&quot;</span><span class="p">)</span>
+                      <span class="s2">&quot;removed in a future release of ophyd.&quot;</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_names</span>
 
     <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1298,7 +1316,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.2.0+25.gea7e752',
+            VERSION:'0.2.0+27.g9c9e33f',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

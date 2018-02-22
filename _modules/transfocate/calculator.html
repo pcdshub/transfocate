@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>transfocate.calculator &mdash; transfocate 0.2.0+25.gea7e752 documentation</title>
+  <title>transfocate.calculator &mdash; transfocate 0.2.0+27.g9c9e33f documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="transfocate 0.2.0+25.gea7e752 documentation" href="../../index.html"/>
+    <link rel="top" title="transfocate 0.2.0+27.g9c9e33f documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2.0+25.gea7e752
+                0.2.0+27.g9c9e33f
               </div>
             
           
@@ -219,8 +219,8 @@
             <span class="k">for</span> <span class="n">combo</span> <span class="ow">in</span> <span class="n">tfs_combos</span><span class="p">:</span>
                 <span class="c1"># Create combinations of prefocusing and transfocating lenses</span>
                 <span class="n">combos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LensConnect</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">combo</span><span class="p">))</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">%s</span><span class="s2"> total combinations of lenses&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">combos</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">combos</span></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">%s</span><span class="s2"> total combinations of lenses&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">combos</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">combos</span>
 
 <div class="viewcode-block" id="Calculator.find_solution"><a class="viewcode-back" href="../../calculator.html#transfocate.calculator.Calculator.find_solution">[docs]</a>    <span class="k">def</span> <span class="nf">find_solution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">z_obj</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
                       <span class="n">include_prefocus</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -266,8 +266,8 @@
                     <span class="n">solution_diff</span> <span class="o">=</span> <span class="n">diff</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Dropping combination that does not meet radius &quot;</span>
-                             <span class="s2">&quot;requirements&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">solution</span></div></div>
+                             <span class="s2">&quot;requirements&quot;</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">solution</span>
 </pre></div>
 
            </div>
@@ -304,7 +304,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.2.0+25.gea7e752',
+            VERSION:'0.2.0+27.g9c9e33f',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
