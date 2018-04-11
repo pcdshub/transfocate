@@ -1,7 +1,7 @@
 import math
 import logging
 
-from pcdsdevices.device_types import EpicsMotor
+from pcdsdevices.device_types import IMS
 from ophyd import Device, EpicsSignalRO, Component, FormattedComponent
 from ophyd.status import wait as status_wait
 
@@ -37,7 +37,7 @@ class Transfocator(Device):
     tfs_10 = Component(Lens, ":TFS:10")
 
     # Translation
-    translation = FormattedComponent(EpicsMotor, "MFX:TFS:MMS:21")
+    translation = FormattedComponent(IMS, "MFX:TFS:MMS:21")
 
     def __init__(self, prefix, *, nominal_sample=399.88103, **kwargs):
         self.nominal_sample = nominal_sample
