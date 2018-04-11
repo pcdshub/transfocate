@@ -19,7 +19,7 @@ requirements:
     - python {{PY_VER}}*,>=3.6
     - ophyd
     - numpy
-    - pcdsdevices
+    - pcdsdevices >=0.5.0
 
 test:
   imports:
