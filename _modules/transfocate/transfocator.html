@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>transfocate.transfocator &mdash; transfocate 0.2.0+48.g109c79f documentation</title>
+  <title>transfocate.transfocator &mdash; transfocate 0.3.0+3.g2e2e3cd documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="transfocate 0.2.0+48.g109c79f documentation" href="../../index.html"/>
+    <link rel="top" title="transfocate 0.3.0+3.g2e2e3cd documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.2.0+48.g109c79f
+                0.3.0+3.g2e2e3cd
               </div>
             
           
@@ -161,7 +161,7 @@
 <span></span><span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 
-<span class="kn">from</span> <span class="nn">pcdsdevices.device_types</span> <span class="k">import</span> <span class="n">EpicsMotor</span>
+<span class="kn">from</span> <span class="nn">pcdsdevices.device_types</span> <span class="k">import</span> <span class="n">IMS</span>
 <span class="kn">from</span> <span class="nn">ophyd</span> <span class="k">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="n">Component</span><span class="p">,</span> <span class="n">FormattedComponent</span>
 <span class="kn">from</span> <span class="nn">ophyd.status</span> <span class="k">import</span> <span class="n">wait</span> <span class="k">as</span> <span class="n">status_wait</span>
 
@@ -197,7 +197,7 @@
     <span class="n">tfs_10</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:10&quot;</span><span class="p">)</span>
 
     <span class="c1"># Translation</span>
-    <span class="n">translation</span> <span class="o">=</span> <span class="n">FormattedComponent</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s2">&quot;MFX:TFS:MMS:21&quot;</span><span class="p">)</span>
+    <span class="n">translation</span> <span class="o">=</span> <span class="n">FormattedComponent</span><span class="p">(</span><span class="n">IMS</span><span class="p">,</span> <span class="s2">&quot;MFX:TFS:MMS:21&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">nominal_sample</span><span class="o">=</span><span class="mf">399.88103</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nominal_sample</span> <span class="o">=</span> <span class="n">nominal_sample</span>
@@ -272,16 +272,16 @@
         <span class="n">calc</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">(</span><span class="n">allowed_xrt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tfs_lenses</span><span class="p">)</span>
         <span class="c1"># Return the solution</span>
         <span class="n">combo</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">find_solution</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">combo</span><span class="o">.</span><span class="n">show_info</span><span class="p">()</span></div>
-        <span class="k">return</span> <span class="n">combo</span>
+        <span class="n">combo</span><span class="o">.</span><span class="n">show_info</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">combo</span></div>
 
 <div class="viewcode-block" id="Transfocator.set"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the Transfocator focus</span>
 
 <span class="sd">        Parameters</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">focus_at</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">focus_at</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Transfocator.focus_at"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator.focus_at">[docs]</a>    <span class="k">def</span> <span class="nf">focus_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -333,8 +333,8 @@
             <span class="n">status</span> <span class="o">=</span> <span class="n">status</span> <span class="o">&amp;</span> <span class="n">st</span>
         <span class="c1"># Wait if necessary</span>
         <span class="k">if</span> <span class="n">wait</span><span class="p">:</span>
-            <span class="n">status_wait</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span></div></div>
-        <span class="k">return</span> <span class="n">status</span>
+            <span class="n">status_wait</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">status</span></div></div>
 </pre></div>
 
            </div>
@@ -371,7 +371,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.2.0+48.g109c79f',
+            VERSION:'0.3.0+3.g2e2e3cd',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
