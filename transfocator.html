@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Transfocator Information &mdash; transfocate 0.3.0+3.g2e2e3cd documentation</title>
+  <title>Transfocator Information &mdash; transfocate 0.3.1+1.g8130299 documentation</title>
   
 
   
@@ -25,25 +25,18 @@
   
 
   
-  
     <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="transfocate 0.3.0+3.g2e2e3cd documentation" href="index.html"/>
-        <link rel="prev" title="Calculator Information" href="calculator.html"/> 
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Calculator Information" href="calculator.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -65,7 +58,7 @@
             
             
               <div class="version">
-                0.3.0+3.g2e2e3cd
+                0.3.1+1.g8130299
               </div>
             
           
@@ -105,7 +98,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">transfocate</a>
@@ -113,9 +106,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -177,7 +171,7 @@
 <dt id="transfocate.transfocator.Transfocator.faulted">
 <code class="descname">faulted</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.faulted" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s1">&#39;:BEAM:FAULTED&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s1">&#39;:BEAM:FAULTED&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -238,7 +232,7 @@
 <dt id="transfocate.transfocator.Transfocator.prefocus_bot">
 <code class="descname">prefocus_bot</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.prefocus_bot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:DIA:01&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:DIA:01&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -247,7 +241,7 @@
 <dt id="transfocate.transfocator.Transfocator.prefocus_mid">
 <code class="descname">prefocus_mid</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.prefocus_mid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:DIA:02&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:DIA:02&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -256,7 +250,7 @@
 <dt id="transfocate.transfocator.Transfocator.prefocus_top">
 <code class="descname">prefocus_top</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.prefocus_top" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:DIA:03&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:DIA:03&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -272,7 +266,7 @@
 <dt id="transfocate.transfocator.Transfocator.tfs_02">
 <code class="descname">tfs_02</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_02" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:02&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:02&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -281,7 +275,7 @@
 <dt id="transfocate.transfocator.Transfocator.tfs_03">
 <code class="descname">tfs_03</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_03" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:03&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:03&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -290,7 +284,7 @@
 <dt id="transfocate.transfocator.Transfocator.tfs_04">
 <code class="descname">tfs_04</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_04" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:04&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:04&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -299,7 +293,7 @@
 <dt id="transfocate.transfocator.Transfocator.tfs_05">
 <code class="descname">tfs_05</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_05" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:05&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:05&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -308,7 +302,7 @@
 <dt id="transfocate.transfocator.Transfocator.tfs_06">
 <code class="descname">tfs_06</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_06" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:06&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:06&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -317,7 +311,7 @@
 <dt id="transfocate.transfocator.Transfocator.tfs_07">
 <code class="descname">tfs_07</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_07" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:07&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:07&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -326,7 +320,7 @@
 <dt id="transfocate.transfocator.Transfocator.tfs_08">
 <code class="descname">tfs_08</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_08" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:08&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:08&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -335,7 +329,7 @@
 <dt id="transfocate.transfocator.Transfocator.tfs_09">
 <code class="descname">tfs_09</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_09" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:09&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:09&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -344,7 +338,7 @@
 <dt id="transfocate.transfocator.Transfocator.tfs_10">
 <code class="descname">tfs_10</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_10" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:10&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:TFS:10&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -359,7 +353,7 @@
 <dt id="transfocate.transfocator.Transfocator.tfs_limit">
 <code class="descname">tfs_limit</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_limit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s1">&#39;:MFX_ONLY&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s1">&#39;:MFX_ONLY&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -368,7 +362,7 @@
 <dt id="transfocate.transfocator.Transfocator.translation">
 <code class="descname">translation</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.translation" title="Permalink to this definition">¶</a></dt>
 <dd><p>FormattedComponent attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FormattedComponent</span><span class="p">(</span><span class="n">IMS</span><span class="p">,</span> <span class="s1">&#39;MFX:TFS:MMS:21&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FormattedComponent</span><span class="p">(</span><span class="n">IMS</span><span class="p">,</span> <span class="s1">&#39;MFX:TFS:MMS:21&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -383,7 +377,7 @@
 <dt id="transfocate.transfocator.Transfocator.xrt_limit">
 <code class="descname">xrt_limit</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.xrt_limit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s1">&#39;:XRT_ONLY&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s1">&#39;:XRT_ONLY&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -394,9 +388,7 @@
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -416,7 +408,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -434,7 +426,8 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.3.0+3.g2e2e3cd',
+            VERSION:'0.3.1+1.g8130299',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -452,14 +445,11 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
   
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>
