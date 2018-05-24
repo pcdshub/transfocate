@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ophyd.device &mdash; transfocate 0.3.1+1.g8130299 documentation</title>
+  <title>ophyd.device &mdash; transfocate 0.3.1+3.gce5099a documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.3.1+1.g8130299
+                0.3.1+3.gce5099a
               </div>
             
           
@@ -149,28 +149,20 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ophyd.device</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">contextlib</span>
-<span class="kn">import</span> <span class="nn">functools</span>
-<span class="kn">import</span> <span class="nn">time</span> <span class="k">as</span> <span class="nn">ttime</span>
+<span></span><span class="kn">import</span> <span class="nn">time</span> <span class="k">as</span> <span class="nn">ttime</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">textwrap</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="p">(</span><span class="n">OrderedDict</span><span class="p">,</span> <span class="n">namedtuple</span><span class="p">)</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">.ophydobj</span> <span class="k">import</span> <span class="n">OphydObject</span><span class="p">,</span> <span class="n">Kind</span>
+<span class="kn">from</span> <span class="nn">.ophydobj</span> <span class="k">import</span> <span class="n">OphydObject</span>
 <span class="kn">from</span> <span class="nn">.status</span> <span class="k">import</span> <span class="n">DeviceStatus</span><span class="p">,</span> <span class="n">StatusBase</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="p">(</span><span class="n">ExceptionBundle</span><span class="p">,</span> <span class="n">set_and_wait</span><span class="p">,</span> <span class="n">RedundantStaging</span><span class="p">,</span>
                     <span class="n">doc_annotation_forwarder</span><span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Tuple</span>
-<span class="kn">from</span> <span class="nn">types</span> <span class="k">import</span> <span class="n">SimpleNamespace</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="k">import</span> <span class="n">MutableSequence</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">groupby</span>
-
 <span class="n">A</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">),</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
-<span class="n">ALL_COMPONENTS</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
 
 
 <span class="k">class</span> <span class="nc">OrderedDictType</span><span class="p">(</span><span class="n">Dict</span><span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">]):</span>
@@ -231,7 +223,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">trigger_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">add_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">Kind</span><span class="o">.</span><span class="n">normal</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                 <span class="n">add_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attr</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># attr is set later by the device when known</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cls</span> <span class="o">=</span> <span class="bp">cls</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
@@ -239,9 +231,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">suffix</span> <span class="o">=</span> <span class="n">suffix</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trigger_value</span> <span class="o">=</span> <span class="n">trigger_value</span>  <span class="c1"># TODO discuss</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="n">_ensure_kind</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">add_prefix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">add_prefix</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;suffix&#39;</span><span class="p">,</span> <span class="s1">&#39;write_pv&#39;</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">add_prefix</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">add_prefix</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">maybe_add_prefix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">kw</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
@@ -274,7 +267,6 @@
         <span class="sd">&#39;&#39;&#39;Create a component for the instance&#39;&#39;&#39;</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attr</span><span class="p">)</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;kind&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">_initial_state</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">attr</span><span class="p">]</span><span class="o">.</span><span class="n">kind</span>
 
         <span class="k">for</span> <span class="n">kw</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="n">kw</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maybe_add_prefix</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">kw</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
@@ -321,7 +313,6 @@
             <span class="n">arg_str</span> <span class="o">=</span> <span class="s1">&#39;, </span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">suffix_str</span><span class="p">,</span> <span class="n">kw_str</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">arg_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="n">arg_str</span> <span class="o">+=</span> <span class="s1">&#39;, kind=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{self.__class__.__name__}</span><span class="s1">(</span><span class="si">{self.cls.__name__}{arg_str}</span><span class="s1">)&#39;</span>
                 <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg_str</span><span class="o">=</span><span class="n">arg_str</span><span class="p">))</span>
@@ -403,20 +394,16 @@
 <span class="sd">        A class attribute to put on the dynamically generated class</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">defn</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">clsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">Kind</span><span class="o">.</span><span class="n">normal</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">defn</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">clsname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">default_read_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_configuration_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">defn</span> <span class="o">=</span> <span class="n">defn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clsname</span> <span class="o">=</span> <span class="n">clsname</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attr</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># attr is set later by the device when known</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lazy</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">default_read_attrs</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
-            <span class="n">default_read_attrs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">default_read_attrs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">default_configuration_attrs</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
-            <span class="n">default_configuration_attrs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">default_configuration_attrs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_read_attrs</span> <span class="o">=</span> <span class="n">default_read_attrs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_configuration_attrs</span> <span class="o">=</span> <span class="n">default_configuration_attrs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="n">_ensure_kind</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_read_attrs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">default_read_attrs</span> <span class="ow">or</span> <span class="p">[])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_configuration_attrs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">default_configuration_attrs</span>
+                                                 <span class="ow">or</span> <span class="p">[])</span>
 
         <span class="c1"># TODO: component compatibility</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trigger_value</span> <span class="o">=</span> <span class="kc">None</span>
@@ -480,18 +467,27 @@
 
         <span class="n">clsdict</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span>
             <span class="vm">__doc__</span><span class="o">=</span><span class="n">docstring</span><span class="p">,</span>
-            <span class="n">_default_read_attrs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_read_attrs</span><span class="p">,</span>
-            <span class="n">_default_configuration_attrs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_configuration_attrs</span>
-        <span class="p">)</span>
+            <span class="n">_default_read_attrs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_read_attrs</span> <span class="ow">or</span> <span class="p">(),</span> 
+            <span class="n">_default_configuration_attrs</span><span class="o">=</span>\
+                <span class="bp">self</span><span class="o">.</span><span class="n">default_configuration_attrs</span> <span class="ow">or</span> <span class="p">())</span>
 
         <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defn</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">clsdict</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_attr</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
 
+        <span class="n">attrs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">defn</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">inst_read</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">read_attrs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attr</span> <span class="ow">in</span> <span class="n">inst_read</span><span class="p">:</span>
+            <span class="c1"># if the sub-device is in the read list, then add all attrs</span>
+            <span class="n">read_attrs</span> <span class="o">=</span> <span class="n">attrs</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># otherwise, only add the attributes that exist in the sub-device</span>
+            <span class="c1"># to the read_attrs list</span>
+            <span class="n">read_attrs</span> <span class="o">=</span> <span class="n">inst_read</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span>
+
         <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">clsname</span><span class="p">,</span> <span class="p">(</span><span class="n">Device</span><span class="p">,</span> <span class="p">),</span> <span class="n">clsdict</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="n">read_attrs</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">read_attrs</span><span class="p">),</span>
                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attr</span><span class="p">),</span>
-                   <span class="n">parent</span><span class="o">=</span><span class="n">instance</span><span class="p">,</span>
-                   <span class="n">kind</span><span class="o">=</span><span class="n">instance</span><span class="o">.</span><span class="n">_initial_state</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">attr</span><span class="p">]</span><span class="o">.</span><span class="n">kind</span><span class="p">)</span>
+                   <span class="n">parent</span><span class="o">=</span><span class="n">instance</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -521,7 +517,7 @@
         <span class="c1"># This attrs are defined at instanitation time and must not</span>
         <span class="c1"># collide with class attributes.</span>
         <span class="n">INSTANCE_ATTRS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;parent&#39;</span><span class="p">,</span> <span class="s1">&#39;component_names&#39;</span><span class="p">,</span> <span class="s1">&#39;_signals&#39;</span><span class="p">,</span>
-                          <span class="s1">&#39;_sig_attrs&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;read_attrs&#39;</span><span class="p">,</span> <span class="s1">&#39;configuration_attrs&#39;</span><span class="p">,</span> <span class="s1">&#39;_sig_attrs&#39;</span><span class="p">,</span>
                           <span class="s1">&#39;_sub_devices&#39;</span><span class="p">]</span>
         <span class="c1"># These attributes are part of the bluesky interface and cannot be</span>
         <span class="c1"># used as component names.</span>
@@ -569,10 +565,10 @@
         <span class="n">clsobj</span><span class="o">.</span><span class="n">component_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">clsobj</span><span class="o">.</span><span class="n">_sig_attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
         <span class="c1"># The namedtuple associated with the device</span>
-        <span class="n">clsobj</span><span class="o">.</span><span class="n">_device_tuple</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
-            <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;Tuple&#39;</span><span class="p">,</span>
-            <span class="p">[</span><span class="n">comp</span> <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">clsobj</span><span class="o">.</span><span class="n">component_names</span>
-             <span class="k">if</span> <span class="ow">not</span> <span class="n">comp</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)])</span>
+        <span class="n">clsobj</span><span class="o">.</span><span class="n">_device_tuple</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;Tuple&#39;</span><span class="p">,</span>
+                                          <span class="n">clsobj</span><span class="o">.</span><span class="n">component_names</span><span class="p">,</span>
+                                          <span class="n">rename</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
         <span class="c1"># Finally, create all the component docstrings</span>
         <span class="k">for</span> <span class="n">cpt</span> <span class="ow">in</span> <span class="n">clsobj</span><span class="o">.</span><span class="n">_sig_attrs</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">cpt</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">cpt</span><span class="o">.</span><span class="n">make_docstring</span><span class="p">(</span><span class="n">clsobj</span><span class="p">)</span>
@@ -718,7 +714,7 @@
                                    <span class="s2">&quot;Maybe the most recent unstaging &quot;</span>
                                    <span class="s2">&quot;encountered an error before finishing. &quot;</span>
                                    <span class="s2">&quot;Try unstaging again.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Staging </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Staging </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_staged</span> <span class="o">=</span> <span class="n">Staged</span><span class="o">.</span><span class="n">partially</span>
 
         <span class="c1"># Resolve any stage_sigs keys given as strings: &#39;a.b&#39; -&gt; self.a.b</span>
@@ -741,9 +737,9 @@
         <span class="n">devices_staged</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">sig</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">stage_sigs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%r</span><span class="s2"> (original value: </span><span class="si">%r</span><span class="s2">)&quot;</span><span class="p">,</span>
-                               <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                               <span class="n">val</span><span class="p">,</span> <span class="n">original_vals</span><span class="p">[</span><span class="n">sig</span><span class="p">])</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%r</span><span class="s2"> (original value: </span><span class="si">%r</span><span class="s2">)&quot;</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                             <span class="n">val</span><span class="p">,</span> <span class="n">original_vals</span><span class="p">[</span><span class="n">sig</span><span class="p">])</span>
                 <span class="n">set_and_wait</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
                 <span class="c1"># It worked -- now add it to this list of sigs to unstage.</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_original_vals</span><span class="p">[</span><span class="n">sig</span><span class="p">]</span> <span class="o">=</span> <span class="n">original_vals</span><span class="p">[</span><span class="n">sig</span><span class="p">]</span>
@@ -756,10 +752,10 @@
                     <span class="n">device</span><span class="o">.</span><span class="n">stage</span><span class="p">()</span>
                     <span class="n">devices_staged</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;An exception was raised while staging </span><span class="si">%s</span><span class="s2"> or &quot;</span>
-                           <span class="s2">&quot;one of its children. Attempting to restore &quot;</span>
-                           <span class="s2">&quot;original settings before re-raising the &quot;</span>
-                           <span class="s2">&quot;exception.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;An exception was raised while staging </span><span class="si">%s</span><span class="s2"> or &quot;</span>
+                         <span class="s2">&quot;one of its children. Attempting to restore &quot;</span>
+                         <span class="s2">&quot;original settings before re-raising the &quot;</span>
+                         <span class="s2">&quot;exception.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">unstage</span><span class="p">()</span>
             <span class="k">raise</span>
         <span class="k">else</span><span class="p">:</span>
@@ -784,7 +780,7 @@
 <span class="sd">            list including self and all child devices unstaged</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Unstaging </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Unstaging </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_staged</span> <span class="o">=</span> <span class="n">Staged</span><span class="o">.</span><span class="n">partially</span>
         <span class="n">devices_unstaged</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -797,9 +793,9 @@
 
         <span class="c1"># Restore original values.</span>
         <span class="k">for</span> <span class="n">sig</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_original_vals</span><span class="o">.</span><span class="n">items</span><span class="p">())):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting </span><span class="si">%s</span><span class="s2"> back to its original value: </span><span class="si">%r</span><span class="s2">)&quot;</span><span class="p">,</span>
-                           <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                           <span class="n">val</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting </span><span class="si">%s</span><span class="s2"> back to its original value: </span><span class="si">%r</span><span class="s2">)&quot;</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                         <span class="n">val</span><span class="p">)</span>
             <span class="n">set_and_wait</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_original_vals</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">sig</span><span class="p">)</span>
         <span class="n">devices_unstaged</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -835,9 +831,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">_validate_kind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_validate_kind</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-
 
 <span class="k">class</span> <span class="nc">GenerateDatumInterface</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Classes that inherit from this can safely customize the</span>
@@ -859,16 +852,12 @@
 <span class="sd">        The PV prefix for all components of the device</span>
 <span class="sd">    name : str, keyword only</span>
 <span class="sd">        The name of the device</span>
-<span class="sd">    kind : a member the Kind IntEnum (or equivalent integer), optional</span>
-<span class="sd">        Default is Kind.normal. See Kind for options.</span>
 <span class="sd">    read_attrs : sequence of attribute names</span>
-<span class="sd">        DEPRECATED</span>
 <span class="sd">        the components to include in a normal reading (i.e., in ``read()``)</span>
 <span class="sd">    configuration_attrs : sequence of attribute names</span>
-<span class="sd">        DEPRECATED</span>
 <span class="sd">        the components to be read less often (i.e., in</span>
 <span class="sd">        ``read_configuration()``) and to adjust via ``configure()``</span>
-<span class="sd">    parent : instance or None, optional</span>
+<span class="sd">    parent : instance or None</span>
 <span class="sd">        The instance of the parent device, if applicable</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -877,114 +866,41 @@
     <span class="c1"># over ride in sub-classes to control the default</span>
     <span class="c1"># contents of read and configuration attrs lists</span>
 
-    <span class="c1"># To use the new &#39;kind&#39; parameter, set these equal to the sentinel</span>
-    <span class="c1"># REPSECT_KIND, defined in this module.</span>
-
     <span class="c1"># If `None`, defaults to `self.component_names&#39;</span>
     <span class="n">_default_read_attrs</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1"># If `None`, defaults to `[]`</span>
     <span class="n">_default_configuration_attrs</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span>
                  <span class="n">read_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">configuration_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Store EpicsSignal objects (only created once they are accessed)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_signals</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_initial_state</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="n">cpt</span><span class="o">.</span><span class="n">kind</span><span class="p">)</span>
-                               <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">cpt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sig_attrs</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_names</span> <span class="ow">and</span> <span class="n">prefix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Must specify prefix if device signals are being &#39;</span>
                              <span class="s1">&#39;used&#39;</span><span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="c1"># The logic of these if blocks is:</span>
-        <span class="c1"># - If the user did not provide read_attrs, fall back on the default</span>
-        <span class="c1"># specified by the class, which ultimately falls back to Device, if no</span>
-        <span class="c1"># subclass overrides it. Either way, we now have a read_attrs.</span>
-        <span class="c1"># - If it is set to the sentinel ALL_COMPONENTS, ignore whatever the</span>
-        <span class="c1"># &#39;kind&#39; settings are; just include everything. This is an escape catch</span>
-        <span class="c1"># for getting what _default_read_attrs=None used to do before &#39;kind&#39;</span>
-        <span class="c1"># was implemented.</span>
-        <span class="c1"># - If it is set to a list, ignore whatever the &#39;kind&#39; settings are and</span>
-        <span class="c1"># just include that list.</span>
-        <span class="c1"># - If it is set to None, respect whatever the &#39;kind&#39; settings of the</span>
-        <span class="c1"># components are.</span>
-
-        <span class="c1"># If any sub-Devices are to be removed from configuration_attrs and</span>
-        <span class="c1"># read_attrs, we have to remove them from read_attrs first, or they</span>
-        <span class="c1"># will not allow themselves to be removed from configuration_attrs.</span>
-        <span class="k">if</span> <span class="n">read_attrs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">read_attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_read_attrs</span>
-        <span class="k">if</span> <span class="n">read_attrs</span> <span class="ow">is</span> <span class="n">ALL_COMPONENTS</span><span class="p">:</span>
-            <span class="n">read_attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_names</span>
-        <span class="k">if</span> <span class="n">read_attrs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">read_attrs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">read_attrs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">configuration_attrs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">configuration_attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_configuration_attrs</span>
-        <span class="k">if</span> <span class="n">configuration_attrs</span> <span class="ow">is</span> <span class="n">ALL_COMPONENTS</span><span class="p">:</span>
-            <span class="n">configuration_attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_names</span>
-        <span class="k">if</span> <span class="n">configuration_attrs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">configuration_attrs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">configuration_attrs</span><span class="p">)</span>
+            <span class="n">dflt_c_attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_configuration_attrs</span>
+            <span class="n">configuration_attrs</span> <span class="o">=</span> <span class="p">(</span><span class="n">dflt_c_attrs</span> <span class="k">if</span>
+                                   <span class="n">dflt_c_attrs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                                   <span class="k">else</span> <span class="p">[])</span>
+
+        <span class="k">if</span> <span class="n">read_attrs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">read_attrs</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_read_attrs</span> <span class="k">if</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">_default_read_attrs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                          <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_names</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_attrs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">read_attrs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configuration_attrs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">configuration_attrs</span><span class="p">)</span>
 
         <span class="c1"># Instantiate non-lazy signals</span>
         <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">cpt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sig_attrs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
          <span class="k">if</span> <span class="ow">not</span> <span class="n">cpt</span><span class="o">.</span><span class="n">lazy</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">_validate_kind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">Kind</span><span class="p">,</span> <span class="n">val</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
-        <span class="k">if</span> <span class="n">Kind</span><span class="o">.</span><span class="n">normal</span> <span class="o">&amp;</span> <span class="n">val</span><span class="p">:</span>
-            <span class="n">val</span> <span class="o">=</span> <span class="n">val</span> <span class="o">|</span> <span class="n">Kind</span><span class="o">.</span><span class="n">config</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_validate_kind</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">read_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">OphydAttrList</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Kind</span><span class="o">.</span><span class="n">normal</span><span class="p">,</span> <span class="n">Kind</span><span class="o">.</span><span class="n">hinted</span><span class="p">,</span>
-                                  <span class="s1">&#39;read_attrs&#39;</span><span class="p">)</span>
-
-    <span class="nd">@read_attrs</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">read_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__attr_list_helper</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Kind</span><span class="o">.</span><span class="n">normal</span><span class="p">,</span> <span class="n">Kind</span><span class="o">.</span><span class="n">hinted</span><span class="p">,</span> <span class="s1">&#39;read_attrs&#39;</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">configuration_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">OphydAttrList</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Kind</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">Kind</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
-                                  <span class="s1">&#39;configuration_attrs&#39;</span><span class="p">)</span>
-
-    <span class="nd">@configuration_attrs</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">configuration_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__attr_list_helper</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Kind</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">Kind</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
-                                <span class="s1">&#39;configuration_attrs&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__attr_list_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">set_kind</span><span class="p">,</span> <span class="n">unset_kind</span><span class="p">,</span> <span class="n">recurse_name</span><span class="p">):</span>
-        <span class="n">val</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-        <span class="n">cn</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">component_names</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cn</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>
-                <span class="n">_lazy_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span> <span class="o">|=</span> <span class="n">set_kind</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">_lazy_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">unset_kind</span>
-
-        <span class="c1"># now look at everything else, presumably things with dots</span>
-        <span class="n">extra</span> <span class="o">=</span> <span class="n">val</span> <span class="o">-</span> <span class="n">cn</span>
-        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">extra</span> <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">c</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You asked to set </span><span class="si">{c}</span><span class="s2"> as a configuration_attr &quot;</span>
-                             <span class="s2">&quot;on </span><span class="si">{self}</span><span class="s2">, but there is no such (grand) child.&quot;</span>
-                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">))</span>
-        <span class="n">group</span> <span class="o">=</span> <span class="n">groupby</span><span class="p">(((</span><span class="n">child</span><span class="p">,</span> <span class="n">rest</span><span class="p">)</span>
-                         <span class="k">for</span> <span class="n">child</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">rest</span> <span class="ow">in</span> <span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
-                                                <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">extra</span><span class="p">)),</span>
-                        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="c1"># we are into grand-children, can not be lazy!</span>
-        <span class="k">for</span> <span class="n">child</span><span class="p">,</span> <span class="n">cf_list</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span> <span class="o">|=</span> <span class="n">set_kind</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">),</span>
-                    <span class="n">recurse_name</span><span class="p">,</span>
-                    <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cf_list</span><span class="p">])</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">signal_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1141,16 +1057,22 @@
 
         <span class="k">return</span> <span class="n">attr</span>
 
+    <span class="k">def</span> <span class="nf">_read_attr_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_list</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get a &#39;read&#39; dictionary containing attributes in attr_list&#39;&#39;&#39;</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attr_list</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">config</span><span class="p">:</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">read_configuration</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">values</span>
+
     <span class="nd">@doc_annotation_forwarder</span><span class="p">(</span><span class="n">BlueskyInterface</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">component_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_names</span><span class="p">:</span>
-            <span class="c1"># this might be lazy and get the Cpt</span>
-            <span class="n">component</span> <span class="o">=</span> <span class="n">_lazy_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_name</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">kind</span> <span class="o">&amp;</span> <span class="n">Kind</span><span class="o">.</span><span class="n">normal</span><span class="p">:</span>
-                <span class="c1"># this forces us to get the real version</span>
-                <span class="n">component</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_name</span><span class="p">)</span>
-                <span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_read_attr_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_attrs</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">res</span>
 
     <span class="k">def</span> <span class="nf">read_configuration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDictType</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
@@ -1160,24 +1082,24 @@
 <span class="sd">        To control which fields are included, adjust the</span>
 <span class="sd">        ``configuration_attrs`` list.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">component_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_names</span><span class="p">:</span>
-            <span class="c1"># this might be lazy and get the Cpt</span>
-            <span class="n">component</span> <span class="o">=</span> <span class="n">_lazy_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_name</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">kind</span> <span class="o">&amp;</span> <span class="n">Kind</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
-                <span class="c1"># this forces us to get the real version</span>
-                <span class="n">component</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_name</span><span class="p">)</span>
-                <span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">read_configuration</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">res</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_attr_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configuration_attrs</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_describe_attr_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_list</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get a &#39;describe&#39; dictionary containing attributes in attr_list&#39;&#39;&#39;</span>
+        <span class="n">desc</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attr_list</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">config</span><span class="p">:</span>
+                <span class="n">desc</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">describe_configuration</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">desc</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">desc</span>
 
     <span class="nd">@doc_annotation_forwarder</span><span class="p">(</span><span class="n">BlueskyInterface</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">component_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_names</span><span class="p">:</span>
-            <span class="n">component</span> <span class="o">=</span> <span class="n">_lazy_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_name</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">kind</span> <span class="o">&amp;</span> <span class="n">Kind</span><span class="o">.</span><span class="n">normal</span><span class="p">:</span>
-                <span class="n">component</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_name</span><span class="p">)</span>
-                <span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_describe_attr_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_attrs</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">res</span>
 
     <span class="k">def</span> <span class="nf">describe_configuration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDictType</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
@@ -1195,23 +1117,7 @@
 <span class="sd">            The keys must be strings and the values must be dict-like</span>
 <span class="sd">            with the ``event_model.event_descriptor.data_key`` schema.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">component_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_names</span><span class="p">:</span>
-            <span class="n">component</span> <span class="o">=</span> <span class="n">_lazy_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_name</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">kind</span> <span class="o">&amp;</span> <span class="n">Kind</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
-                <span class="n">component</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_name</span><span class="p">)</span>
-                <span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">describe_configuration</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">res</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">hints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">component_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_names</span><span class="p">:</span>
-            <span class="n">component</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_name</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">Kind</span><span class="o">.</span><span class="n">normal</span> <span class="o">&amp;</span> <span class="n">component</span><span class="o">.</span><span class="n">kind</span><span class="p">:</span>
-                <span class="n">c_hints</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">hints</span>
-                <span class="n">fields</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">c_hints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fields&#39;</span><span class="p">,</span> <span class="p">[]))</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="n">fields</span><span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_describe_attr_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configuration_attrs</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">trigger_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1261,8 +1167,8 @@
             <span class="n">dev</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">dev</span><span class="o">.</span><span class="n">connected</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;stop: device </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">) is not connected; &#39;</span>
-                               <span class="s1">&#39;skipping&#39;</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;stop: device </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">) is not connected; &#39;</span>
+                             <span class="s1">&#39;skipping&#39;</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span>
                 <span class="k">continue</span>
 
             <span class="k">try</span><span class="p">:</span>
@@ -1272,7 +1178,8 @@
                                  <span class="k">for</span> <span class="n">sub_attr</span><span class="p">,</span> <span class="n">ex</span> <span class="ow">in</span> <span class="n">ex</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
                 <span class="n">exc_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">attr</span><span class="p">,</span> <span class="n">ex</span><span class="p">))</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Device </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">) stop failed&#39;</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Device </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">) stop failed&#39;</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span>
+                             <span class="n">exc_info</span><span class="o">=</span><span class="n">ex</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">exc_list</span><span class="p">:</span>
             <span class="n">exc_info</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> raised </span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">ex</span><span class="p">)</span>
@@ -1284,14 +1191,12 @@
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Get the value of all components in the device</span>
 
-<span class="sd">        Keyword arguments are passed onto each signal.get(). Components</span>
-<span class="sd">        beginning with an underscore will not be included.</span>
+<span class="sd">        Keyword arguments are passed onto each signal.get()</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">values</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_names</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
-                <span class="n">signal</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-                <span class="n">values</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">signal</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+            <span class="n">values</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_tuple</span><span class="p">(</span><span class="o">**</span><span class="n">values</span><span class="p">)</span>
 
@@ -1365,81 +1270,6 @@
 
         <span class="k">yield</span> <span class="p">(</span><span class="s1">&#39;read_attrs&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_attrs</span><span class="p">)</span>
         <span class="k">yield</span> <span class="p">(</span><span class="s1">&#39;configuration_attrs&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration_attrs</span><span class="p">)</span>
-
-    <span class="k">class</span> <span class="nc">OphydAttrList</span><span class="p">(</span><span class="n">MutableSequence</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;list proxy to migrate away from Device.read_attrs and Device.config_attrs</span>
-
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">remove_kind</span><span class="p">,</span> <span class="n">recurse_key</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_kind</span> <span class="o">=</span> <span class="n">kind</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_remove_kind</span> <span class="o">=</span> <span class="n">remove_kind</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">device</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_recurse_key</span> <span class="o">=</span> <span class="n">recurse_key</span>
-
-        <span class="k">def</span> <span class="nf">__internal_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-
-            <span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">component_names</span>
-                        <span class="k">if</span> <span class="n">_lazy_get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kind</span><span class="p">]</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
-                <span class="n">cmpt</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cmpt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recurse_key</span><span class="p">):</span>
-                    <span class="n">out</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">c</span><span class="p">,</span> <span class="n">v</span><span class="p">])</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span>
-                               <span class="nb">getattr</span><span class="p">(</span><span class="n">cmpt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recurse_key</span><span class="p">,</span> <span class="p">[]))</span>
-
-            <span class="k">return</span> <span class="n">out</span>
-
-        <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__internal_list</span><span class="p">()[</span><span class="n">key</span><span class="p">]</span>
-
-        <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="bp">NotImplemented</span>
-
-        <span class="k">def</span> <span class="nf">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-            <span class="n">o</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__internal_list</span><span class="p">()[</span><span class="n">key</span><span class="p">]</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
-                <span class="n">o</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">o</span><span class="p">:</span>
-                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">_remove_kind</span>
-
-        <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__internal_list</span><span class="p">())</span>
-
-        <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">,</span> <span class="nb">object</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span> <span class="o">|=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kind</span>
-
-        <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">_remove_kind</span>
-
-        <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kind</span>
-
-        <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">__internal_list</span><span class="p">()</span>
-
-        <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="n">other</span>
-
-        <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-
-        <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-
-
-<span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
-<span class="k">def</span> <span class="nf">kind_context</span><span class="p">(</span><span class="n">kind</span><span class="p">):</span>
-    <span class="k">yield</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">Component</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_lazy_get</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">parent</span><span class="o">.</span><span class="n">_signals</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">parent</span><span class="o">.</span><span class="n">_initial_state</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
-
-
-<span class="k">def</span> <span class="nf">_ensure_kind</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">Kind</span><span class="p">,</span> <span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">k</span>
 </pre></div>
 
            </div>
@@ -1474,7 +1304,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.3.1+1.g8130299',
+            VERSION:'0.3.1+3.gce5099a',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
