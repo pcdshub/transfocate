@@ -10,17 +10,13 @@ import numpy as np
 ##########
 # Module #
 ##########
-from pcdsdevices.sim.pv import using_fake_epics_pv
 
-
-@using_fake_epics_pv
 def test_lens_properties(lens):
     assert np.isclose(500.0, lens.radius, atol=0.1)
     assert np.isclose(100.0, lens.z,      atol=0.1)
     assert np.isclose(50.0,  lens.focus,  atol=0.1)
 
 
-@using_fake_epics_pv
 def test_image_from_obj(lens):
     # Real image
     assert np.isclose(lens.image_from_obj(0.0),  200.0, atol=0.1)
@@ -28,28 +24,26 @@ def test_image_from_obj(lens):
     assert np.isclose(lens.image_from_obj(75.0), 50.0, atol=0.1)
 
 
-@using_fake_epics_pv
 def test_lens_state(lens):
     # Inserted Lens
-    lens._removed._read_pv.put(0)
-    lens._inserted._read_pv.put(1)
+    lens._removed.sim_put(0)
+    lens._inserted.sim_put(1)
     assert lens.inserted
     assert not lens.removed
     # Removed Lens
-    lens._removed._read_pv.put(1)
-    lens._inserted._read_pv.put(0)
+    lens._removed.sim_put(1)
+    lens._inserted.sim_put(0)
     assert lens.removed
     assert not lens.inserted
 
 
-@using_fake_epics_pv
 def test_lens_motion(lens):
     lens.insert()
-    assert lens._insert._write_pv.get() == 1
-    lens._removed._read_pv.put(0)
-    lens._inserted._read_pv.put(1)
+    assert lens._insert.get() == 1
+    lens._removed.sim_put(0)
+    lens._inserted.sim_put(1)
     lens.remove()
-    assert lens._remove._write_pv.get() == 1
+    assert lens._remove.get() == 1
 
 
 def test_lens_connect_effective_radius(array):
