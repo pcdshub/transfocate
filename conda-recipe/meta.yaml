@@ -17,7 +17,7 @@ requirements:
 
   run:
     - python {{PY_VER}}*,>=3.6
-    - ophyd
+    - ophyd >=1.2.0
     - numpy
     - pcdsdevices >=0.5.0
 
