@@ -112,7 +112,10 @@ class Transfocator(Device):
         calc = Calculator(allowed_xrt, self.tfs_lenses)
         # Return the solution
         combo = calc.find_solution(target, **kwargs)
-        combo.show_info()
+        if combo:
+            combo.show_info()
+        else:
+            logger.error("Unable to find a valid solution for target")
         return combo
 
     def set(self, value, **kwargs):
