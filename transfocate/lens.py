@@ -47,6 +47,8 @@ class Lens(InOutPVStatePositioner):
     # Default configuration attributes. Read attributes are set correctly by
     # InOutRecordPositioner
     _default_configuration_attrs = ['_sig_radius', '_sig_z']
+    # Signal for requested focus
+    _req_focus = C(EpicsSignal, ':REQ_FOCUS')
 
     @property
     def radius(self):

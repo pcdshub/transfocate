@@ -36,6 +36,8 @@ class Transfocator(Device):
     tfs_09 = Component(Lens, ":TFS:09")
     tfs_10 = Component(Lens, ":TFS:10")
 
+    # Requested energy
+    req_energy = Component(EpicsSignalRO, ":BEAM:REQ_ENERGY")
     # Translation
     translation = FormattedComponent(IMS, "MFX:TFS:MMS:21")
 
