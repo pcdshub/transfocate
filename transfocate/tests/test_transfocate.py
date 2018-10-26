@@ -4,7 +4,7 @@ from ophyd.sim import make_fake_device
 import pytest
 import numpy as np
 
-from transfocate.transfocator import Transfocator
+from transfocate.transfocator import Transfocator, constant_energy
 
 logger = logging.getLogger(__name__)
 
@@ -80,3 +80,25 @@ def test_transfocator_focus_at(transfocator):
     for lens in transfocator.tfs_lenses:
         if lens != transfocator.tfs_02:
             assert lens._remove.get() == 1
+
+def test_constant_energy_no_change(transfocator):
+    def nothing(transfocator):
+        pass
+    # tests constant_energy when there is no change to the req_energy pv
+    wrapped_func = constant_energy(nothing)
+    wrapped_func(transfocator)
+
+def test_constant_energy_with_change(transfocator):
+    # tests constant_energy when there is a change to the req_energy pv
+    initial_energy = 9536.5
+    transfocator.req_energy.put(initial_energy)
+#    print(transfocator.req_energy.get())
+    new_energy = 9536.0
+    def change_energy(transfocator, new_energy):
+        transfocator.req_energy.put(new_energy)
+#        print(transfocator.req_energy.get())
+
+    with pytest.raises(InterruptedError):
+        wrapped_func = constant_energy(change_energy)
+        wrapped_func(transfocator, new_energy)
+

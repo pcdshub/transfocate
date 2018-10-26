@@ -2,11 +2,12 @@ import math
 import logging
 
 from pcdsdevices.device_types import IMS
-from ophyd import Device, EpicsSignalRO, Component, FormattedComponent
+from ophyd import Device, EpicsSignalRO, Component, FormattedComponent, EpicsSignal
 from ophyd.status import wait as status_wait
 
 from .lens import Lens, LensConnect
 from .calculator import Calculator
+from functools import wraps
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +38,7 @@ class Transfocator(Device):
     tfs_10 = Component(Lens, ":TFS:10")
 
     # Requested energy
-    req_energy = Component(EpicsSignalRO, ":BEAM:REQ_ENERGY")
+    req_energy = Component(EpicsSignal, ":BEAM:REQ_ENERGY")
     # Translation
     translation = FormattedComponent(IMS, "MFX:TFS:MMS:21")
 
@@ -180,3 +181,18 @@ class Transfocator(Device):
         if wait:
             status_wait(status, timeout=timeout)
         return status
+
+def constant_energy(func):
+    """
+    Ensures that requested energy does not change during calculation
+    """
+    @wraps(func)
+    def with_constant_energy(transfocator_obj, *args, **kwargs):
+        energy_before = transfocator_obj.req_energy.get()
+        result = func(transfocator_obj, *args, **kwargs)
+        energy_after = transfocator_obj.req_energy.get()
+        if energy_before != energy_after:
+            raise InterruptedError
+        return result
+    return with_constant_energy
+
