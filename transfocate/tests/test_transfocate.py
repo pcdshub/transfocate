@@ -4,7 +4,7 @@ from ophyd.sim import make_fake_device
 import pytest
 import numpy as np
 
-from transfocate.transfocator import Transfocator, constant_energy
+from transfocate.transfocator import Transfocator, constant_energy, TransfocatorEnergyInterrupt
 
 logger = logging.getLogger(__name__)
 
@@ -82,23 +82,35 @@ def test_transfocator_focus_at(transfocator):
             assert lens._remove.get() == 1
 
 def test_constant_energy_no_change(transfocator):
-    def nothing(transfocator):
-        pass
     # tests constant_energy when there is no change to the req_energy pv
-    wrapped_func = constant_energy(nothing)
-    wrapped_func(transfocator)
-
-def test_constant_energy_with_change(transfocator):
-    # tests constant_energy when there is a change to the req_energy pv
     initial_energy = 9536.5
     transfocator.req_energy.put(initial_energy)
-#    print(transfocator.req_energy.get())
-    new_energy = 9536.0
+    transfocator.beam_energy.put(initial_energy)
+    def nothing(transfocator):
+        pass
+    wrapped_func = constant_energy(nothing)
+    wrapped_func(transfocator, 'req_energy')
+    wrapped_func(transfocator, 'beam_energy')
+
+def test_constant_energy_with_change(transfocator):
+    # tests constant_energy when there is a signficant change to the req_energy
+    # or beam_energy pv
+    initial_energy = 9536.5
+    transfocator.req_energy.put(initial_energy)
+    transfocator.beam_energy.put(initial_energy)
+    new_energy = 9530.1
     def change_energy(transfocator, new_energy):
         transfocator.req_energy.put(new_energy)
-#        print(transfocator.req_energy.get())
+        transfocator.beam_energy.put(new_energy)
 
-    with pytest.raises(InterruptedError):
+    with pytest.raises(TransfocatorEnergyInterrupt):
         wrapped_func = constant_energy(change_energy)
-        wrapped_func(transfocator, new_energy)
+        wrapped_func(transfocator, 'req_energy', new_energy)
+        wrapped_func(transfocator, 'beam_energy', new_energy)
 
+def test_constant_energy_bad_input(transfocator):
+    def nothing(transfocator):
+        pass
+    with pytest.raises(ValueError):
+        wrapped_func = constant_energy(nothing)
+        wrapped_func(transfocator, 'bad_input_string')

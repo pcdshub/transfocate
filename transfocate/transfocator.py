@@ -39,6 +39,10 @@ class Transfocator(Device):
 
     # Requested energy
     req_energy = Component(EpicsSignal, ":BEAM:REQ_ENERGY")
+
+    # Actual beam energy
+    beam_energy = Component(EpicsSignal, ":BEAM:ENERGY")
+    
     # Translation
     translation = FormattedComponent(IMS, "MFX:TFS:MMS:21")
 
@@ -182,17 +186,35 @@ class Transfocator(Device):
             status_wait(status, timeout=timeout)
         return status
 
+class TransfocatorEnergyInterrupt(Exception):
+    """
+    Custom exception returned when input beam energy (user defined
+    or current measured value) changes significantly during
+    calculation
+    """
+    pass
+
 def constant_energy(func):
     """
     Ensures that requested energy does not change during calculation
+
+    Parameters:
+    transfocator_obj: transfocate.transfocator.Transfocator object
+    energy_type: string
+        input string specifying 'req_energy' or 'beam_energy'
+        to be monitored during calculation
     """
     @wraps(func)
-    def with_constant_energy(transfocator_obj, *args, **kwargs):
-        energy_before = transfocator_obj.req_energy.get()
+    def with_constant_energy(transfocator_obj, energy_type, *args, **kwargs):
+        try:
+            energy_signal = getattr(transfocator_obj, energy_type)
+        except:
+            raise ValueError("input energy_type not defined")
+        energy_before = energy_signal.get()
         result = func(transfocator_obj, *args, **kwargs)
-        energy_after = transfocator_obj.req_energy.get()
-        if energy_before != energy_after:
-            raise InterruptedError
+        energy_after = energy_signal.get()
+        if math.isclose(energy_before, energy_after, abs_tol = 0.1) == False:
+            raise TransfocatorEnergyInterrupt("The beam energy changed significantly during the calculation")
         return result
     return with_constant_energy
 
