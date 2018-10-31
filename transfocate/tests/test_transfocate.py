@@ -81,16 +81,20 @@ def test_transfocator_focus_at(transfocator):
         if lens != transfocator.tfs_02:
             assert lens._remove.get() == 1
 
+
 def test_constant_energy_no_change(transfocator):
     # tests constant_energy when there is no change to the req_energy pv
     initial_energy = 9536.5
     transfocator.req_energy.put(initial_energy)
     transfocator.beam_energy.put(initial_energy)
+
     def nothing(transfocator):
         pass
+
     wrapped_func = constant_energy(nothing)
     wrapped_func(transfocator, 'req_energy')
     wrapped_func(transfocator, 'beam_energy')
+
 
 def test_constant_energy_with_change(transfocator):
     # tests constant_energy when there is a signficant change to the req_energy
@@ -99,6 +103,7 @@ def test_constant_energy_with_change(transfocator):
     transfocator.req_energy.put(initial_energy)
     transfocator.beam_energy.put(initial_energy)
     new_energy = 9530.1
+
     def change_energy(transfocator, new_energy):
         transfocator.req_energy.put(new_energy)
         transfocator.beam_energy.put(new_energy)
@@ -107,6 +112,7 @@ def test_constant_energy_with_change(transfocator):
         wrapped_func = constant_energy(change_energy)
         wrapped_func(transfocator, 'req_energy', new_energy)
         wrapped_func(transfocator, 'beam_energy', new_energy)
+
 
 def test_constant_energy_bad_input(transfocator):
     def nothing(transfocator):

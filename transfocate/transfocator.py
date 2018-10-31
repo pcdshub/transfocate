@@ -42,7 +42,7 @@ class Transfocator(Device):
 
     # Actual beam energy
     beam_energy = Component(EpicsSignal, ":BEAM:ENERGY")
-    
+
     # Translation
     translation = FormattedComponent(IMS, "MFX:TFS:MMS:21")
 
@@ -186,6 +186,7 @@ class Transfocator(Device):
             status_wait(status, timeout=timeout)
         return status
 
+
 class TransfocatorEnergyInterrupt(Exception):
     """
     Custom exception returned when input beam energy (user defined
@@ -193,6 +194,7 @@ class TransfocatorEnergyInterrupt(Exception):
     calculation
     """
     pass
+
 
 def constant_energy(func):
     """
@@ -213,8 +215,7 @@ def constant_energy(func):
         energy_before = energy_signal.get()
         result = func(transfocator_obj, *args, **kwargs)
         energy_after = energy_signal.get()
-        if math.isclose(energy_before, energy_after, abs_tol = 0.1) == False:
+        if math.isclose(energy_before, energy_after, abs_tol=0.1) == False:
             raise TransfocatorEnergyInterrupt("The beam energy changed significantly during the calculation")
         return result
     return with_constant_energy
-
