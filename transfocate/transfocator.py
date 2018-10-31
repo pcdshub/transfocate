@@ -202,12 +202,17 @@ def constant_energy(func):
 
     Parameters:
     transfocator_obj: transfocate.transfocator.Transfocator object
+
     energy_type: string
         input string specifying 'req_energy' or 'beam_energy'
         to be monitored during calculation
+
+    tolerance: float
+        energy (in eV) for which current beam energy can change during
+        calculation and still assumed constant
     """
     @wraps(func)
-    def with_constant_energy(transfocator_obj, energy_type, *args, **kwargs):
+    def with_constant_energy(transfocator_obj, energy_type, tolerance, *args, **kwargs):
         try:
             energy_signal = getattr(transfocator_obj, energy_type)
         except Exception as e:
@@ -215,7 +220,7 @@ def constant_energy(func):
         energy_before = energy_signal.get()
         result = func(transfocator_obj, *args, **kwargs)
         energy_after = energy_signal.get()
-        if not math.isclose(energy_before, energy_after, abs_tol=0.1):
+        if not math.isclose(energy_before, energy_after, abs_tol=tolerance):
             raise TransfocatorEnergyInterrupt("The beam energy changed significantly during the calculation")
         return result
     return with_constant_energy

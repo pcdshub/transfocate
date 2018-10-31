@@ -92,8 +92,8 @@ def test_constant_energy_no_change(transfocator):
         pass
 
     wrapped_func = constant_energy(nothing)
-    wrapped_func(transfocator, 'req_energy')
-    wrapped_func(transfocator, 'beam_energy')
+    wrapped_func(transfocator, 'req_energy', 0.1)
+    wrapped_func(transfocator, 'beam_energy', 0.1)
 
 
 def test_constant_energy_with_change(transfocator):
@@ -110,8 +110,8 @@ def test_constant_energy_with_change(transfocator):
 
     with pytest.raises(TransfocatorEnergyInterrupt):
         wrapped_func = constant_energy(change_energy)
-        wrapped_func(transfocator, 'req_energy', new_energy)
-        wrapped_func(transfocator, 'beam_energy', new_energy)
+        wrapped_func(transfocator, 'req_energy', 0.1, new_energy)
+        wrapped_func(transfocator, 'beam_energy', 0.1, new_energy)
 
 
 def test_constant_energy_bad_input(transfocator):
@@ -119,4 +119,4 @@ def test_constant_energy_bad_input(transfocator):
         pass
     with pytest.raises(AttributeError):
         wrapped_func = constant_energy(nothing)
-        wrapped_func(transfocator, 'bad_input_string')
+        wrapped_func(transfocator, 'bad_input_string', 0.1)
