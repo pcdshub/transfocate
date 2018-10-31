@@ -117,6 +117,6 @@ def test_constant_energy_with_change(transfocator):
 def test_constant_energy_bad_input(transfocator):
     def nothing(transfocator):
         pass
-    with pytest.raises(ValueError):
+    with pytest.raises(AttributeError):
         wrapped_func = constant_energy(nothing)
         wrapped_func(transfocator, 'bad_input_string')

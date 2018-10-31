@@ -210,12 +210,12 @@ def constant_energy(func):
     def with_constant_energy(transfocator_obj, energy_type, *args, **kwargs):
         try:
             energy_signal = getattr(transfocator_obj, energy_type)
-        except:
-            raise ValueError("input energy_type not defined")
+        except Exception as e:
+            raise AttributeError("input 'energy_type' not defined") from e
         energy_before = energy_signal.get()
         result = func(transfocator_obj, *args, **kwargs)
         energy_after = energy_signal.get()
-        if math.isclose(energy_before, energy_after, abs_tol=0.1) == False:
+        if not math.isclose(energy_before, energy_after, abs_tol=0.1):
             raise TransfocatorEnergyInterrupt("The beam energy changed significantly during the calculation")
         return result
     return with_constant_energy
