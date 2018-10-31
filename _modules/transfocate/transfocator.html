@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>transfocate.transfocator &mdash; transfocate 0.3.2+3.g12dba7d documentation</title>
+  <title>transfocate.transfocator &mdash; transfocate 0.3.2+11.g9e377b3 documentation</title>
   
 
   
@@ -56,7 +56,7 @@
             
             
               <div class="version">
-                0.3.2+3.g12dba7d
+                0.3.2+11.g9e377b3
               </div>
             
           
@@ -152,11 +152,12 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="kn">from</span> <span class="nn">pcdsdevices.device_types</span> <span class="k">import</span> <span class="n">IMS</span>
-<span class="kn">from</span> <span class="nn">ophyd</span> <span class="k">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="n">Component</span><span class="p">,</span> <span class="n">FormattedComponent</span>
+<span class="kn">from</span> <span class="nn">ophyd</span> <span class="k">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="n">Component</span><span class="p">,</span> <span class="n">FormattedComponent</span><span class="p">,</span> <span class="n">EpicsSignal</span>
 <span class="kn">from</span> <span class="nn">ophyd.status</span> <span class="k">import</span> <span class="n">wait</span> <span class="k">as</span> <span class="n">status_wait</span>
 
 <span class="kn">from</span> <span class="nn">.lens</span> <span class="k">import</span> <span class="n">Lens</span><span class="p">,</span> <span class="n">LensConnect</span>
 <span class="kn">from</span> <span class="nn">.calculator</span> <span class="k">import</span> <span class="n">Calculator</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">wraps</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -185,6 +186,12 @@
     <span class="n">tfs_08</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:08&quot;</span><span class="p">)</span>
     <span class="n">tfs_09</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:09&quot;</span><span class="p">)</span>
     <span class="n">tfs_10</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:10&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Requested energy</span>
+    <span class="n">req_energy</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignal</span><span class="p">,</span> <span class="s2">&quot;:BEAM:REQ_ENERGY&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Actual beam energy</span>
+    <span class="n">beam_energy</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignal</span><span class="p">,</span> <span class="s2">&quot;:BEAM:ENERGY&quot;</span><span class="p">)</span>
 
     <span class="c1"># Translation</span>
     <span class="n">translation</span> <span class="o">=</span> <span class="n">FormattedComponent</span><span class="p">(</span><span class="n">IMS</span><span class="p">,</span> <span class="s2">&quot;MFX:TFS:MMS:21&quot;</span><span class="p">)</span>
@@ -328,6 +335,45 @@
         <span class="k">if</span> <span class="n">wait</span><span class="p">:</span>
             <span class="n">status_wait</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">status</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">TransfocatorEnergyInterrupt</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Custom exception returned when input beam energy (user defined</span>
+<span class="sd">    or current measured value) changes significantly during</span>
+<span class="sd">    calculation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+<span class="k">def</span> <span class="nf">constant_energy</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ensures that requested energy does not change during calculation</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    transfocator_obj: transfocate.transfocator.Transfocator object</span>
+
+<span class="sd">    energy_type: string</span>
+<span class="sd">        input string specifying &#39;req_energy&#39; or &#39;beam_energy&#39;</span>
+<span class="sd">        to be monitored during calculation</span>
+
+<span class="sd">    tolerance: float</span>
+<span class="sd">        energy (in eV) for which current beam energy can change during</span>
+<span class="sd">        calculation and still assumed constant</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">with_constant_energy</span><span class="p">(</span><span class="n">transfocator_obj</span><span class="p">,</span> <span class="n">energy_type</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">energy_signal</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">transfocator_obj</span><span class="p">,</span> <span class="n">energy_type</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;input &#39;energy_type&#39; not defined&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+        <span class="n">energy_before</span> <span class="o">=</span> <span class="n">energy_signal</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">transfocator_obj</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">energy_after</span> <span class="o">=</span> <span class="n">energy_signal</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">energy_before</span><span class="p">,</span> <span class="n">energy_after</span><span class="p">,</span> <span class="n">abs_tol</span><span class="o">=</span><span class="n">tolerance</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TransfocatorEnergyInterrupt</span><span class="p">(</span><span class="s2">&quot;The beam energy changed significantly during the calculation&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">return</span> <span class="n">with_constant_energy</span>
 </pre></div>
 
            </div>
@@ -340,7 +386,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, SLAC National Accelerator Laboratory.
+        &copy; Copyright 2017, SLAC National Accelerator Laboratory
 
     </p>
   </div>
@@ -359,20 +405,14 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.3.2+3.g12dba7d',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 

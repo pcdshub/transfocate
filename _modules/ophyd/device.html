@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ophyd.device &mdash; transfocate 0.3.2+3.g12dba7d documentation</title>
+  <title>ophyd.device &mdash; transfocate 0.3.2+11.g9e377b3 documentation</title>
   
 
   
@@ -56,7 +56,7 @@
             
             
               <div class="version">
-                0.3.2+3.g12dba7d
+                0.3.2+11.g9e377b3
               </div>
             
           
@@ -307,10 +307,10 @@
         <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-      
+
         <span class="n">kw_str</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">=</span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> \
                            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;read_attrs&#39;</span><span class="p">,</span><span class="s1">&#39;configuration_attrs&#39;</span><span class="p">])</span>
-                           
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">suffix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">suffix_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">:</span>
@@ -377,7 +377,7 @@
 
 
 <span class="k">class</span> <span class="nc">DynamicDeviceComponent</span><span class="p">:</span>
-    <span class="sd">&#39;&#39;&#39;An Device component that dynamically creates a OphyDevice</span>
+    <span class="sd">&#39;&#39;&#39;An Device component that dynamically creates a OphydDevice</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -389,7 +389,7 @@
 <span class="sd">        This will create an attribute on the sub-device of type `SignalClass`,</span>
 <span class="sd">        with a suffix of pv_suffix, which looks something like this::</span>
 
-<span class="sd">            parent.attribute_name = SignalClass(pv_suffix, **keyword_arg_dict)</span>
+<span class="sd">            parent.sub.attribute_name = Cpt(SignalClass, pv_suffix, **keyword_arg_dict)</span>
 
 <span class="sd">        Keep in mind that this is actually done in the metaclass creation, and</span>
 <span class="sd">        not exactly as written above.</span>
@@ -503,7 +503,7 @@
 
         <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="n">_signals</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">attr</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Use .put()&#39;</span><span class="p">)</span>
 
 
@@ -567,7 +567,7 @@
             <span class="n">cpt</span><span class="o">.</span><span class="n">attr</span> <span class="o">=</span> <span class="n">cpt_attr</span>
 
         <span class="c1"># List Signal attribute names.</span>
-        <span class="n">clsobj</span><span class="o">.</span><span class="n">component_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">clsobj</span><span class="o">.</span><span class="n">_sig_attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">clsobj</span><span class="o">.</span><span class="n">component_names</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">clsobj</span><span class="o">.</span><span class="n">_sig_attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
         <span class="c1"># The namedtuple associated with the device</span>
         <span class="n">clsobj</span><span class="o">.</span><span class="n">_device_tuple</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
@@ -1424,7 +1424,7 @@
             <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">_remove_kind</span>
 
         <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kind</span>
+            <span class="k">return</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__internal_list</span><span class="p">()</span>
 
         <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">__internal_list</span><span class="p">()</span>
@@ -1462,7 +1462,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, SLAC National Accelerator Laboratory.
+        &copy; Copyright 2017, SLAC National Accelerator Laboratory
 
     </p>
   </div>
@@ -1481,20 +1481,14 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.3.2+3.g12dba7d',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 

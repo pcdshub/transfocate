@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>transfocate.lens &mdash; transfocate 0.3.2+3.g12dba7d documentation</title>
+  <title>transfocate.lens &mdash; transfocate 0.3.2+11.g9e377b3 documentation</title>
   
 
   
@@ -56,7 +56,7 @@
             
             
               <div class="version">
-                0.3.2+3.g12dba7d
+                0.3.2+11.g9e377b3
               </div>
             
           
@@ -197,6 +197,8 @@
     <span class="c1"># Default configuration attributes. Read attributes are set correctly by</span>
     <span class="c1"># InOutRecordPositioner</span>
     <span class="n">_default_configuration_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_sig_radius&#39;</span><span class="p">,</span> <span class="s1">&#39;_sig_z&#39;</span><span class="p">]</span>
+    <span class="c1"># Signal for requested focus</span>
+    <span class="n">_req_focus</span> <span class="o">=</span> <span class="n">C</span><span class="p">(</span><span class="n">EpicsSignal</span><span class="p">,</span> <span class="s1">&#39;:REQ_FOCUS&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">radius</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -386,7 +388,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, SLAC National Accelerator Laboratory.
+        &copy; Copyright 2017, SLAC National Accelerator Laboratory
 
     </p>
   </div>
@@ -405,20 +407,14 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.3.2+3.g12dba7d',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 

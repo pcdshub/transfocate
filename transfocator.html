@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Transfocator Information &mdash; transfocate 0.3.2+3.g12dba7d documentation</title>
+  <title>Transfocator Information &mdash; transfocate 0.3.2+11.g9e377b3 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.3.2+3.g12dba7d
+                0.3.2+11.g9e377b3
               </div>
             
           
@@ -157,6 +157,15 @@
 <em class="property">class </em><code class="descclassname">transfocate.transfocator.</code><code class="descname">Transfocator</code><span class="sig-paren">(</span><em>prefix</em>, <em>*</em>, <em>nominal_sample=399.88103</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/transfocator.html#Transfocator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#transfocate.transfocator.Transfocator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to represent the MFX Transfocator</p>
 <dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.beam_energy">
+<code class="descname">beam_energy</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.beam_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component attribute</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignal</span><span class="p">,</span> <span class="s1">&#39;:BEAM:ENERGY&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="transfocate.transfocator.Transfocator.current_focus">
 <code class="descname">current_focus</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.current_focus" title="Permalink to this definition">¶</a></dt>
 <dd><p>The distance from the focus of the Transfocator to nominal_sample</p>
@@ -250,6 +259,15 @@
 <code class="descname">prefocus_top</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.prefocus_top" title="Permalink to this definition">¶</a></dt>
 <dd><p>Component attribute</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s1">&#39;:DIA:03&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="transfocate.transfocator.Transfocator.req_energy">
+<code class="descname">req_energy</code><a class="headerlink" href="#transfocate.transfocator.Transfocator.req_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component attribute</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Component</span><span class="p">(</span><span class="n">EpicsSignal</span><span class="p">,</span> <span class="s1">&#39;:BEAM:REQ_ENERGY&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -403,7 +421,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, SLAC National Accelerator Laboratory.
+        &copy; Copyright 2017, SLAC National Accelerator Laboratory
 
     </p>
   </div>
@@ -422,20 +440,14 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.3.2+3.g12dba7d',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
