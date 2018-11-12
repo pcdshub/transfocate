@@ -196,7 +196,7 @@ class TransfocatorEnergyInterrupt(Exception):
     pass
 
 
-def constant_energy(func):
+def constant_energy(func, transfocator_obj, energy_type, tolerance):
     """
     Ensures that requested energy does not change during calculation
 
@@ -212,7 +212,7 @@ def constant_energy(func):
         calculation and still assumed constant
     """
     @wraps(func)
-    def with_constant_energy(transfocator_obj, energy_type, tolerance, *args, **kwargs):
+    def with_constant_energy(*args, **kwargs):
         try:
             energy_signal = getattr(transfocator_obj, energy_type)
         except Exception as e:

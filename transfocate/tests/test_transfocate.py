@@ -91,10 +91,13 @@ def test_constant_energy_no_change(transfocator):
     def nothing(transfocator):
         pass
 
-    wrapped_func = constant_energy(nothing)
-    wrapped_func(transfocator, 'req_energy', 0.1)
-    wrapped_func(transfocator, 'beam_energy', 0.1)
-
+#    wrapped_func = constant_energy(nothing)
+#    wrapped_func(transfocator, 'req_energy', 0.1)
+#    wrapped_func(transfocator, 'beam_energy', 0.1)
+    wrapped_func_req = constant_energy(nothing, transfocator, 'req_energy', 0.1)
+    wrapped_func_req()
+    wrapped_func_beam = constant_energy(nothing, transfocator, 'beam_energy', 0.1)
+    wrapped_func_beam()
 
 def test_constant_energy_with_change(transfocator):
     # tests constant_energy when there is a signficant change to the req_energy
@@ -109,14 +112,17 @@ def test_constant_energy_with_change(transfocator):
         transfocator.beam_energy.put(new_energy)
 
     with pytest.raises(TransfocatorEnergyInterrupt):
-        wrapped_func = constant_energy(change_energy)
-        wrapped_func(transfocator, 'req_energy', 0.1, new_energy)
-        wrapped_func(transfocator, 'beam_energy', 0.1, new_energy)
-
+#        wrapped_func = constant_energy(change_energy)
+#        wrapped_func(transfocator, 'req_energy', 0.1, new_energy)
+#        wrapped_func(transfocator, 'beam_energy', 0.1, new_energy)
+        wrapped_func_req = constant_energy(change_energy, transfocator, 'req_energy', 0.1)
+        wrapped_func_req(new_energy)
+        wrapped_func_beam = constant_energy(change_energy, transfocator, 'beam_energy', 0.1)
+        wrapped_func_beam(new_energy)
 
 def test_constant_energy_bad_input(transfocator):
     def nothing(transfocator):
         pass
     with pytest.raises(AttributeError):
-        wrapped_func = constant_energy(nothing)
-        wrapped_func(transfocator, 'bad_input_string', 0.1)
+        wrapped_func = constant_energy(nothing, transfocator, 'bad_input_string', 0.1)
+        wrapped_func()
