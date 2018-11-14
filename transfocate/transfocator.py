@@ -90,7 +90,7 @@ class Transfocator(Device):
         # Calculate the image from this set of lenses
         return LensConnect(*inserted).image(0.0) - self.nominal_sample
 
-    def find_best_combo(self, target=None, show=True, **kwargs):
+    def find_best_combo(self, target=None, show=True, energy=None, abs_tol=0.1, **kwargs):
         """
         Calculate the best lens array to hit the nominal sample point
 
@@ -103,9 +103,24 @@ class Transfocator(Device):
         show : bool, optional
             Print a table of the of the calculated lens combination
 
+        energy : float, optional
+            requested beam energy to be used in calculation. By
+            default this is 'None' and the current beam energy is
+            used
+
+        abs_tol : float, optional
+            absolute tolerance for which beam energy can change during
+            calculation without returning error
+
         kwargs:
             Passed to :meth:`.Calculator.find_solution`
         """
+        if energy:
+            self.req_energy.put(energy)
+            requested = True
+        else:
+            requested = False
+
         target = target or self.nominal_sample
         # Only included allowed XRT lenses
         xrt_limit = self.xrt_limit.get()
@@ -118,12 +133,23 @@ class Transfocator(Device):
         # Create a calculator
         calc = Calculator(allowed_xrt, self.tfs_lenses)
         # Return the solution
-        combo = calc.find_solution(target, **kwargs)
-        if combo:
-            combo.show_info()
+        # mutate calc.find_solution to check constant energy
+        if requested:
+            find_solution_const_energy = constant_energy(calc.find_solution, self, 'req_energy', abs_tol)
+            combo = find_solution_const_energy(target, requested=requested, **kwargs)
+            if combo:
+                combo.show_info()
+            else:
+                logger.error("Unable to find a valid solution for target")
+            return combo
         else:
-            logger.error("Unable to find a valid solution for target")
-        return combo
+            find_solution_const_energy = constant_energy(calc.find_solution, self, 'beam_energy', abs_tol)
+            combo = find_solution_const_energy(target, requested=requested, **kwargs)
+            if combo:
+                combo.show_info()
+            else:
+                logger.error("Unable to find a valid solution for target")
+            return combo
 
     def set(self, value, **kwargs):
         """
@@ -218,7 +244,7 @@ def constant_energy(func, transfocator_obj, energy_type, tolerance):
         except Exception as e:
             raise AttributeError("input 'energy_type' not defined") from e
         energy_before = energy_signal.get()
-        result = func(transfocator_obj, *args, **kwargs)
+        result = func(*args, **kwargs)
         energy_after = energy_signal.get()
         if not math.isclose(energy_before, energy_after, abs_tol=tolerance):
             raise TransfocatorEnergyInterrupt("The beam energy changed significantly during the calculation")
