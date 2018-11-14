@@ -90,7 +90,7 @@ class Transfocator(Device):
         # Calculate the image from this set of lenses
         return LensConnect(*inserted).image(0.0) - self.nominal_sample
 
-    def find_best_combo(self, target=None, show=True, energy=None, abs_tol=0.1, **kwargs):
+    def find_best_combo(self, target=None, show=True, energy=None, abs_tol=5.0, **kwargs):
         """
         Calculate the best lens array to hit the nominal sample point
 
@@ -104,13 +104,13 @@ class Transfocator(Device):
             Print a table of the of the calculated lens combination
 
         energy : float, optional
-            requested beam energy to be used in calculation. By
-            default this is 'None' and the current beam energy is
+            requested beam energy (in eV) to be used for calculation.
+            By default this is 'None' and the current beam energy is
             used
 
         abs_tol : float, optional
-            absolute tolerance for which beam energy can change during
-            calculation without returning error
+            absolute tolerance (in eV) for which beam energy can change
+            during calculation without returning error
 
         kwargs:
             Passed to :meth:`.Calculator.find_solution`

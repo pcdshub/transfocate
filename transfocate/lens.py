@@ -131,18 +131,14 @@ class Lens(InOutPVStatePositioner):
         # If this happens, then the image location will be infinity.
         # Note, this should not effect the recursive calculations that occur
         # later in the code
-        if not requested:
-            if obj == self.focus:
-                return np.inf
-            # Calculate the location of the focal plane
-            plane = 1/(1/self.focus - 1/obj)
-            # Find the position in accelerator coordinates
-            return plane + self.z
+        if requested:
+            focus = self.req_focus
         else:
-            if obj == self.req_focus:
-                return np.inf
-            plane = 1/(1/self.req_focus - 1/obj)
-            return plane + self.z
+            focus = self.focus
+        if obj == focus:
+            return np.inf
+        plane = 1/(1/focus - 1/obj)
+        return plane + self.z
 
     def _do_move(self, state):
         if state.name == 'IN':
