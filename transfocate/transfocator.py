@@ -131,25 +131,26 @@ class Transfocator(Device):
             logger.warning("Can not find a prefocusing lens that meets the "
                            "safety requirements")
         # Create a calculator
-        calc = Calculator(allowed_xrt, self.tfs_lenses)
-        # Return the solution
         # mutate calc.find_solution to check constant energy
+        # Return the solution
         if requested:
-            find_solution_const_energy = constant_energy(calc.find_solution, self, 'req_energy', abs_tol)
-            combo = find_solution_const_energy(target, requested=requested, **kwargs)
-            if combo:
-                combo.show_info()
-            else:
-                logger.error("Unable to find a valid solution for target")
-            return combo
+            # Checking all xrt lenses
+            calc = Calculator(self.xrt_lenses, self.tfs_lenses)
+            find_solution_const_energy = constant_energy(calc.find_solution,
+                                                         self, 'req_energy',
+                                                         abs_tol)
         else:
-            find_solution_const_energy = constant_energy(calc.find_solution, self, 'beam_energy', abs_tol)
-            combo = find_solution_const_energy(target, requested=requested, **kwargs)
-            if combo:
-                combo.show_info()
-            else:
-                logger.error("Unable to find a valid solution for target")
-            return combo
+            # Checking only xrt_lenses producing foci within xrt_limit
+            calc = Calculator(allowed_xrt, self.tfs_lenses)
+            find_solution_const_energy = constant_energy(calc.find_solution,
+                                                         self, 'beam_energy',
+                                                         abs_tol)
+        combo = find_solution_const_energy(target, requested=requested, **kwargs)
+        if combo:
+            combo.show_info()
+        else:
+            logger.error("Unable to find a valid solution for target")
+        return combo
 
     def set(self, value, **kwargs):
         """

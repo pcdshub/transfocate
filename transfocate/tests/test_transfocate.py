@@ -30,21 +30,21 @@ def transfocator():
         lens._sig_z.sim_put(100.0)
         lens._sig_focus.sim_put(1000.0)
         lens._sig_radius.sim_put(100.0)
-        lens._req_focus.sim_put(100.0)
+        lens._req_focus.sim_put(500.0)
         remove(lens)
     for lens, z in zip(trans.tfs_lenses,
                        np.linspace(250, 260, len(trans.tfs_lenses))):
         lens._sig_z.sim_put(z)
         lens._sig_focus.sim_put(1000.0)
         lens._sig_radius.sim_put(100.0)
-        lens._req_focus.sim_put(100.0)
+        lens._req_focus.sim_put(500.0)
         remove(lens)
     # Give two reasonable values so we can test calculations
     trans.prefocus_bot._sig_focus.sim_put(50.0)
-    trans.prefocus_bot._req_focus.sim_put(50.0)
+    trans.prefocus_bot._req_focus.sim_put(10.0)
     trans.tfs_02._sig_z.sim_put(275.)
     trans.tfs_02._sig_focus.sim_put(25.)
-    trans.tfs_02._req_focus.sim_put(25.)
+    trans.tfs_02._req_focus.sim_put(5.)
     # Use a nominal sample position
     trans.nominal_sample = 300.0
     # Set a reasonable limit
@@ -71,6 +71,7 @@ def test_transfocator_find_best_combo(transfocator):
     transfocator.xrt_limit.sim_put(1500.)
     combo = transfocator.find_best_combo(target=302.5)
     assert combo.nlens == 1
+    print(combo.image(0.0))
     assert np.isclose(302.5, combo.image(0.0), atol=0.1)
 
 
@@ -132,11 +133,11 @@ def test_constant_energy_bad_input(transfocator):
 
 def test_transfocator_find_best_combo_req(transfocator):
     # A solution with a prefocus
-    combo = transfocator.find_best_combo(312.5, energy=9536.0)
-    assert combo.nlens == 2
-    assert np.isclose(312.5, combo.image(0.0), atol=0.1)
+    combo = transfocator.find_best_combo(280.0, energy=9000.0)
+    assert combo.nlens == 4
+    assert np.isclose(280.0, combo.image(0.0, requested=True), atol=0.1)
     # A solution where there are no valid prefocus
     transfocator.xrt_limit.sim_put(1500.)
-    combo = transfocator.find_best_combo(target=302.5, energy=9536.0)
-    assert combo.nlens == 1
-    assert np.isclose(302.5, combo.image(0.0), atol=0.1)
+    combo = transfocator.find_best_combo(target=280.0, energy=9000.0, include_prefocus=False)
+    assert combo.nlens == 3
+    assert np.isclose(280.0, combo.image(0.0, requested=True), atol=0.1)

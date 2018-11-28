@@ -97,7 +97,7 @@ class Lens(InOutPVStatePositioner):
         -------
         float
             Returns the focal length of the lens in meters
-        """ 
+        """
         return self._req_focus.value
 
     def image_from_obj(self, z_obj, requested=False):
