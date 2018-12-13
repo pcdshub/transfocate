@@ -90,7 +90,8 @@ class Transfocator(Device):
         # Calculate the image from this set of lenses
         return LensConnect(*inserted).image(0.0) - self.nominal_sample
 
-    def find_best_combo(self, target=None, show=True, energy=None, abs_tol=5.0, **kwargs):
+    def find_best_combo(self, target=None, show=True, energy=None,
+                        abs_tol=5.0, **kwargs):
         """
         Calculate the best lens array to hit the nominal sample point
 
@@ -145,7 +146,8 @@ class Transfocator(Device):
             find_solution_const_energy = constant_energy(calc.find_solution,
                                                          self, 'beam_energy',
                                                          abs_tol)
-        combo = find_solution_const_energy(target, requested=requested, **kwargs)
+        combo = find_solution_const_energy(target, requested=requested,
+                                           **kwargs)
         if combo:
             combo.show_info()
         else:
@@ -248,6 +250,7 @@ def constant_energy(func, transfocator_obj, energy_type, tolerance):
         result = func(*args, **kwargs)
         energy_after = energy_signal.get()
         if not math.isclose(energy_before, energy_after, abs_tol=tolerance):
-            raise TransfocatorEnergyInterrupt("The beam energy changed significantly during the calculation")
+            raise TransfocatorEnergyInterrupt("The beam energy changed "
+                                              "significantly during the calculation")
         return result
     return with_constant_energy

@@ -90,8 +90,8 @@ class Lens(InOutPVStatePositioner):
     @property
     def req_focus(self):
         """
-        Method converts the EPICS requested focal length signal of the lens into
-        a float
+        Method converts the EPICS requested focal length signal of the lens
+        into a float
 
         Returns
         -------

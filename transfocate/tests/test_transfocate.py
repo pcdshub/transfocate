@@ -20,8 +20,7 @@ def remove(lens):
     lens._inserted.sim_put(0)
 
 
-@pytest.fixture(scope='function')
-def transfocator():
+def sim_transfocator():
     FakeTransfocator = make_fake_device(Transfocator)
     # Create our base transfocator
     trans = FakeTransfocator("TST:LENS", name='Transfocator')
@@ -50,6 +49,11 @@ def transfocator():
     # Set a reasonable limit
     trans.xrt_limit.sim_put(-1.0)
     return trans
+
+
+@pytest.fixture(scope='function')
+def transfocator():
+    return sim_transfocator()
 
 
 def test_transfocator_current_focus(transfocator):
