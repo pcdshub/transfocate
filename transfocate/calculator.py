@@ -67,7 +67,7 @@ class Calculator:
         return combos
 
     def find_solution(self, target, n=4, z_obj=0.0,
-                      include_prefocus=True):
+                      include_prefocus=True, requested=False):
         """
         Find a combination to reach a specific focus
 
@@ -88,6 +88,9 @@ class Calculator:
             Use only combinations that include a prefocusing lens. If False,
             only combinations of Transfocator lenses are returned
 
+        requested: bool, optional
+            Use requested energy (and therefore requested focus).
+
         Returns
         -------
         array: LensConnect
@@ -101,7 +104,7 @@ class Calculator:
             # Check to see if the number of lenses is less than the limit
             if combo.nlens <= n:
                 try:
-                    image = combo.image(z_obj)
+                    image = combo.image(z_obj, requested=requested)
                     diff = np.abs(image - target)
                 except Exception as exc:
                     logger.exception("Unable to calculate image position")

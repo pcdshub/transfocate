@@ -90,7 +90,8 @@ class Transfocator(Device):
         # Calculate the image from this set of lenses
         return LensConnect(*inserted).image(0.0) - self.nominal_sample
 
-    def find_best_combo(self, target=None, show=True, **kwargs):
+    def find_best_combo(self, target=None, show=True, energy=None,
+                        abs_tol=5.0, **kwargs):
         """
         Calculate the best lens array to hit the nominal sample point
 
@@ -103,9 +104,24 @@ class Transfocator(Device):
         show : bool, optional
             Print a table of the of the calculated lens combination
 
+        energy : float, optional
+            requested beam energy (in eV) to be used for calculation.
+            By default this is 'None' and the current beam energy is
+            used
+
+        abs_tol : float, optional
+            absolute tolerance (in eV) for which beam energy can change
+            during calculation without returning error
+
         kwargs:
             Passed to :meth:`.Calculator.find_solution`
         """
+        if energy:
+            self.req_energy.put(energy)
+            requested = True
+        else:
+            requested = False
+
         target = target or self.nominal_sample
         # Only included allowed XRT lenses
         xrt_limit = self.xrt_limit.get()
@@ -116,9 +132,22 @@ class Transfocator(Device):
             logger.warning("Can not find a prefocusing lens that meets the "
                            "safety requirements")
         # Create a calculator
-        calc = Calculator(allowed_xrt, self.tfs_lenses)
+        # mutate calc.find_solution to check constant energy
         # Return the solution
-        combo = calc.find_solution(target, **kwargs)
+        if requested:
+            # Checking all xrt lenses
+            calc = Calculator(self.xrt_lenses, self.tfs_lenses)
+            find_solution_const_energy = constant_energy(calc.find_solution,
+                                                         self, 'req_energy',
+                                                         abs_tol)
+        else:
+            # Checking only xrt_lenses producing foci within xrt_limit
+            calc = Calculator(allowed_xrt, self.tfs_lenses)
+            find_solution_const_energy = constant_energy(calc.find_solution,
+                                                         self, 'beam_energy',
+                                                         abs_tol)
+        combo = find_solution_const_energy(target, requested=requested,
+                                           **kwargs)
         if combo:
             combo.show_info()
         else:
@@ -196,7 +225,7 @@ class TransfocatorEnergyInterrupt(Exception):
     pass
 
 
-def constant_energy(func):
+def constant_energy(func, transfocator_obj, energy_type, tolerance):
     """
     Ensures that requested energy does not change during calculation
 
@@ -212,15 +241,19 @@ def constant_energy(func):
         calculation and still assumed constant
     """
     @wraps(func)
-    def with_constant_energy(transfocator_obj, energy_type, tolerance, *args, **kwargs):
+    def with_constant_energy(*args, **kwargs):
         try:
             energy_signal = getattr(transfocator_obj, energy_type)
         except Exception as e:
             raise AttributeError("input 'energy_type' not defined") from e
         energy_before = energy_signal.get()
-        result = func(transfocator_obj, *args, **kwargs)
+        logger.debug('Energy before the method %s' % energy_before)
+        result = func(*args, **kwargs)
         energy_after = energy_signal.get()
+        logger.debug('Energy after the method %s' % energy_after)
+        delta_energy = abs(energy_after - energy_before)
         if not math.isclose(energy_before, energy_after, abs_tol=tolerance):
-            raise TransfocatorEnergyInterrupt("The beam energy changed significantly during the calculation")
+            raise TransfocatorEnergyInterrupt("The beam energy changed by %s eV"
+                                              "during the calculation" % delta_energy)
         return result
     return with_constant_energy
