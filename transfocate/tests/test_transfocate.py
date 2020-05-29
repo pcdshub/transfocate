@@ -22,6 +22,9 @@ def remove(lens):
 
 @pytest.fixture(scope='function')
 def transfocator():
+    return make_fake_transfocator()
+
+def make_fake_transfocator():
     FakeTransfocator = make_fake_device(Transfocator)
     # Create our base transfocator
     trans = FakeTransfocator("TST:LENS", name='Transfocator')
@@ -71,14 +74,19 @@ def test_transfocator_find_best_combo(transfocator):
 
 def test_transfocator_focus_at(transfocator):
     # test with tfs[0] and xrt[0]
-    # Insert Transfocator lenses so we can test that they are properly removed
+    # Set Transfocator lenses to the wrong state for this focus
     for lens in transfocator.tfs_lenses:
-        insert(lens)
+        if lens == transfocator.tfs_02:
+            remove(lens)
+        else:
+            insert(lens)
+    # Make sure they all get moved correctly
     transfocator.focus_at(value=312.5, wait=False)
     assert transfocator.prefocus_bot._insert.get() == 1
-    assert transfocator.tfs_02._insert.get() == 1
     for lens in transfocator.tfs_lenses:
-        if lens != transfocator.tfs_02:
+        if lens == transfocator.tfs_02:
+            assert lens._insert.get() == 1
+        else:
             assert lens._remove.get() == 1
 
 

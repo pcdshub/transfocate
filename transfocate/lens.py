@@ -61,7 +61,7 @@ class Lens(InOutPVStatePositioner):
         float
             Returns the radius of the lens
         """
-        return self._sig_radius.value
+        return self._sig_radius.get()
 
     @property
     def z(self):
@@ -73,7 +73,7 @@ class Lens(InOutPVStatePositioner):
         float
             Returns the z position of the lens in meters along the beamline
         """
-        return self._sig_z.value
+        return self._sig_z.get()
 
     @property
     def focus(self):
@@ -85,7 +85,7 @@ class Lens(InOutPVStatePositioner):
         float
             Returns the focal length of the lens in meters
         """
-        return self._sig_focus.value
+        return self._sig_focus.get()
 
     def image_from_obj(self, z_obj):
         """
