@@ -22,6 +22,9 @@ def remove(lens):
 
 @pytest.fixture(scope='function')
 def transfocator():
+    return make_fake_transfocator()
+
+def make_fake_transfocator():
     FakeTransfocator = make_fake_device(Transfocator)
     # Create our base transfocator
     trans = FakeTransfocator("TST:LENS", name='Transfocator')
