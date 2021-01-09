@@ -9,17 +9,18 @@ source:
 
 build:
   number: 1
+  noarch: python
 
 requirements:
   build:
-    - python {{PY_VER}}*,>=3.6
+    - python >=3.6
     - setuptools
 
   run:
-    - python {{PY_VER}}*,>=3.6
+    - python >=3.6
     - ophyd >=1.5.0
     - numpy
-    - pcdsdevices >=2.6.0
+    - pcdsdevices >=4.0.0
 
 test:
   imports:
