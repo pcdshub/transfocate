@@ -2,10 +2,10 @@ import math
 import logging
 
 from pcdsdevices.device_types import IMS
-from ophyd import Device, EpicsSignalRO, Component, FormattedComponent, EpicsSignal
+from ophyd import Device, EpicsSignalRO, Component as Cpt, FormattedComponent, EpicsSignal
 from ophyd.status import wait as status_wait
 
-from .lens import Lens, LensConnect
+from .lens import Lens, LensConnect, LensTripLimits
 from .calculator import Calculator
 from functools import wraps
 
@@ -16,32 +16,71 @@ class Transfocator(Device):
     """
     Class to represent the MFX Transfocator
     """
-    # Define EPICS signals
-    xrt_limit = Component(EpicsSignalRO, ":XRT_ONLY")
-    tfs_limit = Component(EpicsSignalRO, ":MFX_ONLY")
-    faulted = Component(EpicsSignalRO, ":BEAM:FAULTED")
+    active_limit = Cpt(
+        LensTripLimits, ":ACTIVE",
+        doc="Active trip limit settings"
+    )
+
+    # Active limits, predicated on pre-focus lens insertion:
+    # no_lens_limit = Cpt(LensTripLimits, ":NO_LENS")
+    # lens1_limit = Cpt(LensTripLimits, ":LENS1")
+    # lens2_limit = Cpt(LensTripLimits, ":LENS2")
+    # lens3_limit = Cpt(LensTripLimits, ":LENS3")
+
+    ioc_alive = Cpt(
+        EpicsSignalRO, ":BEAM:ALIVE", string=True,
+        doc="IOC alive [active]"
+    )
+    faulted = Cpt(
+        EpicsSignalRO, ":BEAM:FAULTED", string=True,
+        doc="Fault currently active"
+    )
+    state_fault = Cpt(
+        EpicsSignalRO, ":BEAM:UNKNOWN", string=True,
+        doc="Lens position unknown [active]"
+    )
+    limit_fault = Cpt(
+        EpicsSignalRO, ":BEAM:LIM_FAULT", string=True,
+         doc="Summary fault due to energy/lens combination [active]"
+    )
+    limit_fault_latch = Cpt(
+        EpicsSignalRO, ":BEAM:POS_FAULT", string=True,
+        doc="Summary fault due to energy/lens combination [latched]"
+    )
+    min_fault_latch = Cpt(
+        EpicsSignalRO, ":BEAM:MIN_FAULT", string=True,
+        doc="Minimum required energy not met for lens combination [latched]"
+    )
+    lens_required_fault_latch = Cpt(
+        EpicsSignalRO, ":BEAM:REQ_TFS_FAULT", string=True,
+        doc="Transfocator lens required for energy/lens combination [latched]"
+    )
+    table_fault_latch = Cpt(
+        EpicsSignalRO, ":BEAM:TAB_FAULT", string=True,
+        doc="Effective radius in table-based disallowed area [latched]"
+    )
 
     # XRT Lenses
-    prefocus_top = Component(Lens, ":DIA:03")
-    prefocus_mid = Component(Lens, ":DIA:02")
-    prefocus_bot = Component(Lens, ":DIA:01")
+    prefocus_top = Cpt(Lens, ":DIA:03")
+    prefocus_mid = Cpt(Lens, ":DIA:02")
+    prefocus_bot = Cpt(Lens, ":DIA:01")
 
     # TFS Lenses
-    tfs_02 = Component(Lens, ":TFS:02")
-    tfs_03 = Component(Lens, ":TFS:03")
-    tfs_04 = Component(Lens, ":TFS:04")
-    tfs_05 = Component(Lens, ":TFS:05")
-    tfs_06 = Component(Lens, ":TFS:06")
-    tfs_07 = Component(Lens, ":TFS:07")
-    tfs_08 = Component(Lens, ":TFS:08")
-    tfs_09 = Component(Lens, ":TFS:09")
-    tfs_10 = Component(Lens, ":TFS:10")
+    tfs_02 = Cpt(Lens, ":TFS:02")
+    tfs_03 = Cpt(Lens, ":TFS:03")
+    tfs_04 = Cpt(Lens, ":TFS:04")
+    tfs_05 = Cpt(Lens, ":TFS:05")
+    tfs_06 = Cpt(Lens, ":TFS:06")
+    tfs_07 = Cpt(Lens, ":TFS:07")
+    tfs_08 = Cpt(Lens, ":TFS:08")
+    tfs_09 = Cpt(Lens, ":TFS:09")
+    tfs_10 = Cpt(Lens, ":TFS:10")
 
     # Requested energy
-    req_energy = Component(EpicsSignal, ":BEAM:REQ_ENERGY")
+    req_energy = Cpt(EpicsSignal, ":BEAM:REQ_ENERGY")
 
     # Actual beam energy
-    beam_energy = Component(EpicsSignal, ":BEAM:ENERGY")
+    beam_energy = Cpt(EpicsSignal, ":BEAM:ENERGY")
 
     # Translation
     translation = FormattedComponent(IMS, "MFX:TFS:MMS:21")
