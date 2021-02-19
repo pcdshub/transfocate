@@ -12,13 +12,13 @@ from functools import wraps
 logger = logging.getLogger(__name__)
 
 
-class Transfocator(Device):
+class TransfocatorInterlock(Device):
     """
-    Class to represent the MFX Transfocator
+    Device containing signals pertinent to the interlock system.
     """
-    active_limit = Cpt(
+    limits = Cpt(
         LensTripLimits, ":ACTIVE",
-        doc="Active trip limit settings"
+        doc="Active trip limit settings, based on pre-focus lens"
     )
 
     # Active limits, predicated on pre-focus lens insertion:
@@ -59,6 +59,13 @@ class Transfocator(Device):
         EpicsSignalRO, ":BEAM:TAB_FAULT", string=True,
         doc="Effective radius in table-based disallowed area [latched]"
     )
+
+
+class Transfocator(Device):
+    """
+    Class to represent the MFX Transfocator
+    """
+    interlock = Cpt(TransfocatorInterlock, '')
 
     # XRT Lenses
     prefocus_top = Cpt(Lens, ":DIA:03")
