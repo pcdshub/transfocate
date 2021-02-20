@@ -24,8 +24,8 @@ logger = logging.getLogger(__name__)
 class LensTripLimits(Device):
     """Trip limits for a given pre-focus lens (or lack thereof)."""
     # _table_name = Cpt(EpicsSignalRO, ":STR", doc="Table name for trip information")
-    low = Cpt(EpicsSignalRO, ":LOW", doc="Trip region low [um]")
-    high = Cpt(EpicsSignalRO, ":HIGH", doc="Trip region high [um]")
+    low = Cpt(EpicsSignalRO, ":LOW", doc="Trip region low [um]", auto_monitor=False)
+    high = Cpt(EpicsSignalRO, ":HIGH", doc="Trip region high [um]", auto_monitor=False)
     
 
 class Lens(InOutPVStatePositioner):

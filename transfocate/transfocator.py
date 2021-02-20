@@ -28,35 +28,35 @@ class TransfocatorInterlock(Device):
     # lens3_limit = Cpt(LensTripLimits, ":LENS3")
 
     ioc_alive = Cpt(
-        EpicsSignalRO, ":BEAM:ALIVE", string=True,
+        EpicsSignalRO, ":BEAM:ALIVE", # string=True,
         doc="IOC alive [active]"
     )
     faulted = Cpt(
-        EpicsSignalRO, ":BEAM:FAULTED", string=True,
+        EpicsSignalRO, ":BEAM:FAULTED", # string=True,
         doc="Fault currently active"
     )
     state_fault = Cpt(
-        EpicsSignalRO, ":BEAM:UNKNOWN", string=True,
+        EpicsSignalRO, ":BEAM:UNKNOWN", # string=True,
         doc="Lens position unknown [active]"
     )
     limit_fault = Cpt(
-        EpicsSignalRO, ":BEAM:LIM_FAULT", string=True,
+        EpicsSignalRO, ":BEAM:LIM_FAULT", # string=True,
          doc="Summary fault due to energy/lens combination [active]"
     )
     limit_fault_latch = Cpt(
-        EpicsSignalRO, ":BEAM:POS_FAULT", string=True,
+        EpicsSignalRO, ":BEAM:POS_FAULT", # string=True,
         doc="Summary fault due to energy/lens combination [latched]"
     )
     min_fault_latch = Cpt(
-        EpicsSignalRO, ":BEAM:MIN_FAULT", string=True,
+        EpicsSignalRO, ":BEAM:MIN_FAULT", # string=True,
         doc="Minimum required energy not met for lens combination [latched]"
     )
     lens_required_fault_latch = Cpt(
-        EpicsSignalRO, ":BEAM:REQ_TFS_FAULT", string=True,
+        EpicsSignalRO, ":BEAM:REQ_TFS_FAULT", # string=True,
         doc="Transfocator lens required for energy/lens combination [latched]"
     )
     table_fault_latch = Cpt(
-        EpicsSignalRO, ":BEAM:TAB_FAULT", string=True,
+        EpicsSignalRO, ":BEAM:TAB_FAULT", # string=True,
         doc="Effective radius in table-based disallowed area [latched]"
     )
 
@@ -71,6 +71,10 @@ class Transfocator(Device):
     prefocus_top = Cpt(Lens, ":DIA:03")
     prefocus_mid = Cpt(Lens, ":DIA:02")
     prefocus_bot = Cpt(Lens, ":DIA:01")
+    xrt_radius = Cpt(EpicsSignalRO, ":BEAM:XRT_RADIUS", kind="normal",
+                     doc="XRT effective radius")
+    tfs_radius = Cpt(EpicsSignalRO, ":BEAM:TFS_RADIUS", kind="normal",
+                     doc="TFS effective radius")
 
     # TFS Lenses
     tfs_02 = Cpt(Lens, ":TFS:02")
