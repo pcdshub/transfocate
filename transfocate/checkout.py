@@ -148,37 +148,42 @@ def _wait_cycles(checkout, num_cycles):
         yield from bps.sleep(0.05)
         
 
-def sweep_energy_plan(tfs, checkout, xrt_lens, tfs_lenses, num_steps=100):
-    assert len(tfs_lenses) == 9
+def sweep_energy_plan(tfs, checkout, xrt_lens, num_steps=50):
     yield from bps.open_run()
     yield from bps.stage(checkout)
     yield from bps.stage(tfs)
-    yield from checkout.set_lens_state(xrt_lens, tfs_lenses)
-    yield from bpp.stub_wrapper(bp.grid_scan(
-        [tfs, checkout],
-        checkout.energy, 0, 38000, num_steps, 
-        # snake_axes=False,
-    ))
+
+    for lens_idx in range(9):
+        tfs_lenses = [0] * 9
+        tfs_lenses[lens_idx] = 1
+
+        yield from checkout.set_lens_state(xrt_lens, tfs_lenses)
+        yield from bpp.stub_wrapper(bp.grid_scan(
+            [tfs, checkout],
+            checkout.energy, 0, 38000, num_steps, 
+            # snake_axes=False,
+        ))
+
     yield from bps.close_run()
 
 
 def plot_sweep_energy(dbi):
-    df = dbi.table()
+    df = db[-1].table()
     df = df.set_index(df.energy)
 
     fig, ax = plt.subplots(constrained_layout=True)
     ax.set_yscale('log')
 
-    df[['trip_low', 'trip_high']].plot(ax=ax)
-
+    ax.scatter(df.energy, df.trip_high, label='Trip high', color='red', s=4, marker='v')
+    ax.scatter(df.energy, df.trip_low, label='Trip low', color='red', s=4, marker='^')
+    
     when_faulted = df.where(df.faulted == 1).dropna()
-    ax.scatter(when_faulted.index, when_faulted.tfs_radius, color='red', s=1)
-
-    # Assume constant values here (specific to the sweep):
-    tfs_radius, *_ = list(df.tfs_radius)
+    ax.scatter(when_faulted.index, when_faulted.tfs_radius, color='black', s=3)
+    
+    ax.set_ylim(1, 1e4)
+    
     xrt_radius, *_ = list(df.xrt_radius)
-
-    ax.set_title(f'TFS radius = {tfs_radius:.2f}; XRT radius = {xrt_radius:.2f}')
+    ax.set_title(f'xrt_radius = {xrt_radius:.2f}')
     return fig
 
 
@@ -223,6 +228,6 @@ if __name__ == "__main__":
     tfs.wait_for_connection()
     checkout.wait_for_connection()
    
-    for xrt_lens in [0, 1, 2, 3]: 
-        RE(sweep_energy_plan(tfs, checkout, xrt_lens, [0, 1, 0] * 3), LiveTable(fields))
+    for xrt_lens in [1]: #  2, 3]: 
+        RE(sweep_energy_plan(tfs, checkout, xrt_lens), LiveTable(fields))
         plot_sweep_energy(db[-1])
