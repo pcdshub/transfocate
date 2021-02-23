@@ -117,7 +117,13 @@ class LensInterlockCheckout(ophyd.Device):
 
     def set_lens_state(self, xrt, tfs):
         """Bluesky plan - set lens state."""
-        for lens, state in zip(self.xrt_lenses, xrt):
+        xrt_lenses = {
+            0: [0, 0, 0],
+            1: [1, 0, 0],
+            2: [0, 1, 0],
+            3: [0, 0, 1],
+        }
+        for lens, state in zip(self.xrt_lenses, xrt_lenses[xrt]):
             yield from bps.mv(lens.state, state)
 
         for lens, state in zip(self.tfs_lenses, tfs):
@@ -142,24 +148,45 @@ def _wait_cycles(checkout, num_cycles):
         yield from bps.sleep(0.05)
         
 
-def test_plan(tfs, checkout):
+def sweep_energy_plan(tfs, checkout, xrt_lens, tfs_lenses, num_steps=100):
+    assert len(tfs_lenses) == 9
     yield from bps.open_run()
     yield from bps.stage(checkout)
     yield from bps.stage(tfs)
-    yield from checkout.set_lens_state(
-        xrt=[1, 0, 0],
-        tfs=[0, 0, 0, 0, 0, 0, 0, 0, 1],
-    )
+    yield from checkout.set_lens_state(xrt_lens, tfs_lenses)
     yield from bpp.stub_wrapper(bp.grid_scan(
         [tfs, checkout],
-        checkout.energy, 0, 38000, 50, 
-        snake_axes=False,
+        checkout.energy, 0, 38000, num_steps, 
+        # snake_axes=False,
     ))
     yield from bps.close_run()
 
 
+def plot_sweep_energy(dbi):
+    df = dbi.table()
+    df = df.set_index(df.energy)
+
+    fig, ax = plt.subplots(constrained_layout=True)
+    ax.set_yscale('log')
+
+    df[['trip_low', 'trip_high']].plot(ax=ax)
+
+    when_faulted = df.where(df.faulted == 1).dropna()
+    ax.scatter(when_faulted.index, when_faulted.tfs_radius, color='red', s=1)
+
+    # Assume constant values here (specific to the sweep):
+    tfs_radius, *_ = list(df.tfs_radius)
+    xrt_radius, *_ = list(df.xrt_radius)
+
+    ax.set_title(f'TFS radius = {tfs_radius:.2f}; XRT radius = {xrt_radius:.2f}')
+    return fig
+
+
 if __name__ == "__main__":
     import transfocate
+    import matplotlib
+    import matplotlib.pyplot as plt
+    plt.ion()
     tfs = transfocate.Transfocator("MFX:LENS", name="tfs")
     checkout = LensInterlockCheckout("MFX:LENS", name="checkout")
     db = databroker.Broker.named('temp')
@@ -174,8 +201,8 @@ if __name__ == "__main__":
     tfs.interlock.lens_required_fault.name = 'lens_required_fault'
     tfs.interlock.table_fault.name = 'table_fault'
     checkout.energy.name = 'energy'
-    # tfs.tfs_radius.name = 'tfs.tfs_radius'
-    # tfs_xrt_radius.name = 'tfs_xrt_radius'
+    tfs.tfs_radius.name = 'tfs_radius'
+    tfs.xrt_radius.name = 'xrt_radius'
 
     fields = [
         'energy',
@@ -190,11 +217,12 @@ if __name__ == "__main__":
         'lens_required_fault',
         'table_fault',
 
-        'tfs_tfs_radius',
-        'tfs_xrt_radius',
+        'tfs_radius',
+        'xrt_radius',
     ]
     tfs.wait_for_connection()
     checkout.wait_for_connection()
-    # from bluesky.callbacks.best_effort import BestEffortCallback
-    # bec = BestEffortCallback()
-    # RE.subscribe(bec)
+   
+    for xrt_lens in [0, 1, 2, 3]: 
+        RE(sweep_energy_plan(tfs, checkout, xrt_lens, [0, 1, 0] * 3), LiveTable(fields))
+        plot_sweep_energy(db[-1])
