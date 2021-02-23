@@ -33,30 +33,44 @@ class TransfocatorInterlock(Device):
     )
     faulted = Cpt(
         EpicsSignalRO, ":BEAM:FAULTED", # string=True,
-        doc="Fault currently active"
+        doc="Fault currently active [active]"
     )
     state_fault = Cpt(
         EpicsSignalRO, ":BEAM:UNKNOWN", # string=True,
         doc="Lens position unknown [active]"
     )
-    limit_fault = Cpt(
-        EpicsSignalRO, ":BEAM:LIM_FAULT", # string=True,
-         doc="Summary fault due to energy/lens combination [active]"
+
+    violated_fault = Cpt(
+        EpicsSignalRO, ":BEAM:VIOLATED", # string=True,
+        doc="Summary fault due to energy/lens combination [active]"
     )
-    limit_fault_latch = Cpt(
-        EpicsSignalRO, ":BEAM:POS_FAULT", # string=True,
+    min_fault = Cpt(
+        EpicsSignalRO, ":BEAM:MIN_FAULT", # string=True,
+        doc="Minimum required energy not met for lens combination [active]"
+    )
+    lens_required_fault = Cpt(
+        EpicsSignalRO, ":BEAM:REQ_TFS_FAULT", # string=True,
+        doc="Transfocator lens required for energy/lens combination [active]"
+    )
+    table_fault = Cpt(
+        EpicsSignalRO, ":BEAM:TAB_FAULT", # string=True,
+        doc="Effective radius in table-based disallowed area [active]"
+    )
+
+    violated_fault_latch = Cpt(
+        EpicsSignalRO, ":BEAM:VIOLATED_LT", # string=True,
         doc="Summary fault due to energy/lens combination [latched]"
     )
     min_fault_latch = Cpt(
-        EpicsSignalRO, ":BEAM:MIN_FAULT", # string=True,
+        EpicsSignalRO, ":BEAM:MIN_FAULT_LT", # string=True,
         doc="Minimum required energy not met for lens combination [latched]"
     )
     lens_required_fault_latch = Cpt(
-        EpicsSignalRO, ":BEAM:REQ_TFS_FAULT", # string=True,
+        EpicsSignalRO, ":BEAM:REQ_TFS_FAULT_LT", # string=True,
         doc="Transfocator lens required for energy/lens combination [latched]"
     )
     table_fault_latch = Cpt(
-        EpicsSignalRO, ":BEAM:TAB_FAULT", # string=True,
+        EpicsSignalRO, ":BEAM:TAB_FAULT_LT", # string=True,
         doc="Effective radius in table-based disallowed area [latched]"
     )
 

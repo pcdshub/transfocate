@@ -165,13 +165,31 @@ if __name__ == "__main__":
     db = databroker.Broker.named('temp')
     RE = bluesky.RunEngine({})
     RE.subscribe(db.insert)
+    tfs.interlock.limits.low.name = 'trip_low'
+    tfs.interlock.limits.high.name = 'trip_high'
+    tfs.interlock.faulted.name = 'faulted'
+    tfs.interlock.state_fault.name = 'state_fault'
+    tfs.interlock.violated_fault.name = 'violated'
+    tfs.interlock.min_fault.name = 'min_fault'
+    tfs.interlock.lens_required_fault.name = 'lens_required_fault'
+    tfs.interlock.table_fault.name = 'table_fault'
+    checkout.energy.name = 'energy'
+    # tfs.tfs_radius.name = 'tfs.tfs_radius'
+    # tfs_xrt_radius.name = 'tfs_xrt_radius'
+
     fields = [
-        'checkout_energy',
-        'tfs_interlock_limits_low',
-        'tfs_interlock_limits_high',
-        'tfs_interlock_faulted',
-        'tfs_interlock_state_fault',
-        'tfs_interlock_limit_fault',
+        'energy',
+
+        'trip_low',
+        'trip_high',
+
+        'faulted',
+        'state_fault',
+        'violated',
+        'min_fault',
+        'lens_required_fault',
+        'table_fault',
+
         'tfs_tfs_radius',
         'tfs_xrt_radius',
     ]
