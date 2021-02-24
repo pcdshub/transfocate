@@ -1,11 +1,18 @@
 import time
 
+import matplotlib  # isort: skip
+
+try:  # noqa
+    matplotlib.use('Qt5Agg')  # noqa
+except Exception:  # noqa
+    ...  # noqa
+
 import bluesky
 import bluesky.plan_stubs as bps
 import bluesky.plans as bp
 import bluesky.preprocessors as bpp
 import databroker
-import matplotlib
+
 import matplotlib.pyplot as plt
 import ophyd
 from bluesky.callbacks import LiveTable
@@ -139,7 +146,7 @@ class LensInterlockCheckout(ophyd.Device):
         yield from bps.sleep(0.3)
 
 
-def sweep_energy_plan(tfs, checkout, xrt_lens, num_steps=75):
+def sweep_energy_plan(tfs, checkout, xrt_lens, num_steps=20):
     yield from bps.open_run()
     yield from bps.stage(checkout)
     yield from bps.stage(tfs)
@@ -171,14 +178,14 @@ def plot_sweep_energy(dbi):
     df = dbi.table()
     df = df.set_index(df.energy)
 
-    fig, ax = plt.subplots(constrained_layout=True)
+    fig, ax = plt.subplots(constrained_layout=True, figsize=(12, 10))
     ax.set_yscale('log')
 
-    ax.scatter(df.energy, df.trip_high, label='Trip high', color='red', s=4, marker='v')
-    ax.scatter(df.energy, df.trip_low, label='Trip low', color='red', s=4, marker='^')
+    ax.scatter(df.energy, df.trip_high, label='Trip high', color='black', marker='v')
+    ax.scatter(df.energy, df.trip_low, label='Trip low', color='black', marker='^')
     
     when_faulted = df.where(df.faulted == 1).dropna()
-    ax.scatter(when_faulted.index, when_faulted.tfs_radius, color='black', s=4, marker='x')
+    ax.scatter(when_faulted.index, when_faulted.tfs_radius, color='red', marker='x')
     
     ax.set_ylim(1, 1e4)
     
