@@ -1,21 +1,12 @@
 import time
 
-import matplotlib  # isort: skip
-
-try:  # noqa
-    matplotlib.use('Qt5Agg')  # noqa
-except Exception:  # noqa
-    ...  # noqa
-
 import bluesky
 import bluesky.plan_stubs as bps
 import bluesky.plans as bp
 import bluesky.preprocessors as bpp
 import databroker
 
-import matplotlib.pyplot as plt
 import ophyd
-from bluesky.callbacks import LiveTable
 from ophyd import Component as Cpt
 from ophyd import EpicsSignal, EpicsSignalRO
 
@@ -146,7 +137,7 @@ class LensInterlockCheckout(ophyd.Device):
         yield from bps.sleep(0.3)
 
 
-def sweep_energy_plan(tfs, checkout, xrt_lens, num_steps=20):
+def sweep_energy_plan(tfs, checkout, xrt_lens, num_steps):
     yield from bps.open_run()
     yield from bps.stage(checkout)
     yield from bps.stage(tfs)
@@ -171,67 +162,3 @@ def sweep_energy_plan(tfs, checkout, xrt_lens, num_steps=20):
         ))
 
     yield from bps.close_run()
-
-
-def plot_sweep_energy(dbi):
-    """Plot the databroker results from a `sweep_energy_plan`."""
-    df = dbi.table()
-    df = df.set_index(df.energy)
-
-    fig, ax = plt.subplots(constrained_layout=True, figsize=(12, 10))
-    ax.set_yscale('log')
-
-    ax.scatter(df.energy, df.trip_high, label='Trip high', color='black', marker='v')
-    ax.scatter(df.energy, df.trip_low, label='Trip low', color='black', marker='^')
-    
-    when_faulted = df.where(df.faulted == 1).dropna()
-    ax.scatter(when_faulted.index, when_faulted.tfs_radius, color='red', marker='x')
-    
-    ax.set_ylim(1, 1e4)
-    
-    xrt_radius, *_ = list(df.xrt_radius)
-    ax.set_title(f'xrt_radius = {xrt_radius:.2f}')
-    return fig
-
-
-if __name__ == "__main__":
-    plt.ion()
-    tfs = transfocate.Transfocator("MFX:LENS", name="tfs")
-    checkout = LensInterlockCheckout("MFX:LENS", name="checkout")
-    db = databroker.Broker.named('temp')
-    RE = bluesky.RunEngine({})
-    RE.subscribe(db.insert)
-    tfs.interlock.limits.low.name = 'trip_low'
-    tfs.interlock.limits.high.name = 'trip_high'
-    tfs.interlock.faulted.name = 'faulted'
-    tfs.interlock.state_fault.name = 'state_fault'
-    tfs.interlock.violated_fault.name = 'violated'
-    tfs.interlock.min_fault.name = 'min_fault'
-    tfs.interlock.lens_required_fault.name = 'lens_required_fault'
-    tfs.interlock.table_fault.name = 'table_fault'
-    checkout.energy.name = 'energy'
-    tfs.tfs_radius.name = 'tfs_radius'
-    tfs.xrt_radius.name = 'xrt_radius'
-
-    fields = [
-        'energy',
-
-        'trip_low',
-        'trip_high',
-
-        'faulted',
-        'state_fault',
-        'violated',
-        'min_fault',
-        'lens_required_fault',
-        'table_fault',
-
-        'tfs_radius',
-        'xrt_radius',
-    ]
-    tfs.wait_for_connection()
-    checkout.wait_for_connection()
-   
-    for xrt_lens in [3]: # [1, 2, 3]: 
-        RE(sweep_energy_plan(tfs, checkout, xrt_lens), LiveTable(fields))
-        plot_sweep_energy(db[-1])
