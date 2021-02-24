@@ -1,13 +1,18 @@
-import ophyd
-import bluesky
-import databroker
 import time
-import bluesky.plans as bp
-import bluesky.plan_stubs as bps
-import bluesky.preprocessors as bpp
-from bluesky.callbacks import LiveTable
 
-from ophyd import Component as Cpt, EpicsSignal, EpicsSignalRO
+import bluesky
+import bluesky.plan_stubs as bps
+import bluesky.plans as bp
+import bluesky.preprocessors as bpp
+import databroker
+import matplotlib
+import matplotlib.pyplot as plt
+import ophyd
+from bluesky.callbacks import LiveTable
+from ophyd import Component as Cpt
+from ophyd import EpicsSignal, EpicsSignalRO
+
+import transfocate
 
 
 class StageHelperMixin:
@@ -78,8 +83,9 @@ class LensCheckout(ophyd.Device):
   
 class LensInterlockCheckout(ophyd.Device):
     energy_input = Cpt(InputLinkOverrideHelper, ":BEAM:ENERGY")
-    energy = Cpt(EpicsSignal, ":PLC:ENERGY_RBV", write_pv=":BEAM:ENERGY", kind="normal")
+    energy = Cpt(EpicsSignal, ":PLC:ENERGY_RBV", write_pv=":BEAM:ENERGY", kind="normal", auto_monitor=False)
     plc_cycles = Cpt(EpicsSignalRO, ":PLC:CYCLE", kind="normal")
+    update_seq = Cpt(EpicsSignalRO, ":PLC:UPDATE_SEQ", kind="normal")
 
     # XRT Lenses
     xrt_03 = Cpt(LensCheckout, ":DIA:03")
@@ -119,9 +125,9 @@ class LensInterlockCheckout(ophyd.Device):
         """Bluesky plan - set lens state."""
         xrt_lenses = {
             0: [0, 0, 0],
-            1: [1, 0, 0],
+            1: [0, 0, 1],
             2: [0, 1, 0],
-            3: [0, 0, 1],
+            3: [1, 0, 0],
         }
         for lens, state in zip(self.xrt_lenses, xrt_lenses[xrt]):
             yield from bps.mv(lens.state, state)
@@ -130,34 +136,27 @@ class LensInterlockCheckout(ophyd.Device):
             yield from bps.mv(lens.state, state)
 
         yield from bps.wait()
+        yield from bps.sleep(0.3)
 
 
-def _wait_cycles(checkout, num_cycles):
-    """
-    Wait for a number of PLC cycles to elapse before continuing.
-    """
-    start_cycles = checkout.plc_cycles.get()
-
-    def is_done():
-        elapsed = checkout.plc_cycles.get() - start_cycles
-        if elapsed < 0:
-            elapsed += 65535
-        return elapsed > num_cycles
-
-    while not is_done():
-        yield from bps.sleep(0.05)
-        
-
-def sweep_energy_plan(tfs, checkout, xrt_lens, num_steps=50):
+def sweep_energy_plan(tfs, checkout, xrt_lens, num_steps=75):
     yield from bps.open_run()
     yield from bps.stage(checkout)
     yield from bps.stage(tfs)
 
-    for lens_idx in range(9):
-        tfs_lenses = [0] * 9
-        tfs_lenses[lens_idx] = 1
-
-        yield from checkout.set_lens_state(xrt_lens, tfs_lenses)
+    tfs_lens_combinations = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    ]
+    for tfs_lens_combo in tfs_lens_combinations:
+        yield from checkout.set_lens_state(xrt_lens, tfs_lens_combo)
         yield from bpp.stub_wrapper(bp.grid_scan(
             [tfs, checkout],
             checkout.energy, 0, 38000, num_steps, 
@@ -168,7 +167,8 @@ def sweep_energy_plan(tfs, checkout, xrt_lens, num_steps=50):
 
 
 def plot_sweep_energy(dbi):
-    df = db[-1].table()
+    """Plot the databroker results from a `sweep_energy_plan`."""
+    df = dbi.table()
     df = df.set_index(df.energy)
 
     fig, ax = plt.subplots(constrained_layout=True)
@@ -178,7 +178,7 @@ def plot_sweep_energy(dbi):
     ax.scatter(df.energy, df.trip_low, label='Trip low', color='red', s=4, marker='^')
     
     when_faulted = df.where(df.faulted == 1).dropna()
-    ax.scatter(when_faulted.index, when_faulted.tfs_radius, color='black', s=3)
+    ax.scatter(when_faulted.index, when_faulted.tfs_radius, color='black', s=4, marker='x')
     
     ax.set_ylim(1, 1e4)
     
@@ -188,9 +188,6 @@ def plot_sweep_energy(dbi):
 
 
 if __name__ == "__main__":
-    import transfocate
-    import matplotlib
-    import matplotlib.pyplot as plt
     plt.ion()
     tfs = transfocate.Transfocator("MFX:LENS", name="tfs")
     checkout = LensInterlockCheckout("MFX:LENS", name="checkout")
@@ -228,6 +225,6 @@ if __name__ == "__main__":
     tfs.wait_for_connection()
     checkout.wait_for_connection()
    
-    for xrt_lens in [1]: #  2, 3]: 
+    for xrt_lens in [3]: # [1, 2, 3]: 
         RE(sweep_energy_plan(tfs, checkout, xrt_lens), LiveTable(fields))
         plot_sweep_energy(db[-1])
