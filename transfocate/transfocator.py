@@ -27,6 +27,14 @@ class TransfocatorInterlock(Device):
     # lens2_limit = Cpt(LensTripLimits, ":LENS2")
     # lens3_limit = Cpt(LensTripLimits, ":LENS3")
 
+    bypass = Cpt(
+        EpicsSignal, ":BYPASS:STATUS", write_pv=":BYPASS:SET",
+        doc="Bypass in use?",
+    )
+    bypass_energy = Cpt(
+        EpicsSignal, ":BYPASS:ENERGY",
+        doc="Bypass energy",
+    )
     ioc_alive = Cpt(
         EpicsSignalRO, ":BEAM:ALIVE", # string=True,
         doc="IOC alive [active]"
