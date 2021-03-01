@@ -24,6 +24,7 @@ def remove(lens):
 def transfocator():
     return make_fake_transfocator()
 
+
 def make_fake_transfocator():
     FakeTransfocator = make_fake_device(Transfocator)
     # Create our base transfocator
@@ -47,7 +48,8 @@ def make_fake_transfocator():
     # Use a nominal sample position
     trans.nominal_sample = 300.0
     # Set a reasonable limit
-    trans.xrt_limit.sim_put(-1.0)
+    trans.interlock.limits.low.sim_put(0.0)
+    trans.interlock.limits.low.sim_put(0.0)
     return trans
 
 
@@ -66,7 +68,8 @@ def test_transfocator_find_best_combo(transfocator):
     assert combo.nlens == 2
     assert np.isclose(312.5, combo.image(0.0), atol=0.1)
     # A solution where there are no valid prefocus
-    transfocator.xrt_limit.sim_put(1500.)
+    transfocator.interlock.limits.low.sim_put(0.)
+    transfocator.interlock.limits.high.sim_put(1500.)
     combo = transfocator.find_best_combo(target=302.5)
     assert combo.nlens == 1
     assert np.isclose(302.5, combo.image(0.0), atol=0.1)
