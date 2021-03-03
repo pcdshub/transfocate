@@ -2,46 +2,118 @@ import math
 import logging
 
 from pcdsdevices.device_types import IMS
-from ophyd import Device, EpicsSignalRO, Component, FormattedComponent, EpicsSignal
+from ophyd import Device, EpicsSignalRO, Component as Cpt, FormattedComponent, EpicsSignal
 from ophyd.status import wait as status_wait
 
-from .lens import Lens, LensConnect
+from .lens import Lens, LensConnect, LensTripLimits
 from .calculator import Calculator
 from functools import wraps
 
 logger = logging.getLogger(__name__)
 
 
+class TransfocatorInterlock(Device):
+    """
+    Device containing signals pertinent to the interlock system.
+    """
+    limits = Cpt(
+        LensTripLimits, ":ACTIVE",
+        doc="Active trip limit settings, based on pre-focus lens"
+    )
+
+    # Active limits, predicated on pre-focus lens insertion:
+    # no_lens_limit = Cpt(LensTripLimits, ":NO_LENS")
+    # lens1_limit = Cpt(LensTripLimits, ":LENS1")
+    # lens2_limit = Cpt(LensTripLimits, ":LENS2")
+    # lens3_limit = Cpt(LensTripLimits, ":LENS3")
+
+    bypass = Cpt(
+        EpicsSignal, ":BYPASS:STATUS", write_pv=":BYPASS:SET",
+        doc="Bypass in use?",
+    )
+    bypass_energy = Cpt(
+        EpicsSignal, ":BYPASS:ENERGY",
+        doc="Bypass energy",
+    )
+    ioc_alive = Cpt(
+        EpicsSignalRO, ":BEAM:ALIVE", # string=True,
+        doc="IOC alive [active]"
+    )
+    faulted = Cpt(
+        EpicsSignalRO, ":BEAM:FAULTED", # string=True,
+        doc="Fault currently active [active]"
+    )
+    state_fault = Cpt(
+        EpicsSignalRO, ":BEAM:UNKNOWN", # string=True,
+        doc="Lens position unknown [active]"
+    )
+
+    violated_fault = Cpt(
+        EpicsSignalRO, ":BEAM:VIOLATED", # string=True,
+        doc="Summary fault due to energy/lens combination [active]"
+    )
+    min_fault = Cpt(
+        EpicsSignalRO, ":BEAM:MIN_FAULT", # string=True,
+        doc="Minimum required energy not met for lens combination [active]"
+    )
+    lens_required_fault = Cpt(
+        EpicsSignalRO, ":BEAM:REQ_TFS_FAULT", # string=True,
+        doc="Transfocator lens required for energy/lens combination [active]"
+    )
+    table_fault = Cpt(
+        EpicsSignalRO, ":BEAM:TAB_FAULT", # string=True,
+        doc="Effective radius in table-based disallowed area [active]"
+    )
+
+    violated_fault_latch = Cpt(
+        EpicsSignalRO, ":BEAM:VIOLATED_LT", # string=True,
+        doc="Summary fault due to energy/lens combination [latched]"
+    )
+    min_fault_latch = Cpt(
+        EpicsSignalRO, ":BEAM:MIN_FAULT_LT", # string=True,
+        doc="Minimum required energy not met for lens combination [latched]"
+    )
+    lens_required_fault_latch = Cpt(
+        EpicsSignalRO, ":BEAM:REQ_TFS_FAULT_LT", # string=True,
+        doc="Transfocator lens required for energy/lens combination [latched]"
+    )
+    table_fault_latch = Cpt(
+        EpicsSignalRO, ":BEAM:TAB_FAULT_LT", # string=True,
+        doc="Effective radius in table-based disallowed area [latched]"
+    )
+
+
 class Transfocator(Device):
     """
     Class to represent the MFX Transfocator
     """
-    # Define EPICS signals
-    xrt_limit = Component(EpicsSignalRO, ":XRT_ONLY")
-    tfs_limit = Component(EpicsSignalRO, ":MFX_ONLY")
-    faulted = Component(EpicsSignalRO, ":BEAM:FAULTED")
+    interlock = Cpt(TransfocatorInterlock, '')
 
     # XRT Lenses
-    prefocus_top = Component(Lens, ":DIA:03")
-    prefocus_mid = Component(Lens, ":DIA:02")
-    prefocus_bot = Component(Lens, ":DIA:01")
+    prefocus_top = Cpt(Lens, ":DIA:03")
+    prefocus_mid = Cpt(Lens, ":DIA:02")
+    prefocus_bot = Cpt(Lens, ":DIA:01")
+    xrt_radius = Cpt(EpicsSignalRO, ":BEAM:XRT_RADIUS", kind="normal",
+                     doc="XRT effective radius")
+    tfs_radius = Cpt(EpicsSignalRO, ":BEAM:TFS_RADIUS", kind="normal",
+                     doc="TFS effective radius")
 
     # TFS Lenses
-    tfs_02 = Component(Lens, ":TFS:02")
-    tfs_03 = Component(Lens, ":TFS:03")
-    tfs_04 = Component(Lens, ":TFS:04")
-    tfs_05 = Component(Lens, ":TFS:05")
-    tfs_06 = Component(Lens, ":TFS:06")
-    tfs_07 = Component(Lens, ":TFS:07")
-    tfs_08 = Component(Lens, ":TFS:08")
-    tfs_09 = Component(Lens, ":TFS:09")
-    tfs_10 = Component(Lens, ":TFS:10")
+    tfs_02 = Cpt(Lens, ":TFS:02")
+    tfs_03 = Cpt(Lens, ":TFS:03")
+    tfs_04 = Cpt(Lens, ":TFS:04")
+    tfs_05 = Cpt(Lens, ":TFS:05")
+    tfs_06 = Cpt(Lens, ":TFS:06")
+    tfs_07 = Cpt(Lens, ":TFS:07")
+    tfs_08 = Cpt(Lens, ":TFS:08")
+    tfs_09 = Cpt(Lens, ":TFS:09")
+    tfs_10 = Cpt(Lens, ":TFS:10")
 
     # Requested energy
-    req_energy = Component(EpicsSignal, ":BEAM:REQ_ENERGY")
+    req_energy = Cpt(EpicsSignal, ":BEAM:REQ_ENERGY")
 
     # Actual beam energy
-    beam_energy = Component(EpicsSignal, ":BEAM:ENERGY")
+    beam_energy = Cpt(EpicsSignal, ":BEAM:ENERGY")
 
     # Translation
     translation = FormattedComponent(IMS, "MFX:TFS:MMS:21")
@@ -108,9 +180,13 @@ class Transfocator(Device):
         """
         target = target or self.nominal_sample
         # Only included allowed XRT lenses
-        xrt_limit = self.xrt_limit.get()
-        allowed_xrt = [lens for lens in self.xrt_lenses
-                       if lens.radius >= xrt_limit]
+        xrt_low, xrt_high = self.interlock.limits.get()
+        allowed_xrt = [
+            lens for lens in self.xrt_lenses
+            if lens.radius < xrt_low or
+            lens.radius > xrt_high or
+            xrt_low == xrt_high
+        ]
         # Warn users if no XRT lenses are over the required radius
         if not allowed_xrt:
             logger.warning("Can not find a prefocusing lens that meets the "
