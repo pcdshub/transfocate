@@ -3,7 +3,6 @@ import datetime
 import numpy as np
 import openpyxl
 import pandas as pd
-
 from reportlab import platypus
 from reportlab.lib import colors, pagesizes, units
 from reportlab.lib.styles import getSampleStyleSheet

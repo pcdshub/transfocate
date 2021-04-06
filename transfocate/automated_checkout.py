@@ -5,18 +5,17 @@ try:  # noqa
     matplotlib.use("Qt5Agg")  # noqa
 except Exception:  # noqa
     ...  # noqa
-import matplotlib.pyplot as plt
-
 import bluesky
 import databroker
-
+import matplotlib.pyplot as plt
 from bluesky.callbacks import LiveTable
+
 import transfocate
 import transfocate.checkout
 
-from .table.info import data as spreadsheet_data, MIN_RADIUS, MIN_ENERGY
 from .table import generate_report
-
+from .table.info import MIN_ENERGY, MIN_RADIUS
+from .table.info import data as spreadsheet_data
 
 lens_to_spreadsheet_df = {
     0: spreadsheet_data["NO_LENS"],

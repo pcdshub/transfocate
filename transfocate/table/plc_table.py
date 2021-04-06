@@ -1,9 +1,9 @@
 """Create Beckhoff TwinCAT PLC source code for the spreadsheet."""
 import sys
-import numpy as np
-import pandas as pd
 
 import matplotlib
+import numpy as np
+import pandas as pd
 
 matplotlib.use("Agg")  # noqa
 

@@ -1,16 +1,15 @@
 """Generate IOC header files (in C) for the spreadsheet table."""
 import sys
-import numpy as np
-import pandas as pd
 
 import matplotlib
+import numpy as np
+import pandas as pd
 
 matplotlib.use("Agg")  # noqa
 
 import matplotlib.pyplot as plt  # noqa
 
 from .info import data as spreadsheet_data
-
 
 # Header file output settings:
 ROW_FORMAT = "{{{energy:.6f}, {trip_min:.6f}, {trip_max:.6f}}}"

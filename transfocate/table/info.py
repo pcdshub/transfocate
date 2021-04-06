@@ -1,9 +1,8 @@
-import os
 import logging
+import os
 import pathlib
 
 import pandas as pd
-
 
 logger = logging.getLogger(__name__)
 
