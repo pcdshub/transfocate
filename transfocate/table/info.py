@@ -1,12 +1,14 @@
+import os
+import logging
 import pathlib
 
 import pandas as pd
 
 
+logger = logging.getLogger(__name__)
+
 MODULE_PATH = pathlib.Path(__file__).parent.resolve()
 
-# Configuration for reading the spreadsheet:
-SPREADSHEET = MODULE_PATH / 'MFX_EnergyLensInterlock_Tables_Transposed.xlsx'
 EXCEL_SHEET = 'Results'
 ROW_START = 16
 REGIONS = {
@@ -53,7 +55,10 @@ MIN_ENERGY = {
     1: 5.96e3,
 }
 
-def read_spreadsheet(spreadsheet=SPREADSHEET):
+def read_spreadsheet(spreadsheet=None):
+    if spreadsheet is None:
+        spreadsheet = SPREADSHEET
+
     for name, read_kw in REGIONS.items():
         df = pd.read_excel(
             spreadsheet,
@@ -71,4 +76,15 @@ def read_spreadsheet(spreadsheet=SPREADSHEET):
         yield name, df
 
 
+# Configuration for reading the spreadsheet:
+try:
+    SPREADSHEET = pathlib.Path(os.environ["TRANSFOCATOR_SPREADSHEET"])
+except KeyError:
+    SPREADSHEET = MODULE_PATH / 'MFX_EnergyLensInterlock_Tables_Transposed.xlsx'
+
+if not SPREADSHEET.exists():
+    logger.error(
+        "Table not available (``TRANSFOCATOR_SPREADSHEET``): %s",
+        SPREADSHEET
+    )
 data = dict(read_spreadsheet())
