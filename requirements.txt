@@ -1,3 +1,7 @@
-ophyd
+bluesky
 numpy
+openpyxl
+ophyd
+pandas
 pcdsdevices
+reportlab
