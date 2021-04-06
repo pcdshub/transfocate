@@ -1,7 +1,9 @@
+databroker
 bluesky
 numpy
 openpyxl
 ophyd
 pandas
 pcdsdevices
+prettytable
 reportlab
