@@ -13,77 +13,29 @@ from ophyd import EpicsSignal, EpicsSignalRO
 import transfocate
 
 
-class StageHelperMixin:
-    def stage(self, *args, **kwargs):
-        ret = super().stage(*args, **kwargs)
-        # A delay for CA links to get reconfigured
-        time.sleep(0.05)
-        self._stage_unstage_hook()
-        return ret
-
-    def unstage(self, *args, **kwargs):
-        ret = super().unstage(*args, **kwargs)
-        # A delay for CA links to get reconfigured
-        time.sleep(0.05)
-        self._stage_unstage_hook()
-        return ret
-
-
-class InputLinkOverrideHelper(StageHelperMixin, ophyd.Device):
-    """
-    Helper Device for overriding a record's input link during a bluesky scan.
-    """
-    # TODO output_link variant for ATEF?
-    input_link = Cpt(EpicsSignal, ".INP$", kind="config", string=True)
-    proc = Cpt(EpicsSignal, ".PROC", kind="omitted")
-    # TODO: generalizing fails with `string=True` here:
-    value = Cpt(EpicsSignal, "", kind="normal")
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.stage_sigs = {
-            # Disable the input link entirely:
-            "input_link": "",
-        }
-
-    def _stage_unstage_hook(self):
-        """Poke record after switching its INP field."""
-        self.proc.put(1)
-
-
-class OutputModeSelectOverrideHelper(StageHelperMixin, ophyd.Device):
-    """
-    Helper Device for overriding a record's OMSL during a bluesky scan.
-    """
-    omsl = Cpt(EpicsSignal, ".OMSL", kind="config", string=True)
-    proc = Cpt(EpicsSignal, ".PROC", kind="omitted")
-    value = Cpt(EpicsSignal, "", kind="normal")
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.stage_sigs = {
-            # Disable closed_loop when staging:
-            "omsl": "supervisory",
-        }
-
-    def _stage_unstage_hook(self):
-        """Poke record after switching its OMSL."""
-        self.proc.put(1)
-
-
 class LensCheckout(ophyd.Device):
-    state_omsl = Cpt(OutputModeSelectOverrideHelper, ":STATE")
     state = Cpt(EpicsSignal, ":STATE", kind="normal")  # , string=True)
-
-    known_omsl = Cpt(OutputModeSelectOverrideHelper, ":SAFE")
+    state_bypass = Cpt(
+        EpicsSignal, ":BYP:INS", kind="normal",
+        doc="Override state in bypass mode with this"
+    )
     known = Cpt(EpicsSignal, ":SAFE", kind="normal", string=True)
+    known_bypass = Cpt(
+        EpicsSignal, ":BYP:KNOWN", kind="normal",
+        doc="Override known in bypass mode with this"
+    )
 
 
 class LensInterlockCheckout(ophyd.Device):
     bypass = Cpt(
         EpicsSignal,
         ":BYPASS:STATUS", write_pv=":BYPASS:SET",
-        doc="Bypass in use?",
+        doc="Energy bypass in use?",
+    )
+    bypass_positions = Cpt(
+        EpicsSignal,
+        ":BYPASS:INSERTED:SET",
+        doc="Bypass lens positions",
     )
     energy = Cpt(
         EpicsSignal,
@@ -115,6 +67,7 @@ class LensInterlockCheckout(ophyd.Device):
         self.stage_sigs = {
             # Set the bypass during scans
             "bypass": 1,
+            "bypass_positions": 1,
         }
 
     @property
@@ -135,7 +88,7 @@ class LensInterlockCheckout(ophyd.Device):
         """Transfocator lenses."""
         return [lens for lens in self.lenses if 'TFS' in lens.prefix]
 
-    def set_lens_state(self, xrt, tfs):
+    def set_lens_state(self, xrt, tfs, *, bypass_mode=True):
         """Bluesky plan - set lens state."""
         xrt_lenses = {
             0: [0, 0, 0],
@@ -144,10 +97,18 @@ class LensInterlockCheckout(ophyd.Device):
             3: [1, 0, 0],
         }
         for lens, state in zip(self.xrt_lenses, xrt_lenses[xrt]):
-            yield from bps.mv(lens.state, state)
+            if bypass_mode:
+                yield from bps.mv(lens.state_bypass, state)
+                yield from bps.mv(lens.known_bypass, 1)
+            else:
+                yield from bps.mv(lens.state, state)
 
         for lens, state in zip(self.tfs_lenses, tfs):
-            yield from bps.mv(lens.state, state)
+            if bypass_mode:
+                yield from bps.mv(lens.state_bypass, state)
+                yield from bps.mv(lens.known_bypass, 1)
+            else:
+                yield from bps.mv(lens.state, state)
 
         yield from bps.wait()
         yield from bps.sleep(0.5)
