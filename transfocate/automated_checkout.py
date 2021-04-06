@@ -1,3 +1,62 @@
+"""
+Introduction
+============
+
+These scripts use the IOC-defined bypass tools, meaning that no lenses will be
+moved and photon energy does _not_ need to change.
+
+Performing a checkout
+=====================
+
+First, load an IPython session with this module.
+
+    $ source /reg/g/pcds/pyps/conda/pcds_conda
+    $ ipython -i -m transfocate.automated_checkout
+
+If the above times out, re-run the script.  It's ophyd related and will be
+resolved eventually.  Otherwise, continue on.
+
+Manual mode
+===========
+
+To perform a scan for a single XRT lens, use:
+
+    >>> sweep_and_plot_xrt(xrt_lens, num_steps=100)
+
+This will choose different combinations of TFS lenses to span the region, and
+scan energy in 100 discrete steps.
+
+To perform a scan for _all_ XRT lenses, use:
+
+    >>> sweep_and_plot_xrt_all(num_steps=100)
+
+Per-lens data and plots will be saved to Excel and PNG/PDF files, respectively.
+This can be combined into a full checkout report with the following:
+
+    >>> generate_report()
+
+Automatic mode
+==============
+
+Automatic mode will perform ``sweep_and_plot_xrt_all()`` and
+``generate_report()`` for you.
+
+Report generation
+=================
+
+Report generation will use the files generated from the scan steps above.
+It will only use existing files from the current directory.
+
+It can be used on its own - after exiting the IPython session and reloading
+it - without scanning again.
+
+***************************************************************************
+***************************************************************************
+Now, you'll have the option to perform the steps automatically or manually.
+***************************************************************************
+***************************************************************************
+
+"""
 import matplotlib  # isort: skip
 import time
 
@@ -16,6 +75,8 @@ import transfocate.checkout
 from .table import generate_report
 from .table.info import MIN_ENERGY, MIN_RADIUS
 from .table.info import data as spreadsheet_data
+
+DESCRIPTION = __doc__
 
 lens_to_spreadsheet_df = {
     0: spreadsheet_data["NO_LENS"],
@@ -226,68 +287,7 @@ Please re-try running this script.
         )
         raise
 
-    print(
-        """
-Introduction
-============
-
-These scripts use the IOC-defined bypass tools, meaning that no lenses will be
-moved and photon energy does _not_ need to change.
-
-Performing a checkout
-=====================
-
-First, load an IPython session with this module.
-
-    $ source /reg/g/pcds/pyps/conda/pcds_conda
-    $ ipython -i -m transfocate.automated_checkout
-
-If the above times out, re-run the script.  It's ophyd related and will be
-resolved eventually.  Otherwise, continue on.
-
-Manual mode
-===========
-
-To perform a scan for a single XRT lens, use:
-
-    >>> sweep_and_plot_xrt(xrt_lens, num_steps=100)
-
-This will choose different combinations of TFS lenses to span the region, and
-scan energy in 100 discrete steps.
-
-To perform a scan for _all_ XRT lenses, use:
-
-    >>> sweep_and_plot_xrt_all(num_steps=100)
-
-Per-lens data and plots will be saved to Excel and PNG/PDF files, respectively.
-This can be combined into a full checkout report with the following:
-
-    >>> generate_report()
-
-Automatic mode
-==============
-
-Automatic mode will perform ``sweep_and_plot_xrt_all()`` and
-``generate_report()`` for you.
-
-Report generation
-=================
-
-Report generation will use the files generated from the scan steps above.
-It will only use existing files from the current directory.
-
-It can be used on its own - after exiting the IPython session and reloading
-it - without scanning again.
-
-***************************************************************************
-***************************************************************************
-Now, you'll have the option to perform the steps automatically or manually.
-***************************************************************************
-***************************************************************************
-
-"""
-    )
-
+    print(DESCRIPTION)
     print("Run scans and generate report? ('yes' to continue)")
     if input().lower() == "yes":
         print("Number of data points? Default: 50")
