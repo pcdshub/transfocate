@@ -4,7 +4,8 @@ import numpy as np
 import pandas as pd
 
 import matplotlib
-matplotlib.use('Agg')  # noqa
+
+matplotlib.use("Agg")  # noqa
 
 import matplotlib.pyplot as plt  # noqa
 
@@ -50,7 +51,7 @@ END_IF
 </TcPlcObject>
 """
 
-pd.set_option('display.max_rows', 1000)
+pd.set_option("display.max_rows", 1000)
 
 
 def generate_source():
@@ -59,7 +60,7 @@ def generate_source():
     table_code = []
 
     for name, df in spreadsheet_data.items():
-        table_name = f'st{name}'
+        table_name = f"st{name}"
 
         declarations.append(
             DECLARATION_FORMAT.format(
@@ -67,21 +68,17 @@ def generate_source():
                 row_count=len(df) - 1,
             )
         )
-        rows = '\n    '.join(
+        rows = "\n    ".join(
             ROW_FORMAT.format(idx=idx, table_name=table_name, **dict(row))
             for idx, (_, row) in enumerate(df.iterrows())
         )
         table_code.append(
-            TABLE_FORMAT.format(
-                table_name=table_name,
-                rows=rows,
-                row_count=len(df)
-            )
+            TABLE_FORMAT.format(table_name=table_name, rows=rows, row_count=len(df))
         )
 
     code = CODE_FORMAT.format(
-        tables='\n'.join(table_code),
-        declarations='\n    '.join(declarations),
+        tables="\n".join(table_code),
+        declarations="\n    ".join(declarations),
     )
 
     return code
@@ -91,35 +88,38 @@ def plot_data(ax, key, data):
     ax.set_title(key)
     df = data[key]
     ax.fill_between(
-        df.energy, df.trip_min, df.trip_max,
+        df.energy,
+        df.trip_min,
+        df.trip_max,
         where=(df.trip_max > df.trip_min),
         interpolate=True,
-        color='red',
+        color="red",
         alpha=0.2,
-        hatch='/',
+        hatch="/",
     )
 
-    df.trip_min.plot(ax=ax, lw=1, color='black')
-    df.trip_max.plot(ax=ax, lw=1, color='red')
+    df.trip_min.plot(ax=ax, lw=1, color="black")
+    df.trip_max.plot(ax=ax, lw=1, color="red")
 
-    ax.legend(loc='best')
-    ax.set_yscale('log')
-    ax.set_ylabel('Reff')
-    ax.set_xlabel('Energy [keV]')
+    ax.legend(loc="best")
+    ax.set_yscale("log")
+    ax.set_ylabel("Reff")
+    ax.set_xlabel("Energy [keV]")
     return df
 
 
 def main():
     """
     Generate the PLC source code and print it to standard output.
-    
+
     Returns the generated data.
     """
     code = generate_source()
     print(code)
 
-    _, axes = plt.subplots(ncols=2, nrows=2, constrained_layout=True,
-                           dpi=120, figsize=(11, 8))
+    _, axes = plt.subplots(
+        ncols=2, nrows=2, constrained_layout=True, dpi=120, figsize=(11, 8)
+    )
     # plt.ion()
     keys = list(spreadsheet_data)
     plot_data(axes[0, 0], keys[0], spreadsheet_data)
@@ -127,10 +127,10 @@ def main():
     plot_data(axes[1, 0], keys[2], spreadsheet_data)
     plot_data(axes[1, 1], keys[3], spreadsheet_data)
     plt.suptitle("Disallowed Effective Radius Regions")
-    plt.savefig('plc_table_regions.png')
+    plt.savefig("plc_table_regions.png")
     # plt.ioff()
     return code
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     data = main()

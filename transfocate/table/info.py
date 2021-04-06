@@ -9,13 +9,13 @@ logger = logging.getLogger(__name__)
 
 MODULE_PATH = pathlib.Path(__file__).parent.resolve()
 
-EXCEL_SHEET = 'Results'
+EXCEL_SHEET = "Results"
 ROW_START = 16
 REGIONS = {
-    'NO_LENS': {'usecols': 'B:D'},
-    'LENS3_333': {'usecols': 'F:H'},
-    'LENS2_428': {'usecols': 'J:L'},
-    'LENS1_750': {'usecols': 'N:P'},
+    "NO_LENS": {"usecols": "B:D"},
+    "LENS3_333": {"usecols": "F:H"},
+    "LENS2_428": {"usecols": "J:L"},
+    "LENS1_750": {"usecols": "N:P"},
 }
 
 # Lens information
@@ -55,6 +55,7 @@ MIN_ENERGY = {
     1: 5.96e3,
 }
 
+
 def read_spreadsheet(spreadsheet=None):
     if spreadsheet is None:
         spreadsheet = SPREADSHEET
@@ -62,17 +63,17 @@ def read_spreadsheet(spreadsheet=None):
     for name, read_kw in REGIONS.items():
         df = pd.read_excel(
             spreadsheet,
-            engine='openpyxl',
+            engine="openpyxl",
             sheet_name=EXCEL_SHEET,
             skiprows=ROW_START - 1,
             header=None,
             **read_kw
         )
-        df.columns = ['energy', 'trip_min', 'trip_max']
+        df.columns = ["energy", "trip_min", "trip_max"]
         df.energy *= 1e3  # keV -> eV
         df = df.dropna()
         df = df.set_index(df.energy)
-        df.loc[df.trip_max > 1e4, 'trip_max'] = 1e4
+        df.loc[df.trip_max > 1e4, "trip_max"] = 1e4
         yield name, df
 
 
@@ -80,11 +81,8 @@ def read_spreadsheet(spreadsheet=None):
 try:
     SPREADSHEET = pathlib.Path(os.environ["TRANSFOCATOR_SPREADSHEET"])
 except KeyError:
-    SPREADSHEET = MODULE_PATH / 'MFX_EnergyLensInterlock_Tables_Transposed.xlsx'
+    SPREADSHEET = MODULE_PATH / "MFX_EnergyLensInterlock_Tables_Transposed.xlsx"
 
 if not SPREADSHEET.exists():
-    logger.error(
-        "Table not available (``TRANSFOCATOR_SPREADSHEET``): %s",
-        SPREADSHEET
-    )
+    logger.error("Table not available (``TRANSFOCATOR_SPREADSHEET``): %s", SPREADSHEET)
 data = dict(read_spreadsheet())

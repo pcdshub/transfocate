@@ -4,7 +4,8 @@ import numpy as np
 import pandas as pd
 
 import matplotlib
-matplotlib.use('Agg')  # noqa
+
+matplotlib.use("Agg")  # noqa
 
 import matplotlib.pyplot as plt  # noqa
 
@@ -84,22 +85,19 @@ const RangeTable static {table_name} = {{
 }};
 """
 
-pd.set_option('display.max_rows', 1000)
+pd.set_option("display.max_rows", 1000)
 
 
 def generate_header():
     """Generate the C header from the given spreadsheet."""
     code = [HEADER.lstrip()]
-    
+
     for name, df in spreadsheet_data.items():
-        rows = ',\n        '.join(
-            ROW_FORMAT.format(**dict(row))
-            for _, row in df.iterrows()
+        rows = ",\n        ".join(
+            ROW_FORMAT.format(**dict(row)) for _, row in df.iterrows()
         )
         table_code = TABLE_FORMAT.format(
-            table_name=f'TABLE_{name}',
-            rows=rows,
-            row_count=len(df)
+            table_name=f"TABLE_{name}", rows=rows, row_count=len(df)
         )
         code.append(table_code)
 
@@ -111,21 +109,23 @@ def plot_data(ax, key, data):
     ax.set_title(key)
     df = data[key]
     ax.fill_between(
-        df.energy, df.trip_min, df.trip_max,
+        df.energy,
+        df.trip_min,
+        df.trip_max,
         where=(df.trip_max > df.trip_min),
         interpolate=True,
-        color='red',
+        color="red",
         alpha=0.2,
-        hatch='/',
+        hatch="/",
     )
 
-    df.trip_min.plot(ax=ax, lw=1, color='black')
-    df.trip_max.plot(ax=ax, lw=1, color='red')
+    df.trip_min.plot(ax=ax, lw=1, color="black")
+    df.trip_max.plot(ax=ax, lw=1, color="red")
 
-    ax.legend(loc='best')
-    ax.set_yscale('log')
-    ax.set_ylabel('Reff')
-    ax.set_xlabel('Energy [eV]')
+    ax.legend(loc="best")
+    ax.set_yscale("log")
+    ax.set_ylabel("Reff")
+    ax.set_xlabel("Energy [eV]")
     return df
 
 
@@ -136,8 +136,9 @@ def main():
     code = generate_header()
     print(code)
 
-    _, axes = plt.subplots(ncols=2, nrows=2, constrained_layout=True,
-                           dpi=120, figsize=(11, 8))
+    _, axes = plt.subplots(
+        ncols=2, nrows=2, constrained_layout=True, dpi=120, figsize=(11, 8)
+    )
     # plt.ion()
     keys = list(spreadsheet_data)
     plot_data(axes[0, 0], keys[0], spreadsheet_data)
@@ -145,10 +146,10 @@ def main():
     plot_data(axes[1, 0], keys[2], spreadsheet_data)
     plot_data(axes[1, 1], keys[3], spreadsheet_data)
     plt.suptitle("Disallowed Effective Radius Regions")
-    plt.savefig('interlock_regions.png')
+    plt.savefig("interlock_regions.png")
     # plt.ioff()
     return code
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
