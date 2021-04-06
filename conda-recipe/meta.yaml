@@ -8,7 +8,7 @@ source:
   path: ..
 
 build:
-  number: 1
+  number: 0
   noarch: python
 
 requirements:
@@ -18,9 +18,15 @@ requirements:
 
   run:
     - python >=3.6
-    - ophyd >=1.5.0
+    - bluesky
+    - databroker
     - numpy
+    - openpyxl
+    - ophyd >=1.5.0
+    - pandas
     - pcdsdevices >=4.0.0
+    - prettytable
+    - reportlab
 
 test:
   imports:
