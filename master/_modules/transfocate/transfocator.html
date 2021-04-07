@@ -1,0 +1,507 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>transfocate.transfocator &mdash; transfocate 0.5.0+1.g4811681 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> transfocate
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5.0+1.g4811681
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../lens.html">Lens Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../calculator.html">Calculator Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../transfocator.html">Transfocator Information</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">transfocate</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>transfocate.transfocator</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for transfocate.transfocator</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">pcdsdevices.device_types</span> <span class="kn">import</span> <span class="n">IMS</span>
+<span class="kn">from</span> <span class="nn">ophyd</span> <span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="n">Component</span> <span class="k">as</span> <span class="n">Cpt</span><span class="p">,</span> <span class="n">FormattedComponent</span><span class="p">,</span> <span class="n">EpicsSignal</span>
+<span class="kn">from</span> <span class="nn">ophyd.status</span> <span class="kn">import</span> <span class="n">wait</span> <span class="k">as</span> <span class="n">status_wait</span>
+
+<span class="kn">from</span> <span class="nn">.lens</span> <span class="kn">import</span> <span class="n">Lens</span><span class="p">,</span> <span class="n">LensConnect</span><span class="p">,</span> <span class="n">LensTripLimits</span>
+<span class="kn">from</span> <span class="nn">.calculator</span> <span class="kn">import</span> <span class="n">Calculator</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">TransfocatorInterlock</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Device containing signals pertinent to the interlock system.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">limits</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
+        <span class="n">LensTripLimits</span><span class="p">,</span> <span class="s2">&quot;:ACTIVE&quot;</span><span class="p">,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Active trip limit settings, based on pre-focus lens&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Active limits, predicated on pre-focus lens insertion:</span>
+    <span class="c1"># no_lens_limit = Cpt(LensTripLimits, &quot;:NO_LENS&quot;)</span>
+    <span class="c1"># lens1_limit = Cpt(LensTripLimits, &quot;:LENS1&quot;)</span>
+    <span class="c1"># lens2_limit = Cpt(LensTripLimits, &quot;:LENS2&quot;)</span>
+    <span class="c1"># lens3_limit = Cpt(LensTripLimits, &quot;:LENS3&quot;)</span>
+
+    <span class="n">bypass</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
+        <span class="n">EpicsSignal</span><span class="p">,</span> <span class="s2">&quot;:BYPASS:STATUS&quot;</span><span class="p">,</span> <span class="n">write_pv</span><span class="o">=</span><span class="s2">&quot;:BYPASS:SET&quot;</span><span class="p">,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Bypass in use?&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">bypass_energy</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
+        <span class="n">EpicsSignal</span><span class="p">,</span> <span class="s2">&quot;:BYPASS:ENERGY&quot;</span><span class="p">,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Bypass energy&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">ioc_alive</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
+        <span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:BEAM:ALIVE&quot;</span><span class="p">,</span> <span class="c1"># string=True,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;IOC alive [active]&quot;</span>
+    <span class="p">)</span>
+    <span class="n">faulted</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
+        <span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:BEAM:FAULTED&quot;</span><span class="p">,</span> <span class="c1"># string=True,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Fault currently active [active]&quot;</span>
+    <span class="p">)</span>
+    <span class="n">state_fault</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
+        <span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:BEAM:UNKNOWN&quot;</span><span class="p">,</span> <span class="c1"># string=True,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Lens position unknown [active]&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">violated_fault</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
+        <span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:BEAM:VIOLATED&quot;</span><span class="p">,</span> <span class="c1"># string=True,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Summary fault due to energy/lens combination [active]&quot;</span>
+    <span class="p">)</span>
+    <span class="n">min_fault</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
+        <span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:BEAM:MIN_FAULT&quot;</span><span class="p">,</span> <span class="c1"># string=True,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Minimum required energy not met for lens combination [active]&quot;</span>
+    <span class="p">)</span>
+    <span class="n">lens_required_fault</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
+        <span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:BEAM:REQ_TFS_FAULT&quot;</span><span class="p">,</span> <span class="c1"># string=True,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Transfocator lens required for energy/lens combination [active]&quot;</span>
+    <span class="p">)</span>
+    <span class="n">table_fault</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
+        <span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:BEAM:TAB_FAULT&quot;</span><span class="p">,</span> <span class="c1"># string=True,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Effective radius in table-based disallowed area [active]&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">violated_fault_latch</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
+        <span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:BEAM:VIOLATED_LT&quot;</span><span class="p">,</span> <span class="c1"># string=True,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Summary fault due to energy/lens combination [latched]&quot;</span>
+    <span class="p">)</span>
+    <span class="n">min_fault_latch</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
+        <span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:BEAM:MIN_FAULT_LT&quot;</span><span class="p">,</span> <span class="c1"># string=True,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Minimum required energy not met for lens combination [latched]&quot;</span>
+    <span class="p">)</span>
+    <span class="n">lens_required_fault_latch</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
+        <span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:BEAM:REQ_TFS_FAULT_LT&quot;</span><span class="p">,</span> <span class="c1"># string=True,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Transfocator lens required for energy/lens combination [latched]&quot;</span>
+    <span class="p">)</span>
+    <span class="n">table_fault_latch</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
+        <span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:BEAM:TAB_FAULT_LT&quot;</span><span class="p">,</span> <span class="c1"># string=True,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Effective radius in table-based disallowed area [latched]&quot;</span>
+    <span class="p">)</span>
+
+
+<div class="viewcode-block" id="Transfocator"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator">[docs]</a><span class="k">class</span> <span class="nc">Transfocator</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to represent the MFX Transfocator</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">interlock</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">TransfocatorInterlock</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="c1"># XRT Lenses</span>
+    <span class="n">prefocus_top</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:DIA:03&quot;</span><span class="p">)</span>
+    <span class="n">prefocus_mid</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:DIA:02&quot;</span><span class="p">)</span>
+    <span class="n">prefocus_bot</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:DIA:01&quot;</span><span class="p">)</span>
+    <span class="n">xrt_radius</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:BEAM:XRT_RADIUS&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span>
+                     <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;XRT effective radius&quot;</span><span class="p">)</span>
+    <span class="n">tfs_radius</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:BEAM:TFS_RADIUS&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span>
+                     <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;TFS effective radius&quot;</span><span class="p">)</span>
+
+    <span class="c1"># TFS Lenses</span>
+    <span class="n">tfs_02</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:02&quot;</span><span class="p">)</span>
+    <span class="n">tfs_03</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:03&quot;</span><span class="p">)</span>
+    <span class="n">tfs_04</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:04&quot;</span><span class="p">)</span>
+    <span class="n">tfs_05</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:05&quot;</span><span class="p">)</span>
+    <span class="n">tfs_06</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:06&quot;</span><span class="p">)</span>
+    <span class="n">tfs_07</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:07&quot;</span><span class="p">)</span>
+    <span class="n">tfs_08</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:08&quot;</span><span class="p">)</span>
+    <span class="n">tfs_09</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:09&quot;</span><span class="p">)</span>
+    <span class="n">tfs_10</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Lens</span><span class="p">,</span> <span class="s2">&quot;:TFS:10&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Requested energy</span>
+    <span class="n">req_energy</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsSignal</span><span class="p">,</span> <span class="s2">&quot;:BEAM:REQ_ENERGY&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Actual beam energy</span>
+    <span class="n">beam_energy</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsSignal</span><span class="p">,</span> <span class="s2">&quot;:BEAM:ENERGY&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Translation</span>
+    <span class="n">translation</span> <span class="o">=</span> <span class="n">FormattedComponent</span><span class="p">(</span><span class="n">IMS</span><span class="p">,</span> <span class="s2">&quot;MFX:TFS:MMS:21&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">nominal_sample</span><span class="o">=</span><span class="mf">399.88103</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nominal_sample</span> <span class="o">=</span> <span class="n">nominal_sample</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">lenses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Component lenses</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span> <span class="k">for</span> <span class="n">dev</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_devices</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">),</span> <span class="n">Lens</span><span class="p">)]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">xrt_lenses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Lenses in the XRT</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">lens</span> <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lenses</span> <span class="k">if</span> <span class="s1">&#39;DIA&#39;</span> <span class="ow">in</span> <span class="n">lens</span><span class="o">.</span><span class="n">prefix</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tfs_lenses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Transfocator lenses</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">lens</span> <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lenses</span> <span class="k">if</span> <span class="s1">&#39;TFS&#39;</span> <span class="ow">in</span> <span class="n">lens</span><span class="o">.</span><span class="n">prefix</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">current_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The distance from the focus of the Transfocator to nominal_sample</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        If no lenses are inserted this will retun NaN</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Find inserted lenses</span>
+        <span class="n">inserted</span> <span class="o">=</span> <span class="p">[</span><span class="n">lens</span> <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lenses</span> <span class="k">if</span> <span class="n">lens</span><span class="o">.</span><span class="n">inserted</span><span class="p">]</span>
+        <span class="c1"># Check that we have any inserted lenses at all</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">inserted</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No lenses are currently inserted&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">nan</span>
+        <span class="c1"># Calculate the image from this set of lenses</span>
+        <span class="k">return</span> <span class="n">LensConnect</span><span class="p">(</span><span class="o">*</span><span class="n">inserted</span><span class="p">)</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">nominal_sample</span>
+
+<div class="viewcode-block" id="Transfocator.find_best_combo"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator.find_best_combo">[docs]</a>    <span class="k">def</span> <span class="nf">find_best_combo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the best lens array to hit the nominal sample point</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        target : float, optional</span>
+<span class="sd">            The target image of the lens array. By default this is</span>
+<span class="sd">            `nominal_sample`</span>
+
+<span class="sd">        show : bool, optional</span>
+<span class="sd">            Print a table of the of the calculated lens combination</span>
+
+<span class="sd">        kwargs:</span>
+<span class="sd">            Passed to :meth:`.Calculator.find_solution`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">target</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">nominal_sample</span>
+        <span class="c1"># Only included allowed XRT lenses</span>
+        <span class="n">xrt_low</span><span class="p">,</span> <span class="n">xrt_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interlock</span><span class="o">.</span><span class="n">limits</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">allowed_xrt</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">lens</span> <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">xrt_lenses</span>
+            <span class="k">if</span> <span class="n">lens</span><span class="o">.</span><span class="n">radius</span> <span class="o">&lt;</span> <span class="n">xrt_low</span> <span class="ow">or</span>
+            <span class="n">lens</span><span class="o">.</span><span class="n">radius</span> <span class="o">&gt;</span> <span class="n">xrt_high</span> <span class="ow">or</span>
+            <span class="n">xrt_low</span> <span class="o">==</span> <span class="n">xrt_high</span>
+        <span class="p">]</span>
+        <span class="c1"># Warn users if no XRT lenses are over the required radius</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">allowed_xrt</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Can not find a prefocusing lens that meets the &quot;</span>
+                           <span class="s2">&quot;safety requirements&quot;</span><span class="p">)</span>
+        <span class="c1"># Create a calculator</span>
+        <span class="n">calc</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">(</span><span class="n">allowed_xrt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tfs_lenses</span><span class="p">)</span>
+        <span class="c1"># Return the solution</span>
+        <span class="n">combo</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">find_solution</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">combo</span><span class="p">:</span>
+            <span class="n">combo</span><span class="o">.</span><span class="n">show_info</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unable to find a valid solution for target&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">combo</span></div>
+
+<div class="viewcode-block" id="Transfocator.set"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the Transfocator focus</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">focus_at</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Transfocator.focus_at"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator.focus_at">[docs]</a>    <span class="k">def</span> <span class="nf">focus_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate a combination and insert the lenses</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        value: float, optional</span>
+<span class="sd">            Chosen focal plane. Nominal sample by default</span>
+
+<span class="sd">        wait : bool, optional</span>
+<span class="sd">            Wait for the motion of the transfocator to complete</span>
+
+<span class="sd">        timeout: float, optional</span>
+<span class="sd">            Timeout for motion</span>
+
+<span class="sd">        kwargs:</span>
+<span class="sd">            All passed to :meth:`.find_best_combo`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        StateStatus</span>
+<span class="sd">            Status that represents whether the move is complete</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Find the best combination of lenses to match the target image</span>
+        <span class="n">plane</span> <span class="o">=</span> <span class="n">value</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">nominal_sample</span>
+        <span class="n">best_combo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_best_combo</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">plane</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># Collect status to combine</span>
+        <span class="n">statuses</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="c1"># Only tell one XRT lens to insert</span>
+        <span class="n">prefocused</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">xrt_lenses</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lens</span> <span class="ow">in</span> <span class="n">best_combo</span><span class="o">.</span><span class="n">lenses</span><span class="p">:</span>
+                <span class="n">statuses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lens</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">))</span>
+                <span class="n">prefocused</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">break</span>
+        <span class="c1"># If we have no XRT lenses one remove will do</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">prefocused</span><span class="p">:</span>
+            <span class="n">statuses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xrt_lenses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">))</span>
+        <span class="c1"># Ensure all Transfocator lenses are correct</span>
+        <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tfs_lenses</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lens</span> <span class="ow">in</span> <span class="n">best_combo</span><span class="o">.</span><span class="n">lenses</span><span class="p">:</span>
+                <span class="n">statuses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lens</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">statuses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lens</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">))</span>
+        <span class="c1"># Conglomerate all status objects</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">statuses</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">statuses</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">status</span> <span class="o">&amp;</span> <span class="n">st</span>
+        <span class="c1"># Wait if necessary</span>
+        <span class="k">if</span> <span class="n">wait</span><span class="p">:</span>
+            <span class="n">status_wait</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">status</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">TransfocatorEnergyInterrupt</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Custom exception returned when input beam energy (user defined</span>
+<span class="sd">    or current measured value) changes significantly during</span>
+<span class="sd">    calculation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+<span class="k">def</span> <span class="nf">constant_energy</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ensures that requested energy does not change during calculation</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    transfocator_obj: transfocate.transfocator.Transfocator object</span>
+
+<span class="sd">    energy_type: string</span>
+<span class="sd">        input string specifying &#39;req_energy&#39; or &#39;beam_energy&#39;</span>
+<span class="sd">        to be monitored during calculation</span>
+
+<span class="sd">    tolerance: float</span>
+<span class="sd">        energy (in eV) for which current beam energy can change during</span>
+<span class="sd">        calculation and still assumed constant</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">with_constant_energy</span><span class="p">(</span><span class="n">transfocator_obj</span><span class="p">,</span> <span class="n">energy_type</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">energy_signal</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">transfocator_obj</span><span class="p">,</span> <span class="n">energy_type</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;input &#39;energy_type&#39; not defined&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+        <span class="n">energy_before</span> <span class="o">=</span> <span class="n">energy_signal</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">transfocator_obj</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">energy_after</span> <span class="o">=</span> <span class="n">energy_signal</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">energy_before</span><span class="p">,</span> <span class="n">energy_after</span><span class="p">,</span> <span class="n">abs_tol</span><span class="o">=</span><span class="n">tolerance</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TransfocatorEnergyInterrupt</span><span class="p">(</span><span class="s2">&quot;The beam energy changed significantly during the calculation&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">return</span> <span class="n">with_constant_energy</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2017, SLAC National Accelerator Laboratory.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

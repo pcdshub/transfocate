@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Transfocator Information &mdash; transfocate 0.5.0+1.g4811681 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Calculator Information" href="calculator.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> transfocate
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5.0+1.g4811681
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="lens.html">Lens Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calculator.html">Calculator Information</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Transfocator Information</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">transfocate</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Transfocator Information</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/transfocator.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-transfocate.transfocator">
+<span id="transfocator-information"></span><h1>Transfocator Information<a class="headerlink" href="#module-transfocate.transfocator" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="transfocate.transfocator.Transfocator">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">transfocate.transfocator.</span></code><code class="sig-name descname"><span class="pre">Transfocator</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nominal_sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">399.88103</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/transfocator.html#Transfocator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transfocate.transfocator.Transfocator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to represent the MFX Transfocator</p>
+<dl class="py method">
+<dt id="transfocate.transfocator.Transfocator.current_focus">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">current_focus</span></code><a class="headerlink" href="#transfocate.transfocator.Transfocator.current_focus" title="Permalink to this definition">¶</a></dt>
+<dd><p>The distance from the focus of the Transfocator to nominal_sample</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If no lenses are inserted this will retun NaN</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transfocate.transfocator.Transfocator.find_best_combo">
+<code class="sig-name descname"><span class="pre">find_best_combo</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/transfocator.html#Transfocator.find_best_combo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transfocate.transfocator.Transfocator.find_best_combo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the best lens array to hit the nominal sample point</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>float</em><em>, </em><em>optional</em>) – The target image of the lens array. By default this is
+<cite>nominal_sample</cite></p></li>
+<li><p><strong>show</strong> (<em>bool</em><em>, </em><em>optional</em>) – Print a table of the of the calculated lens combination</p></li>
+<li><p><strong>kwargs</strong> – Passed to <a class="reference internal" href="calculator.html#transfocate.calculator.Calculator.find_solution" title="transfocate.calculator.Calculator.find_solution"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Calculator.find_solution()</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transfocate.transfocator.Transfocator.focus_at">
+<code class="sig-name descname"><span class="pre">focus_at</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/transfocator.html#Transfocator.focus_at"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transfocate.transfocator.Transfocator.focus_at" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate a combination and insert the lenses</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<em>float</em><em>, </em><em>optional</em>) – Chosen focal plane. Nominal sample by default</p></li>
+<li><p><strong>wait</strong> (<em>bool</em><em>, </em><em>optional</em>) – Wait for the motion of the transfocator to complete</p></li>
+<li><p><strong>timeout</strong> (<em>float</em><em>, </em><em>optional</em>) – Timeout for motion</p></li>
+<li><p><strong>kwargs</strong> – All passed to <a class="reference internal" href="#transfocate.transfocator.Transfocator.find_best_combo" title="transfocate.transfocator.Transfocator.find_best_combo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find_best_combo()</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Status that represents whether the move is complete</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>StateStatus</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transfocate.transfocator.Transfocator.lenses">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">lenses</span></code><a class="headerlink" href="#transfocate.transfocator.Transfocator.lenses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component lenses</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transfocate.transfocator.Transfocator.set">
+<code class="sig-name descname"><span class="pre">set</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/transfocator.html#Transfocator.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transfocate.transfocator.Transfocator.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the Transfocator focus</p>
+<p>Parameters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transfocate.transfocator.Transfocator.tfs_lenses">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">tfs_lenses</span></code><a class="headerlink" href="#transfocate.transfocator.Transfocator.tfs_lenses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transfocator lenses</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transfocate.transfocator.Transfocator.xrt_lenses">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">xrt_lenses</span></code><a class="headerlink" href="#transfocate.transfocator.Transfocator.xrt_lenses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lenses in the XRT</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="calculator.html" class="btn btn-neutral float-left" title="Calculator Information" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2017, SLAC National Accelerator Laboratory.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

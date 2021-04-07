@@ -1,0 +1,372 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Lens Information &mdash; transfocate 0.5.0+1.g4811681 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Calculator Information" href="calculator.html" />
+    <link rel="prev" title="Transfocate" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> transfocate
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5.0+1.g4811681
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Lens Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calculator.html">Calculator Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="transfocator.html">Transfocator Information</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">transfocate</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Lens Information</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/lens.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-transfocate.lens">
+<span id="lens-information"></span><h1>Lens Information<a class="headerlink" href="#module-transfocate.lens" title="Permalink to this headline">¶</a></h1>
+<p>Basic Lens object handling</p>
+<dl class="py class">
+<dt id="transfocate.lens.Lens">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">transfocate.lens.</span></code><code class="sig-name descname"><span class="pre">Lens</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/lens.html#Lens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transfocate.lens.Lens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data structure for basic Lens object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prefix</strong> (<em>str</em>) – Name of the state record that controls the PV</p></li>
+<li><p><strong>prefix_lens</strong> (<em>str</em>) – Prefix for the PVs that contain focusing information</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="transfocate.lens.Lens.focus">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">focus</span></code><a class="headerlink" href="#transfocate.lens.Lens.focus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method converts the EPICS focal length signal of the lens into a float</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns the focal length of the lens in meters</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transfocate.lens.Lens.image_from_obj">
+<code class="sig-name descname"><span class="pre">image_from_obj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/lens.html#Lens.image_from_obj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transfocate.lens.Lens.image_from_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method calculates the image distance in meters along the beam pipeline
+from a point of origin given the focal length of the lens, location of
+lens, and location of object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>z_obj</strong> – Location of object along the beamline in meters (m)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns the distance z_im of the image along the beam pipeline from
+a point of origin in meters (m)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>image</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the location of the object (z_obj) is equal to the focal length of
+the lens, this function will return infinity.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transfocate.lens.Lens.radius">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">radius</span></code><a class="headerlink" href="#transfocate.lens.Lens.radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method converts the EPICS lens radius signal into a float that can be
+used for calculations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns the radius of the lens</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transfocate.lens.Lens.z">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">z</span></code><a class="headerlink" href="#transfocate.lens.Lens.z" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method converts the z position EPICS signal into a float.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns the z position of the lens in meters along the beamline</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="transfocate.lens.LensConnect">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">transfocate.lens.</span></code><code class="sig-name descname"><span class="pre">LensConnect</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/lens.html#LensConnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transfocate.lens.LensConnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data structure for a basic system of lenses</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> (<a class="reference internal" href="#transfocate.lens.Lens" title="transfocate.lens.Lens"><em>Lens</em></a>) – Lens objects</p></li>
+<li><p><strong>args</strong> – Variable length argument list of the lenses in the system, their
+radii, z position, and focal length.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="transfocate.lens.LensConnect.connect">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">connect</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/lens.html#LensConnect.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transfocate.lens.LensConnect.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new LensConnect from the combination of multiple</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transfocate.lens.LensConnect.effective_radius">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">effective_radius</span></code><a class="headerlink" href="#transfocate.lens.LensConnect.effective_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method calculates the effective radius of the lens array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>returns the effective radius of the lens array.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transfocate.lens.LensConnect.image">
+<code class="sig-name descname"><span class="pre">image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/lens.html#LensConnect.image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transfocate.lens.LensConnect.image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method recursively calculates the z location of the image of a system
+of lenses and returns it in meters (m)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>z_obj</strong> – Location of the object along the beam pipline from a designated
+point of origin in meters (m)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns the location z of a system of lenses in meters (m).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transfocate.lens.LensConnect.nlens">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">nlens</span></code><a class="headerlink" href="#transfocate.lens.LensConnect.nlens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method calculates the total number of lenses in the Lens array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns the total number of lenses in the array.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transfocate.lens.LensConnect.show_info">
+<code class="sig-name descname"><span class="pre">show_info</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/transfocate/lens.html#LensConnect.show_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transfocate.lens.LensConnect.show_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show a table of information on the lens</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="calculator.html" class="btn btn-neutral float-right" title="Calculator Information" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Transfocate" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2017, SLAC National Accelerator Laboratory.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

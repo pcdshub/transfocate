@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>transfocate.calculator &mdash; transfocate 0.5.0+1.g4811681 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> transfocate
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5.0+1.g4811681
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../lens.html">Lens Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../calculator.html">Calculator Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../transfocator.html">Transfocator Information</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">transfocate</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>transfocate.calculator</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for transfocate.calculator</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">transfocate.lens</span> <span class="kn">import</span> <span class="n">LensConnect</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Calculator"><a class="viewcode-back" href="../../calculator.html#transfocate.calculator.Calculator">[docs]</a><span class="k">class</span> <span class="nc">Calculator</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for the transfocator beryllium lens calculator.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xrt_lenses : list</span>
+<span class="sd">        A list of the xrt prefocus lenses</span>
+
+<span class="sd">    tfs_lenses : list</span>
+<span class="sd">        A list of the transfocator lenses</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xrt_lenses</span><span class="p">,</span> <span class="n">tfs_lenses</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xrt_lenses</span> <span class="o">=</span> <span class="n">xrt_lenses</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tfs_lenses</span> <span class="o">=</span> <span class="n">tfs_lenses</span>
+
+<div class="viewcode-block" id="Calculator.combinations"><a class="viewcode-back" href="../../calculator.html#transfocate.calculator.Calculator.combinations">[docs]</a>    <span class="k">def</span> <span class="nf">combinations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_prefocus</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        All possible combinations of the given lenses</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        include_prefocus : bool</span>
+<span class="sd">            Use only combinations that include a prefocusing lens. If False,</span>
+<span class="sd">            only combinations of Transfocator lenses are returned</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        combos: list</span>
+<span class="sd">            List of LensConnect objects</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">combos</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">tfs_combos</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="c1"># Warn operators if we received no transfocator lenses</span>
+        <span class="k">if</span> <span class="n">include_prefocus</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">xrt_lenses</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No XRT lens given to calculator, but prefocusing &quot;</span>
+                           <span class="s2">&quot;was requested&quot;</span><span class="p">)</span>
+            <span class="n">include_prefocus</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># Initially only consider transfocator lenses</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tfs_lenses</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">list_combos</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tfs_lenses</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+            <span class="c1"># Create LensConnect objects from all of our possible combinations</span>
+            <span class="n">tfs_combos</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">LensConnect</span><span class="p">(</span><span class="o">*</span><span class="n">combo</span><span class="p">)</span> <span class="k">for</span> <span class="n">combo</span> <span class="ow">in</span> <span class="n">list_combos</span><span class="p">])</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">%s</span><span class="s2"> combinations of Transfocator lenses&quot;</span><span class="p">,</span>
+                     <span class="nb">len</span><span class="p">(</span><span class="n">tfs_combos</span><span class="p">))</span>
+        <span class="c1"># If we don&#39;t want to prefocus return only Transfocator lenses</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">include_prefocus</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">tfs_combos</span>
+        <span class="c1"># Loop through all the prefocusing lenses</span>
+        <span class="k">for</span> <span class="n">prefocus</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">xrt_lenses</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">LensConnect</span><span class="p">(</span><span class="n">prefocus</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">combo</span> <span class="ow">in</span> <span class="n">tfs_combos</span><span class="p">:</span>
+                <span class="c1"># Create combinations of prefocusing and transfocating lenses</span>
+                <span class="n">combos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LensConnect</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">combo</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">%s</span><span class="s2"> total combinations of lenses&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">combos</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">combos</span></div>
+
+<div class="viewcode-block" id="Calculator.find_solution"><a class="viewcode-back" href="../../calculator.html#transfocate.calculator.Calculator.find_solution">[docs]</a>    <span class="k">def</span> <span class="nf">find_solution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">z_obj</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                      <span class="n">include_prefocus</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find a combination to reach a specific focus</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        target: float</span>
+<span class="sd">            The desired position of the focal plane in accelerator coordinates</span>
+
+<span class="sd">        n : int, optional</span>
+<span class="sd">            The maximum number of lenses in a valid combination. This saves</span>
+<span class="sd">            time by avoiding calculating the focal plane of combinations with a</span>
+<span class="sd">            large number of lenses</span>
+
+<span class="sd">        z_obj : float, optional</span>
+<span class="sd">            The source point of the beam</span>
+
+<span class="sd">        include_prefocus: bool, optional</span>
+<span class="sd">            Use only combinations that include a prefocusing lens. If False,</span>
+<span class="sd">            only combinations of Transfocator lenses are returned</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        array: LensConnect</span>
+<span class="sd">            An array of lens combinations with the closest possible image to</span>
+<span class="sd">            the target_image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">solution</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">solution_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="c1"># Loop through all possible tfs/xrt combinations</span>
+        <span class="k">for</span> <span class="n">combo</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">include_prefocus</span><span class="o">=</span><span class="n">include_prefocus</span><span class="p">):</span>
+            <span class="c1"># Check to see if the number of lenses is less than the limit</span>
+            <span class="k">if</span> <span class="n">combo</span><span class="o">.</span><span class="n">nlens</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">image</span> <span class="o">=</span> <span class="n">combo</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="n">z_obj</span><span class="p">)</span>
+                    <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">image</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Unable to calculate image position&quot;</span><span class="p">)</span>
+                    <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+                <span class="c1"># See if we have found a better solution</span>
+                <span class="k">if</span> <span class="n">diff</span> <span class="o">&lt;</span> <span class="n">solution_diff</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Found a combination with image </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2"> &quot;</span>
+                                 <span class="s2">&quot;from target </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">diff</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+                    <span class="n">solution</span> <span class="o">=</span> <span class="n">combo</span>
+                    <span class="n">solution_diff</span> <span class="o">=</span> <span class="n">diff</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Result found with a focal plane </span><span class="si">{}</span><span class="s2"> from the requested &quot;</span>
+                    <span class="s2">&quot;position&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">solution_diff</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">solution</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2017, SLAC National Accelerator Laboratory.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
