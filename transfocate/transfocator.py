@@ -179,21 +179,7 @@ class Transfocator(Device):
             Passed to :meth:`.Calculator.find_solution`
         """
         target = target or self.nominal_sample
-        # Only included allowed XRT lenses
-        xrt_low, xrt_high = self.interlock.limits.get()
-        allowed_xrt = [
-            lens for lens in self.xrt_lenses
-            if lens.radius < xrt_low or
-            lens.radius > xrt_high or
-            xrt_low == xrt_high
-        ]
-        # Warn users if no XRT lenses are over the required radius
-        if not allowed_xrt:
-            logger.warning("Can not find a prefocusing lens that meets the "
-                           "safety requirements")
-        # Create a calculator
-        calc = Calculator(allowed_xrt, self.tfs_lenses)
-        # Return the solution
+        calc = Calculator(self.xrt_lenses, self.tfs_lenses)
         combo = calc.find_solution(target, **kwargs)
         if combo:
             combo.show_info()
