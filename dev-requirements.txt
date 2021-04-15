@@ -3,5 +3,4 @@ sphinx
 sphinx_rtd_theme
 ipython
 matplotlib
-codecov
 doctr
