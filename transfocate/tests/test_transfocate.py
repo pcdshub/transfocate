@@ -71,8 +71,8 @@ def test_transfocator_find_best_combo(transfocator):
     transfocator.interlock.limits.low.sim_put(0.)
     transfocator.interlock.limits.high.sim_put(1500.)
     combo = transfocator.find_best_combo(target=302.5)
-    assert combo.nlens == 1
-    assert np.isclose(302.5, combo.image(0.0), atol=0.1)
+    assert combo.nlens == 2
+    assert np.isclose(302.5, combo.image(0.0), atol=0.2)
 
 
 def test_transfocator_focus_at(transfocator):
