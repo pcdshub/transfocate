@@ -1,13 +1,8 @@
 """Create Beckhoff TwinCAT PLC source code for the spreadsheet."""
 import sys
 
-import matplotlib
 import numpy as np
 import pandas as pd
-
-matplotlib.use("Agg")  # noqa
-
-import matplotlib.pyplot as plt  # noqa
 
 from .info import data as spreadsheet_data
 
@@ -116,6 +111,10 @@ def main():
     """
     code = generate_source()
     print(code)
+
+    import matplotlib  # noqa
+    matplotlib.use("Agg")  # noqa
+    import matplotlib.pyplot as plt  # noqa
 
     _, axes = plt.subplots(
         ncols=2, nrows=2, constrained_layout=True, dpi=120, figsize=(11, 8)
