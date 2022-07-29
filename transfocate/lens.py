@@ -11,7 +11,7 @@ import logging
 ###############
 import numpy as np
 import prettytable
-from ophyd import EpicsSignalRO, EpicsSignal, Component as C
+from ophyd import EpicsSignalRO, EpicsSignal, Component as Cpt, Device
 from pcdsdevices.inout import InOutPVStatePositioner
 
 ##########
@@ -20,6 +20,13 @@ from pcdsdevices.inout import InOutPVStatePositioner
 
 logger = logging.getLogger(__name__)
 
+
+class LensTripLimits(Device):
+    """Trip limits for a given pre-focus lens (or lack thereof)."""
+    # _table_name = Cpt(EpicsSignalRO, ":STR", doc="Table name for trip information")
+    low = Cpt(EpicsSignalRO, ":LOW", doc="Trip region low [um]", auto_monitor=False)
+    high = Cpt(EpicsSignalRO, ":HIGH", doc="Trip region high [um]", auto_monitor=False)
+    
 
 class Lens(InOutPVStatePositioner):
     """
@@ -34,21 +41,21 @@ class Lens(InOutPVStatePositioner):
         Prefix for the PVs that contain focusing information
     """
     # StatePositioner information
-    _inserted = C(EpicsSignalRO, ':STATE')
-    _removed = C(EpicsSignalRO, ":OUT")
-    _insert = C(EpicsSignal, ':INSERT')
-    _remove = C(EpicsSignal, ':REMOVE')
+    _inserted = Cpt(EpicsSignalRO, ':STATE')
+    _removed = Cpt(EpicsSignalRO, ":OUT")
+    _insert = Cpt(EpicsSignal, ':INSERT')
+    _remove = Cpt(EpicsSignal, ':REMOVE')
     _state_logic = {'_inserted': {0: 'defer',  1: 'IN'},
                     '_removed': {0: 'defer', 1: 'OUT'}}
     # Signals related to optical configuration
-    _sig_radius = C(EpicsSignalRO, ":RADIUS", auto_monitor=True)
-    _sig_z = C(EpicsSignalRO, ":Z", auto_monitor=True)
-    _sig_focus = C(EpicsSignalRO, ":FOCUS", auto_monitor=True)
+    _sig_radius = Cpt(EpicsSignalRO, ":RADIUS", auto_monitor=True)
+    _sig_z = Cpt(EpicsSignalRO, ":Z", auto_monitor=True)
+    _sig_focus = Cpt(EpicsSignalRO, ":FOCUS", auto_monitor=True)
     # Default configuration attributes. Read attributes are set correctly by
     # InOutRecordPositioner
     _default_configuration_attrs = ['_sig_radius', '_sig_z']
     # Signal for requested focus
-    _req_focus = C(EpicsSignal, ':REQ_FOCUS')
+    _req_focus = Cpt(EpicsSignal, ':REQ_FOCUS')
 
     @property
     def radius(self):
@@ -61,7 +68,7 @@ class Lens(InOutPVStatePositioner):
         float
             Returns the radius of the lens
         """
-        return self._sig_radius.value
+        return self._sig_radius.get()
 
     @property
     def z(self):
@@ -73,7 +80,7 @@ class Lens(InOutPVStatePositioner):
         float
             Returns the z position of the lens in meters along the beamline
         """
-        return self._sig_z.value
+        return self._sig_z.get()
 
     @property
     def focus(self):
@@ -85,7 +92,7 @@ class Lens(InOutPVStatePositioner):
         float
             Returns the focal length of the lens in meters
         """
-        return self._sig_focus.value
+        return self._sig_focus.get()
 
     @property
     def req_focus(self):

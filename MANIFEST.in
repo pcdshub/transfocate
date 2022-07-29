@@ -1,2 +1,3 @@
 include versioneer.py
 include transfocate/_version.py
+include transfocate/table/MFX_EnergyLensInterlock_Tables_Transposed.xlsx

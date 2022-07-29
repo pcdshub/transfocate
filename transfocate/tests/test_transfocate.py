@@ -47,7 +47,8 @@ def sim_transfocator():
     # Use a nominal sample position
     trans.nominal_sample = 300.0
     # Set a reasonable limit
-    trans.xrt_limit.sim_put(-1.0)
+    trans.interlock.limits.low.sim_put(0.0)
+    trans.interlock.limits.low.sim_put(0.0)
     return trans
 
 
@@ -72,7 +73,8 @@ def test_transfocator_find_best_combo(transfocator):
     assert combo.nlens == 2
     assert np.isclose(312.5, combo.image(0.0), atol=0.1)
     # A solution where there are no valid prefocus
-    transfocator.xrt_limit.sim_put(1500.)
+    transfocator.interlock.limits.low.sim_put(0.)
+    transfocator.interlock.limits.high.sim_put(1500.)
     combo = transfocator.find_best_combo(target=302.5)
     assert combo.nlens == 1
     print(combo.image(0.0))
@@ -84,12 +86,17 @@ def test_transfocator_focus_at(transfocator):
     # Insert Transfocator lenses so we can test that they are properly removed
     transfocator.beam_energy.put(9536.5)
     for lens in transfocator.tfs_lenses:
-        insert(lens)
+        if lens == transfocator.tfs_02:
+            remove(lens)
+        else:
+            insert(lens)
+    # Make sure they all get moved correctly
     transfocator.focus_at(value=312.5, wait=False)
     assert transfocator.prefocus_bot._insert.get() == 1
-    assert transfocator.tfs_02._insert.get() == 1
     for lens in transfocator.tfs_lenses:
-        if lens != transfocator.tfs_02:
+        if lens == transfocator.tfs_02:
+            assert lens._insert.get() == 1
+        else:
             assert lens._remove.get() == 1
 
 
