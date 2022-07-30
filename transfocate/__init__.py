@@ -1,6 +1,6 @@
 __all__ = ['Lens', 'LensConnect', 'Calculator', 'Transfocator']
 
-from .lens import Lens, LensConnect
+from .lens import LensBase, MFXLens, LensConnect
 from .calculator import Calculator
 from .transfocator import Transfocator
 

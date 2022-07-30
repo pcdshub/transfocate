@@ -5,8 +5,10 @@ from pcdsdevices.device_types import IMS
 from ophyd import Device, EpicsSignalRO, Component as Cpt, FormattedComponent, EpicsSignal
 from ophyd.status import wait as status_wait
 
-from .lens import Lens, LensConnect, LensTripLimits
+from .lens import LensConnect, LensTripLimits
+from .lens import MFXLens as Lens
 from .calculator import Calculator
+from .offline_calculator import TFS_Calculator
 from functools import wraps
 
 logger = logging.getLogger(__name__)
@@ -162,7 +164,7 @@ class Transfocator(Device):
         # Calculate the image from this set of lenses
         return LensConnect(*inserted).image(0.0) - self.nominal_sample
 
-    def find_best_combo(self, target=None, show=True, **kwargs):
+    def find_best_combo(self, target=None, energy=None, show=True, **kwargs):
         """
         Calculate the best lens array to hit the nominal sample point
 
@@ -178,11 +180,14 @@ class Transfocator(Device):
         kwargs:
             Passed to :meth:`.Calculator.find_solution`
         """
+        energy = energy or self.beam_energy.get()
         target = target or self.nominal_sample
-        calc = Calculator(self.xrt_lenses, self.tfs_lenses)
-        combo = calc.find_solution(target, **kwargs)
+        # calc = Calculator(self.xrt_lenses, self.tfs_lenses)
+        calc = TFS_Calculator(tfs_lenses=self.tfs_lenses, prefocus_lenses=self.xrt_lenses)
+        combo, diff = calc.find_solution(target, energy, **kwargs)
         if combo:
             combo.show_info()
+            print(f'Difference to desired focus position: {diff}')
         else:
             logger.error("Unable to find a valid solution for target")
         return combo
