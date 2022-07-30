@@ -7,7 +7,7 @@ import wave
 import numpy as np
 
 from .lens import LensConnect
-import utils as ut
+from .utils import MFX_prefocus_energy_range
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,6 @@ class TFS_Calculator(object):
         if tfs_lenses is not None:
             self.combos = self.combinations()
         return
-
 
     def combinations(self):
         """
@@ -48,7 +47,7 @@ class TFS_Calculator(object):
 
 
     def get_pre_focus_lens(self, energy):
-        for e_range, lens in ut.MFX_prefocus_energy_range.items():
+        for e_range, lens in MFX_prefocus_energy_range.items():
             if energy>=e_range[0] and energy<e_range[1]:
                 pre_focus_lens_idx = lens[0]
                 break
@@ -61,8 +60,8 @@ class TFS_Calculator(object):
             print(f'Radius: {pre_focus_lens.radius} um\n')
         return pre_focus_lens
 
-
-    def get_combo_image(self, combo, z_obj=0.0):
+    @staticmethod
+    def get_combo_image(combo, z_obj=0.0):
         return combo.image(z_obj)
 
     
@@ -91,10 +90,10 @@ class TFS_Calculator(object):
         
         Steps:
         1) find the right pre-focussing lens. These are pre-defined based on the 
-        photon energy (see prefocus_energy_range). and add it to the combos
+        photon energy (see prefocus_energy_range) and add it to the combos.
         2) Calculate the focus and the difference to the target for each TFS lens
-        combination
-        3) Pick the smaller difference
+        combination.
+        3) Pick the combo with the smallest difference
         """
         # Step 1
         pre_focus_lens = self.get_pre_focus_lens(energy)
