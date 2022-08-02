@@ -5,6 +5,7 @@ Basic Lens object handling
 # Standard #
 ############
 import logging
+from math import radians
 
 ###############
 # Third Party #
@@ -29,13 +30,13 @@ class LensTripLimits(Device):
     high = Cpt(EpicsSignalRO, ":HIGH", doc="Trip region high [um]", auto_monitor=False)
 
 
-class LensBase(object):
-    def __init__(self, radius=None, z_position=None, **kwargs):
-        if radius is not None:
-            self.radius = radius
-            self.z = z_position
-            self.inserted = None
-            self.prefix = 'dummy'
+class LensCalcMixin():
+    def __init__(self, *args, **kwargs):
+        """
+        Relies on the following methods / attributes from the child class:
+        - self.radius
+        - self.z
+        """
         return
 
     def focus(self, energy):
@@ -76,7 +77,7 @@ class LensBase(object):
         return plane + self.z
 
 
-class MFXLens(InOutPVStatePositioner, LensBase):
+class MFXLens(InOutPVStatePositioner, LensCalcMixin):
     """
     Data structure for basic Lens object
 
@@ -106,7 +107,8 @@ class MFXLens(InOutPVStatePositioner, LensBase):
     _req_focus = Cpt(EpicsSignal, ':REQ_FOCUS')
 
     def __init__(self, prefix, **kwargs):
-        super(MFXLens, self).__init__(prefix, **kwargs)
+        super().__init__(prefix, **kwargs)
+        
 
     @property
     def radius(self):

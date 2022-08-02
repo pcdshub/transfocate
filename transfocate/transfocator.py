@@ -85,7 +85,12 @@ class TransfocatorInterlock(Device):
     )
 
 
-class Transfocator(Device):
+class TransfocatorBase(Device):
+    def __init__(self, prefix, *args, **kwargs):
+        super().__init__(prefix, **kwargs)
+        return
+
+class MFXTransfocator(TransfocatorBase):
     """
     Class to represent the MFX Transfocator
     """

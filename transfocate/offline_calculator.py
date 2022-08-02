@@ -1,8 +1,6 @@
 import itertools
 import logging
-from pathlib import Path
 from unittest import skip
-import wave
 
 import numpy as np
 
@@ -13,11 +11,10 @@ logger = logging.getLogger(__name__)
 
 
 class TFS_Calculator(object):
-    def __init__(self, tfs_lenses=None, prefocus_lenses=None):
+    def __init__(self, tfs_lenses, prefocus_lenses=None):
         self.tfs_lenses = tfs_lenses
         self.prefocus_lenses = prefocus_lenses
-        if tfs_lenses is not None:
-            self.combos = self.combinations()
+        self.combos = self.combinations()
         return
 
     def combinations(self):
@@ -26,9 +23,6 @@ class TFS_Calculator(object):
 
         Parameters
         ----------
-        include_prefocus : bool
-            Use only combinations that include a prefocusing lens. If False,
-            only combinations of Transfocator lenses are returned
 
         Returns
         -------
@@ -45,6 +39,10 @@ class TFS_Calculator(object):
                      len(tfs_combos))
         return tfs_combos
 
+    
+    def _update_combos(self):
+        self.combos = self.combinations()
+
 
     def get_pre_focus_lens(self, energy):
         for e_range, lens in MFX_prefocus_energy_range.items():
@@ -60,11 +58,12 @@ class TFS_Calculator(object):
             print(f'Radius: {pre_focus_lens.radius} um\n')
         return pre_focus_lens
 
+
     @staticmethod
     def get_combo_image(combo, z_obj=0.0):
         return combo.image(z_obj)
 
-    
+
     def find_solution(self, target, energy, n=4, z_obj=0.0):
         """
         Find a combination to reach a specific focus
@@ -96,15 +95,16 @@ class TFS_Calculator(object):
         3) Pick the combo with the smallest difference
         """
         # Step 1
-        pre_focus_lens = self.get_pre_focus_lens(energy)
-        if pre_focus_lens is None:
-            combos = self.combos
-        else:
-            combos = []
-            for combo in self.combos:
-                c = LensConnect(pre_focus_lens)
-                lens_combo = LensConnect.connect(c, combo)
-                combos.append(lens_combo)
+        if self.prefocus_lenses is not None:
+            pre_focus_lens = self.get_pre_focus_lens(energy)
+            if pre_focus_lens is None:
+                combos = self.combos
+            else:
+                combos = []
+                for combo in self.combos:
+                    c = LensConnect(pre_focus_lens)
+                    lens_combo = LensConnect.connect(c, combo)
+                    combos.append(lens_combo)
 
         # Step 2
         diff = []

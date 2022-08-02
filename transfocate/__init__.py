@@ -1,8 +1,8 @@
 __all__ = ['Lens', 'LensConnect', 'Calculator', 'Transfocator']
 
-from .lens import LensBase, MFXLens, LensConnect
+from .lens import MFXLens, LensConnect
 from .calculator import Calculator
-from .transfocator import Transfocator
+from .transfocator import TransfocatorBase, MFXTransfocator
 
 from ._version import get_versions
 __version__ = get_versions()['version']
