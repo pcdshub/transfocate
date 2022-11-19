@@ -7,3 +7,4 @@ pandas
 pcdsdevices
 prettytable
 reportlab
+periodictable

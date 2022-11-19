@@ -17,6 +17,7 @@ from pcdsdevices.inout import InOutPVStatePositioner
 ##########
 # Module #
 ##########
+import transfocate.utils as ut
 
 logger = logging.getLogger(__name__)
 
@@ -26,9 +27,59 @@ class LensTripLimits(Device):
     # _table_name = Cpt(EpicsSignalRO, ":STR", doc="Table name for trip information")
     low = Cpt(EpicsSignalRO, ":LOW", doc="Trip region low [um]", auto_monitor=False)
     high = Cpt(EpicsSignalRO, ":HIGH", doc="Trip region high [um]", auto_monitor=False)
-    
 
-class Lens(InOutPVStatePositioner):
+
+class LensCalcMixin():
+    def __init__(self, *args, **kwargs):
+        """
+        Mixin class to abstract focal length calculation from a variety of 
+        lens devices.
+        
+        Relies on the following methods / attributes from the child class:
+        - self.radius
+        - self.z
+        """
+        return
+
+    def focus(self, energy):
+        return ut.focal_length(self.radius, energy)
+    
+    def image_from_obj(self, z_obj, energy):
+        """
+        Method calculates the image distance in meters along the beam pipeline
+        from a point of origin given the focal length of the lens, location of
+        lens, and location of object.
+
+        Parameters
+        ----------
+        z_obj
+            Location of object along the beamline in meters (m)
+
+        Returns
+        -------
+        image
+            Returns the distance z_im of the image along the beam pipeline from
+            a point of origin in meters (m)
+        Note
+        ----
+        If the location of the object (z_obj) is equal to the focal length of
+        the lens, this function will return infinity.
+        """
+        # Find the object location for the lens
+        obj = self.z - z_obj
+        # Check if the lens object is at the focal length
+        # If this happens, then the image location will be infinity.
+        # Note, this should not effect the recursive calculations that occur
+        # later in the code
+        if obj == self.focus(energy):
+            return np.inf
+        # Calculate the location of the focal plane
+        plane = 1/(1/self.focus(energy) - 1/obj)
+        # Find the position in accelerator coordinates
+        return plane + self.z
+
+
+class MFXLens(InOutPVStatePositioner, LensCalcMixin):
     """
     Data structure for basic Lens object
 
@@ -57,6 +108,10 @@ class Lens(InOutPVStatePositioner):
     # Signal for requested focus
     _req_focus = Cpt(EpicsSignal, ':REQ_FOCUS')
 
+    def __init__(self, prefix, **kwargs):
+        super().__init__(prefix, **kwargs)
+        
+
     @property
     def radius(self):
         """
@@ -83,7 +138,7 @@ class Lens(InOutPVStatePositioner):
         return self._sig_z.get()
 
     @property
-    def focus(self):
+    def sig_focus(self):
         """
         Method converts the EPICS focal length signal of the lens into a float
 
@@ -93,40 +148,6 @@ class Lens(InOutPVStatePositioner):
             Returns the focal length of the lens in meters
         """
         return self._sig_focus.get()
-
-    def image_from_obj(self, z_obj):
-        """
-        Method calculates the image distance in meters along the beam pipeline
-        from a point of origin given the focal length of the lens, location of
-        lens, and location of object.
-
-        Parameters
-        ----------
-        z_obj
-            Location of object along the beamline in meters (m)
-
-        Returns
-        -------
-        image
-            Returns the distance z_im of the image along the beam pipeline from
-            a point of origin in meters (m)
-        Note
-        ----
-        If the location of the object (z_obj) is equal to the focal length of
-        the lens, this function will return infinity.
-        """
-        # Find the object location for the lens
-        obj = self.z - z_obj
-        # Check if the lens object is at the focal length
-        # If this happens, then the image location will be infinity.
-        # Note, this should not effect the recursive calculations that occur
-        # later in the code
-        if obj == self.focus:
-            return np.inf
-        # Calculate the location of the focal plane
-        plane = 1/(1/self.focus - 1/obj)
-        # Find the position in accelerator coordinates
-        return plane + self.z
 
     def _do_move(self, state):
         if state.name == 'IN':
@@ -173,7 +194,7 @@ class LensConnect:
             return 0.0
         return 1/np.sum(np.reciprocal([float(l.radius) for l in self.lenses]))
 
-    def image(self, z_obj):
+    def image(self, z_obj, energy):
         """
         Method recursively calculates the z location of the image of a system
         of lenses and returns it in meters (m)
@@ -193,7 +214,7 @@ class LensConnect:
         image = z_obj
         # Determine the final output by looping through lenses
         for lens in self.lenses:
-            image = lens.image_from_obj(image)
+            image = lens.image_from_obj(image, energy)
         return image
 
     @property
