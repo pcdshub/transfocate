@@ -10,7 +10,7 @@ import numpy as np
 ##########
 # Module #
 ##########
-from transfocate.calculator import Calculator
+from packages.transfocate.offline_calculator import Calculator
 from .conftest import FakeLens
 
 

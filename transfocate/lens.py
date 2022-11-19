@@ -5,7 +5,6 @@ Basic Lens object handling
 # Standard #
 ############
 import logging
-from math import radians
 
 ###############
 # Third Party #
@@ -33,6 +32,9 @@ class LensTripLimits(Device):
 class LensCalcMixin():
     def __init__(self, *args, **kwargs):
         """
+        Mixin class to abstract focal length calculation from a variety of 
+        lens devices.
+        
         Relies on the following methods / attributes from the child class:
         - self.radius
         - self.z

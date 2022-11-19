@@ -1,6 +1,6 @@
 import itertools
 import logging
-from unittest import skip
+# from unittest import skip
 
 import numpy as np
 
@@ -29,7 +29,7 @@ class TFS_Calculator(object):
         combos: list
             List of LensConnect objects
         """
-        combos = list()
+
         tfs_combos = list()
         for i in range(1, len(self.tfs_lenses)+1):
             list_combos = list(itertools.combinations(self.tfs_lenses, i))
@@ -39,14 +39,12 @@ class TFS_Calculator(object):
                      len(tfs_combos))
         return tfs_combos
 
-    
     def _update_combos(self):
         self.combos = self.combinations()
 
-
     def get_pre_focus_lens(self, energy):
         for e_range, lens in MFX_prefocus_energy_range.items():
-            if energy>=e_range[0] and energy<e_range[1]:
+            if energy >= e_range[0] and energy < e_range[1]:
                 pre_focus_lens_idx = lens[0]
                 break
         if pre_focus_lens_idx is None:
@@ -58,11 +56,9 @@ class TFS_Calculator(object):
             print(f'Radius: {pre_focus_lens.radius} um\n')
         return pre_focus_lens
 
-
     @staticmethod
     def get_combo_image(combo, z_obj=0.0):
         return combo.image(z_obj)
-
 
     def find_solution(self, target, energy, n=4, z_obj=0.0):
         """
@@ -86,14 +82,15 @@ class TFS_Calculator(object):
         array: LensConnect
             An array of lens combinations with the closest possible image to
             the target_image
-        
+
         Steps:
-        1) find the right pre-focussing lens. These are pre-defined based on the 
-        photon energy (see prefocus_energy_range) and add it to the combos.
-        2) Calculate the focus and the difference to the target for each TFS lens
-        combination.
+        1) find the right pre-focussing lens. These are pre-defined based on
+        the photon energy (see prefocus_energy_range) and add it to the combos.
+        2) Calculate the focus and the difference to the target for each TFS
+        lens combination.
         3) Pick the combo with the smallest difference
         """
+
         # Step 1
         if self.prefocus_lenses is not None:
             pre_focus_lens = self.get_pre_focus_lens(energy)
@@ -113,8 +110,7 @@ class TFS_Calculator(object):
                 continue
             image = combo.image(z_obj, energy)
             diff.append(np.abs(image - target))
-        
+
         # Step 3
         solution = combos[np.argmin(diff)]
         return solution, np.min(diff)
-
