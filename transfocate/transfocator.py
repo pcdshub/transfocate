@@ -2,7 +2,7 @@ import math
 import logging
 
 from pcdsdevices.device_types import IMS
-from ophyd import Device, EpicsSignalRO, (Component as Cpt, 
+from ophyd import (Device, EpicsSignalRO, Component as Cpt,
     FormattedComponent, EpicsSignal)
 from ophyd.status import wait as status_wait
 
