@@ -5,7 +5,7 @@ requires = [ "setuptools>=45", "setuptools_scm[toml]>=6.2",]
 [project]
 classifiers = [ "Development Status :: 2 - Pre-Alpha", "Natural Language :: English", "Programming Language :: Python :: 3",]
 description = "Automated Calculation of Transfocator Focusing Optics"
-dynamic = [ "version", "readme", "dependencies", "optional-dependencies", "optional-dependencies",]
+dynamic = [ "version", "readme", "dependencies", "optional-dependencies",]
 keywords = []
 name = "transfocate"
 requires-python = ">=3.9"
@@ -35,3 +35,6 @@ file = [ "requirements.txt",]
 
 [tool.setuptools.dynamic.optional-dependencies.test]
 file = "dev-requirements.txt"
+
+[tool.setuptools.dynamic.optional-dependencies.docs]
+file = "docs-requirements.txt"
