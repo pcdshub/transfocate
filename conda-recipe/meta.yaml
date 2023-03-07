@@ -25,6 +25,7 @@ requirements:
   - python >=3.6
   - bluesky
   - databroker
+  - matplotlib-base
   - numpy
   - openpyxl
   - ophyd >=1.5.0
@@ -33,13 +34,11 @@ requirements:
   - prettytable
   - reportlab
 
-
-
 test:
+  requires:
+  - pytest
   imports:
   - transfocate
-
-
 
 about:
   home: https://github.com/pcdshub/transfocate

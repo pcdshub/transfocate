@@ -22,6 +22,8 @@ import sys
 module_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../")
 sys.path.insert(0, module_path)
 
+import transfocate  # noqa: E402
+
 
 # -- General configuration ------------------------------------------------
 
@@ -33,12 +35,13 @@ sys.path.insert(0, module_path)
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "sphinxcontrib.jquery",
-    "sphinx.ext.autodoc",
-    "sphinx.ext.viewcode",
-    "IPython.sphinxext.ipython_directive",
     "IPython.sphinxext.ipython_console_highlighting",
+    "IPython.sphinxext.ipython_directive",
+    "docs_versions_menu",
+    "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
+    "sphinx.ext.viewcode",
+    "sphinxcontrib.jquery",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -63,8 +66,6 @@ author = "SLAC National Accelerator Laboratory"
 # built documents.
 #
 # The short X.Y version.
-import transfocate
-
 version = str(transfocate.__version__)
 # The full version, including alpha/beta/rc tags.
 release = str(transfocate.__version__)

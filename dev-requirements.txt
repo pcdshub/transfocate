@@ -1,7 +1,1 @@
 pytest
-sphinx
-sphinx_rtd_theme
-ipython
-matplotlib
-doctr
-sphinxcontrib-jquery
