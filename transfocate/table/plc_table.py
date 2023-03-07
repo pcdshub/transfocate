@@ -1,7 +1,5 @@
 """Create Beckhoff TwinCAT PLC source code for the spreadsheet."""
-import sys
 
-import numpy as np
 import pandas as pd
 
 from .info import data as spreadsheet_data

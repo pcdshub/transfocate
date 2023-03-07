@@ -73,7 +73,7 @@ import transfocate
 import transfocate.checkout
 
 from .table import generate_report
-from .table.info import MIN_ENERGY, MIN_RADIUS
+from .table.info import MIN_ENERGY
 from .table.info import data as spreadsheet_data
 
 DESCRIPTION = __doc__
