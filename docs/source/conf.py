@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # transfocate documentation build configuration file, created by
 # sphinx-quickstart on Tue Jul  4 09:52:15 2017.

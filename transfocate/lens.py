@@ -137,7 +137,7 @@ class Lens(InOutPVStatePositioner):
         # through check_value first. Just in case this is here to not fail
         # silently
         else:
-            raise ValueError("Invalid State {}".format(state))
+            raise ValueError(f"Invalid State {state}")
 
 
 class LensConnect:

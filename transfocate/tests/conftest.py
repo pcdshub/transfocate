@@ -11,7 +11,7 @@ from ophyd.sim import make_fake_device
 ################
 # Mock Classes #
 ################
-class FakeLens(object):
+class FakeLens:
 
     image_from_obj = Lens.image_from_obj
 
