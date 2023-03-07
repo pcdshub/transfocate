@@ -1,12 +1,8 @@
-###############
-# Third Party #
-###############
 import pytest
-##########
-# Module #
-##########
-from transfocate.lens import Lens, LensConnect
 from ophyd.sim import make_fake_device
+
+from ..lens import Lens, LensConnect
+
 
 ################
 # Mock Classes #
@@ -29,9 +25,12 @@ class FakeLens:
 
 
 SynLens = make_fake_device(Lens)
+
+
 ############
 # Fixtures #
 ############
+
 
 @pytest.fixture(scope='module')
 def lens():
