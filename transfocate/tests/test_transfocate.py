@@ -1,10 +1,12 @@
 import logging
 
-from ophyd.sim import make_fake_device
-import pytest
 import numpy as np
+import pytest
+from ophyd.sim import make_fake_device
 
-from transfocate.transfocator import Transfocator, constant_energy, TransfocatorEnergyInterrupt
+from transfocate.transfocator import (Transfocator,
+                                      TransfocatorEnergyInterrupt,
+                                      constant_energy)
 
 logger = logging.getLogger(__name__)
 

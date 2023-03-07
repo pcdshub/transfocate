@@ -24,7 +24,6 @@ sys.path.insert(0, module_path)
 
 import transfocate  # noqa: E402
 
-
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.

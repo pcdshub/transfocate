@@ -2,11 +2,9 @@
 import bluesky.plan_stubs as bps
 import bluesky.plans as bp
 import bluesky.preprocessors as bpp
-
 import ophyd
 from ophyd import Component as Cpt
 from ophyd import EpicsSignal, EpicsSignalRO
-
 
 
 class LensCheckout(ophyd.Device):

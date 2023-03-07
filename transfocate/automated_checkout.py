@@ -285,7 +285,7 @@ Sorry, trouble connecting to some devices. This happens occasionally at initiali
 Please re-try running this script.
 """
         )
-        raise
+        raise ex
 
     print(DESCRIPTION)
     print("Run scans and generate report? ('yes' to continue)")

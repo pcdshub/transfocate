@@ -2,7 +2,6 @@
 
 import pandas as pd
 
-
 from .info import data as spreadsheet_data
 
 # Header file output settings:

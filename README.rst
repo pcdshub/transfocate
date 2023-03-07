@@ -50,7 +50,7 @@ To perform a scan for a single XRT lens, use:
 .. code-block:: python
 
     >>> sweep_and_plot_xrt(xrt_lens, num_steps=100)
-    
+
 This will choose different combinations of TFS lenses to span the region, and
 scan energy in 100 discrete steps.
 To perform a scan for _all_ XRT lenses, use:
@@ -58,7 +58,7 @@ To perform a scan for _all_ XRT lenses, use:
 .. code-block:: python
 
     >>> sweep_and_plot_xrt_all(num_steps=100)
-    
+
 Per-lens data and plots will be saved to Excel and PNG/PDF files, respectively.
 This can be combined into a full checkout report with the following:
 

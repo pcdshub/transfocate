@@ -2,15 +2,17 @@
 # Standard #
 ############
 
+import numpy as np
 ###############
 # Third Party #
 ###############
 import pytest
-import numpy as np
+
 ##########
 # Module #
 ##########
 from transfocate.calculator import Calculator
+
 from .conftest import FakeLens
 
 
