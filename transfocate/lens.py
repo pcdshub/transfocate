@@ -1,23 +1,13 @@
 """
 Basic Lens object handling
 """
-############
-# Standard #
-############
 import logging
 
-###############
-# Third Party #
-###############
 import numpy as np
 import prettytable
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO
 from pcdsdevices.inout import InOutPVStatePositioner
-
-##########
-# Module #
-##########
 
 logger = logging.getLogger(__name__)
 

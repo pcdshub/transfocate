@@ -4,9 +4,6 @@ from ophyd.sim import make_fake_device
 from ..lens import Lens, LensConnect
 
 
-################
-# Mock Classes #
-################
 class FakeLens:
 
     image_from_obj = Lens.image_from_obj
@@ -25,11 +22,6 @@ class FakeLens:
 
 
 SynLens = make_fake_device(Lens)
-
-
-############
-# Fixtures #
-############
 
 
 @pytest.fixture(scope='module')
