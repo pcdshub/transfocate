@@ -1,9 +1,6 @@
 """Generate IOC header files (in C) for the spreadsheet table."""
-import sys
 
-import numpy as np
 import pandas as pd
-
 
 from .info import data as spreadsheet_data
 

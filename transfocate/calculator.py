@@ -5,7 +5,6 @@ import numpy as np
 
 from transfocate.lens import LensConnect
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -103,7 +102,7 @@ class Calculator:
                 try:
                     image = combo.image(z_obj)
                     diff = np.abs(image - target)
-                except Exception as exc:
+                except Exception:
                     logger.exception("Unable to calculate image position")
                     diff = np.inf
                 # See if we have found a better solution

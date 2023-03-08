@@ -1,8 +1,10 @@
-{% set data = load_setup_py_data() %}
+{% set package_name = "transfocate" %}
+{% set import_name = "transfocate" %}
+{% set version = load_file_regex(load_file=os.path.join(import_name, "_version.py"), regex_pattern=".*version = '(\S+)'").group(1) %}
 
 package:
-  name: transfocate
-  version : {{ data.get('version') }}
+  name: {{ package_name }}
+  version: {{ version }}
 
 source:
   path: ..
@@ -10,29 +12,33 @@ source:
 build:
   number: 0
   noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
 
 requirements:
   build:
-    - python >=3.6
-    - setuptools
-
+  - python >=3.9
+  - setuptools_scm
+  - pip
   run:
-    - python >=3.6
-    - bluesky
-    - databroker
-    - numpy
-    - openpyxl
-    - ophyd >=1.5.0
-    - pandas
-    - pcdsdevices >=4.0.0
-    - prettytable
-    - reportlab
+  - python >=3.9
+  - bluesky
+  - databroker
+  - matplotlib-base
+  - numpy
+  - openpyxl
+  - ophyd >=1.5.0
+  - pandas
+  - pcdsdevices >=4.0.0
+  - prettytable
+  - reportlab
 
 test:
+  requires:
+  - pytest
   imports:
-    - transfocate
+  - transfocate
 
 about:
   home: https://github.com/pcdshub/transfocate
   license: SLAC Open License
-  summary: Devices abstractions and utlitiies for the MFX Transfocator 
+  summary: Devices abstractions and utlitiies for the MFX Transfocator

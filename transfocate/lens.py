@@ -1,22 +1,13 @@
 """
 Basic Lens object handling
 """
-############
-# Standard #
-############
 import logging
 
-###############
-# Third Party #
-###############
 import numpy as np
 import prettytable
-from ophyd import EpicsSignalRO, EpicsSignal, Component as Cpt, Device
+from ophyd import Component as Cpt
+from ophyd import Device, EpicsSignal, EpicsSignalRO
 from pcdsdevices.inout import InOutPVStatePositioner
-
-##########
-# Module #
-##########
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +17,7 @@ class LensTripLimits(Device):
     # _table_name = Cpt(EpicsSignalRO, ":STR", doc="Table name for trip information")
     low = Cpt(EpicsSignalRO, ":LOW", doc="Trip region low [um]", auto_monitor=False)
     high = Cpt(EpicsSignalRO, ":HIGH", doc="Trip region high [um]", auto_monitor=False)
-    
+
 
 class Lens(InOutPVStatePositioner):
     """
@@ -45,8 +36,10 @@ class Lens(InOutPVStatePositioner):
     _removed = Cpt(EpicsSignalRO, ":OUT")
     _insert = Cpt(EpicsSignal, ':INSERT')
     _remove = Cpt(EpicsSignal, ':REMOVE')
-    _state_logic = {'_inserted': {0: 'defer',  1: 'IN'},
-                    '_removed': {0: 'defer', 1: 'OUT'}}
+    _state_logic = {
+        "_inserted": {0: "defer", 1: "IN"},
+        "_removed": {0: "defer", 1: "OUT"},
+    }
     # Signals related to optical configuration
     _sig_radius = Cpt(EpicsSignalRO, ":RADIUS", auto_monitor=True)
     _sig_z = Cpt(EpicsSignalRO, ":Z", auto_monitor=True)
@@ -137,7 +130,7 @@ class Lens(InOutPVStatePositioner):
         # through check_value first. Just in case this is here to not fail
         # silently
         else:
-            raise ValueError("Invalid State {}".format(state))
+            raise ValueError(f"Invalid State {state}")
 
 
 class LensConnect:
@@ -171,7 +164,7 @@ class LensConnect:
         """
         if not self.lenses:
             return 0.0
-        return 1/np.sum(np.reciprocal([float(l.radius) for l in self.lenses]))
+        return 1 / np.sum(np.reciprocal([float(lens.radius) for lens in self.lenses]))
 
     def image(self, z_obj):
         """

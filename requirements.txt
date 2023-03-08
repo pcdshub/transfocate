@@ -1,5 +1,6 @@
 databroker
 bluesky
+matplotlib
 numpy
 openpyxl
 ophyd

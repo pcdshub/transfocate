@@ -1,0 +1,5 @@
+docs-versions-menu
+sphinx
+sphinxcontrib-jquery
+sphinx_rtd_theme
+ipython

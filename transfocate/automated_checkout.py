@@ -73,7 +73,7 @@ import transfocate
 import transfocate.checkout
 
 from .table import generate_report
-from .table.info import MIN_ENERGY, MIN_RADIUS
+from .table.info import MIN_ENERGY
 from .table.info import data as spreadsheet_data
 
 DESCRIPTION = __doc__
@@ -285,7 +285,7 @@ Sorry, trouble connecting to some devices. This happens occasionally at initiali
 Please re-try running this script.
 """
         )
-        raise
+        raise ex
 
     print(DESCRIPTION)
     print("Run scans and generate report? ('yes' to continue)")
