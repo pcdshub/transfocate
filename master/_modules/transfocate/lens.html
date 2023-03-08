@@ -1,194 +1,102 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>transfocate.lens &mdash; transfocate 0.5.0+1.g4811681 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>transfocate.lens &mdash; transfocate 0.5.7.dev31+gd76c0b1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/docs-versions-menu.js"></script>
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../../index.html" class="icon icon-home"> transfocate
           
-
-          
+          <a href="../../index.html" class="icon icon-home">
+            transfocate
           </a>
-
-          
-            
-            
               <div class="version">
-                0.5.0+1.g4811681
+                0.5.7.dev31+gd76c0b1
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../lens.html">Lens Information</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../calculator.html">Calculator Information</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../transfocator.html">Transfocator Information</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">transfocate</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-        
-      <li>transfocate.lens</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">transfocate.lens</li>
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for transfocate.lens</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Basic Lens object handling</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="c1">############</span>
-<span class="c1"># Standard #</span>
-<span class="c1">############</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 
-<span class="c1">###############</span>
-<span class="c1"># Third Party #</span>
-<span class="c1">###############</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">prettytable</span>
-<span class="kn">from</span> <span class="nn">ophyd</span> <span class="kn">import</span> <span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="n">EpicsSignal</span><span class="p">,</span> <span class="n">Component</span> <span class="k">as</span> <span class="n">Cpt</span><span class="p">,</span> <span class="n">Device</span>
+<span class="kn">from</span> <span class="nn">ophyd</span> <span class="kn">import</span> <span class="n">Component</span> <span class="k">as</span> <span class="n">Cpt</span>
+<span class="kn">from</span> <span class="nn">ophyd</span> <span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">EpicsSignal</span><span class="p">,</span> <span class="n">EpicsSignalRO</span>
 <span class="kn">from</span> <span class="nn">pcdsdevices.inout</span> <span class="kn">import</span> <span class="n">InOutPVStatePositioner</span>
-
-<span class="c1">##########</span>
-<span class="c1"># Module #</span>
-<span class="c1">##########</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">LensTripLimits</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Trip limits for a given pre-focus lens (or lack thereof).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Trip limits for a given pre-focus lens (or lack thereof).&quot;&quot;&quot;</span>
     <span class="c1"># _table_name = Cpt(EpicsSignalRO, &quot;:STR&quot;, doc=&quot;Table name for trip information&quot;)</span>
     <span class="n">low</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:LOW&quot;</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Trip region low [um]&quot;</span><span class="p">,</span> <span class="n">auto_monitor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">high</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:HIGH&quot;</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Trip region high [um]&quot;</span><span class="p">,</span> <span class="n">auto_monitor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    
+
 
 <div class="viewcode-block" id="Lens"><a class="viewcode-back" href="../../lens.html#transfocate.lens.Lens">[docs]</a><span class="k">class</span> <span class="nc">Lens</span><span class="p">(</span><span class="n">InOutPVStatePositioner</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Data structure for basic Lens object</span>
 
 <span class="sd">    Parameters</span>
@@ -204,8 +112,10 @@
     <span class="n">_removed</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:OUT&quot;</span><span class="p">)</span>
     <span class="n">_insert</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsSignal</span><span class="p">,</span> <span class="s1">&#39;:INSERT&#39;</span><span class="p">)</span>
     <span class="n">_remove</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsSignal</span><span class="p">,</span> <span class="s1">&#39;:REMOVE&#39;</span><span class="p">)</span>
-    <span class="n">_state_logic</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;_inserted&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;defer&#39;</span><span class="p">,</span>  <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;IN&#39;</span><span class="p">},</span>
-                    <span class="s1">&#39;_removed&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;defer&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;OUT&#39;</span><span class="p">}}</span>
+    <span class="n">_state_logic</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;_inserted&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;defer&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;IN&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;_removed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;defer&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;OUT&quot;</span><span class="p">},</span>
+    <span class="p">}</span>
     <span class="c1"># Signals related to optical configuration</span>
     <span class="n">_sig_radius</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:RADIUS&quot;</span><span class="p">,</span> <span class="n">auto_monitor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">_sig_z</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;:Z&quot;</span><span class="p">,</span> <span class="n">auto_monitor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -218,7 +128,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">radius</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method converts the EPICS lens radius signal into a float that can be</span>
 <span class="sd">        used for calculations.</span>
 
@@ -231,7 +141,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">z</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method converts the z position EPICS signal into a float.</span>
 
 <span class="sd">        Returns</span>
@@ -243,7 +153,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">focus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method converts the EPICS focal length signal of the lens into a float</span>
 
 <span class="sd">        Returns</span>
@@ -254,7 +164,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sig_focus</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Lens.image_from_obj"><a class="viewcode-back" href="../../lens.html#transfocate.lens.Lens.image_from_obj">[docs]</a>    <span class="k">def</span> <span class="nf">image_from_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method calculates the image distance in meters along the beam pipeline</span>
 <span class="sd">        from a point of origin given the focal length of the lens, location of</span>
 <span class="sd">        lens, and location of object.</span>
@@ -296,11 +206,11 @@
         <span class="c1"># through check_value first. Just in case this is here to not fail</span>
         <span class="c1"># silently</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid State </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">state</span><span class="p">))</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid State </span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="LensConnect"><a class="viewcode-back" href="../../lens.html#transfocate.lens.LensConnect">[docs]</a><span class="k">class</span> <span class="nc">LensConnect</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Data structure for a basic system of lenses</span>
 
 <span class="sd">    Parameters</span>
@@ -309,7 +219,7 @@
 <span class="sd">        Lens objects</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        args</span>
@@ -320,7 +230,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">effective_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method calculates the effective radius of the lens array</span>
 
 <span class="sd">        Returns</span>
@@ -330,10 +240,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">lenses</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">0.0</span>
-        <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">reciprocal</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lenses</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">reciprocal</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">lens</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span> <span class="k">for</span> <span class="n">lens</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lenses</span><span class="p">]))</span>
 
 <div class="viewcode-block" id="LensConnect.image"><a class="viewcode-back" href="../../lens.html#transfocate.lens.LensConnect.image">[docs]</a>    <span class="k">def</span> <span class="nf">image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method recursively calculates the z location of the image of a system</span>
 <span class="sd">        of lenses and returns it in meters (m)</span>
 
@@ -357,7 +267,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">nlens</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method calculates the total number of lenses in the Lens array.</span>
 
 <span class="sd">        Returns</span>
@@ -368,7 +278,7 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lenses</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a table with lens information</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Create initial table</span>
@@ -381,60 +291,44 @@
         <span class="k">return</span> <span class="n">pt</span>
 
 <div class="viewcode-block" id="LensConnect.show_info"><a class="viewcode-back" href="../../lens.html#transfocate.lens.LensConnect.show_info">[docs]</a>    <span class="k">def</span> <span class="nf">show_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Show a table of information on the lens</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="LensConnect.connect"><a class="viewcode-back" href="../../lens.html#transfocate.lens.LensConnect.connect">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">array1</span><span class="p">,</span> <span class="n">array2</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a new LensConnect from the combination of multiple</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">array1</span><span class="o">.</span><span class="n">lenses</span><span class="p">,</span> <span class="o">*</span><span class="n">array2</span><span class="o">.</span><span class="n">lenses</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2017, SLAC National Accelerator Laboratory.
-
-    </p>
+    <p>&#169; Copyright 2017, SLAC National Accelerator Laboratory.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

@@ -26,11 +26,11 @@ tutorial does not affect the real Transfocator in MFX.
 
 
 .. ipython:: python
-    
-    import transfocate 
-    
+
+    import transfocate
+
     import transfocate.tests
-    
+
     mfx_transfocator = transfocate.tests.transfocator
 
 
@@ -42,7 +42,7 @@ manipulate them by:
 .. ipython:: python
 
     mfx_transfocator.prefocus_bot.insert()
-   
+
     mfx_transfocator.tfs_04.insert()
 
 You may also want to set the value of the ``nominal_sample`` this is the
@@ -68,7 +68,7 @@ Transfocator. To do this, use :meth:`.Transfocator.current_focus`
 This command will find the difference between the current focus of the
 Transfocator and the position we have saved as `nominal_sample`.  This may be
 helpful if you want to see which lenses are currently inserted in the beamline
-or to make sure that your previous settings have not been tampered with.  
+or to make sure that your previous settings have not been tampered with.
 
 To find your optimal array of lenses, use :meth:`.Transfocator.find_best_combo`
 and to find and apply your desired array of lenses, use
