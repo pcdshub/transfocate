@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Transfocate &mdash; transfocate 0.5.7 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <title>Transfocate &mdash; transfocate 0.5.9.dev3+g174dd2d documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/docs-versions-menu.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=c0569671"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/docs-versions-menu.js?v=3d6a1aea"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -35,7 +37,7 @@
             transfocate
           </a>
               <div class="version">
-                0.5.7
+                0.5.9.dev3+g174dd2d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -77,7 +79,7 @@
            <div itemprop="articleBody">
              
   <section id="transfocate">
-<h1>Transfocate<a class="headerlink" href="#transfocate" title="Permalink to this heading"></a></h1>
+<h1>Transfocate<a class="headerlink" href="#transfocate" title="Link to this heading"></a></h1>
 <p>The Transfocator is a tunable apparatus that focuses X-rays through the
 application of compound refractive Beryllium lenses.  Normally, to operate the
 Transfocator, users must know the location of lenses within the device and
@@ -94,7 +96,7 @@ apply appropriate lens systems. Information for the lenses include the radius,
 focal length, and z position along the beam and are all EPICS Read Only
 signals.  Additionally, all units of length are measured in meters.</p>
 <section id="creating-a-new-transfocator">
-<h2>Creating a New Transfocator<a class="headerlink" href="#creating-a-new-transfocator" title="Permalink to this heading"></a></h2>
+<h2>Creating a New Transfocator<a class="headerlink" href="#creating-a-new-transfocator" title="Link to this heading"></a></h2>
 <p>The lens arrays in Transfocator will be handled as <a class="reference internal" href="lens.html#transfocate.lens.LensConnect" title="transfocate.lens.LensConnect"><code class="xref py py-class docutils literal notranslate"><span class="pre">LensConnect</span></code></a> to
 provide more functionality. The examples below use a simulated model so the
 tutorial does not affect the real Transfocator in MFX.</p>
@@ -107,7 +109,7 @@ tutorial does not affect the real Transfocator in MFX.</p>
 </div>
 </section>
 <section id="manipulating-lenses">
-<h2>Manipulating Lenses<a class="headerlink" href="#manipulating-lenses" title="Permalink to this heading"></a></h2>
+<h2>Manipulating Lenses<a class="headerlink" href="#manipulating-lenses" title="Link to this heading"></a></h2>
 <p>All of the lenses are sub-components of the Transfocator object. You can
 manipulate them by:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="n">mfx_transfocator</span><span class="o">.</span><span class="n">prefocus_bot</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span>
@@ -127,7 +129,7 @@ itself.</p>
 </div>
 </section>
 <section id="finding-and-applying-optimal-combination">
-<h2>Finding and Applying Optimal Combination<a class="headerlink" href="#finding-and-applying-optimal-combination" title="Permalink to this heading"></a></h2>
+<h2>Finding and Applying Optimal Combination<a class="headerlink" href="#finding-and-applying-optimal-combination" title="Link to this heading"></a></h2>
 <p>First, you may want to find the current focus of the lenses inserted in the
 Transfocator. To do this, use <a class="reference internal" href="transfocator.html#transfocate.transfocator.Transfocator.current_focus" title="transfocate.transfocator.Transfocator.current_focus"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Transfocator.current_focus()</span></code></a></p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [7]: </span><span class="n">mfx_transfocator</span><span class="o">.</span><span class="n">current_focus</span>

@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>transfocate.transfocator &mdash; transfocate 0.5.7 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>transfocate.transfocator &mdash; transfocate 0.5.9.dev3+g174dd2d documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
-        <script src="../../_static/docs-versions-menu.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=c0569671"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/docs-versions-menu.js?v=3d6a1aea"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -33,7 +35,7 @@
             transfocate
           </a>
               <div class="version">
-                0.5.7
+                0.5.9.dev3+g174dd2d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -161,7 +163,9 @@
     <span class="p">)</span>
 
 
-<div class="viewcode-block" id="Transfocator"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator">[docs]</a><span class="k">class</span> <span class="nc">Transfocator</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+<div class="viewcode-block" id="Transfocator">
+<a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator">[docs]</a>
+<span class="k">class</span> <span class="nc">Transfocator</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class to represent the MFX Transfocator</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -240,7 +244,9 @@
         <span class="c1"># Calculate the image from this set of lenses</span>
         <span class="k">return</span> <span class="n">LensConnect</span><span class="p">(</span><span class="o">*</span><span class="n">inserted</span><span class="p">)</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">nominal_sample</span>
 
-<div class="viewcode-block" id="Transfocator.find_best_combo"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator.find_best_combo">[docs]</a>    <span class="k">def</span> <span class="nf">find_best_combo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Transfocator.find_best_combo">
+<a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator.find_best_combo">[docs]</a>
+    <span class="k">def</span> <span class="nf">find_best_combo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the best lens array to hit the nominal sample point</span>
 
@@ -265,7 +271,10 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unable to find a valid solution for target&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">combo</span></div>
 
-<div class="viewcode-block" id="Transfocator.set"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Transfocator.set">
+<a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator.set">[docs]</a>
+    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the Transfocator focus</span>
 
@@ -273,7 +282,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">focus_at</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Transfocator.focus_at"><a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator.focus_at">[docs]</a>    <span class="k">def</span> <span class="nf">focus_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Transfocator.focus_at">
+<a class="viewcode-back" href="../../transfocator.html#transfocate.transfocator.Transfocator.focus_at">[docs]</a>
+    <span class="k">def</span> <span class="nf">focus_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate a combination and insert the lenses</span>
 
@@ -324,7 +336,9 @@
         <span class="c1"># Wait if necessary</span>
         <span class="k">if</span> <span class="n">wait</span><span class="p">:</span>
             <span class="n">status_wait</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">status</span></div></div>
+        <span class="k">return</span> <span class="n">status</span></div>
+</div>
+
 
 
 <span class="k">class</span> <span class="nc">TransfocatorEnergyInterrupt</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>

@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>transfocate.calculator &mdash; transfocate 0.5.7 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>transfocate.calculator &mdash; transfocate 0.5.9.dev3+g174dd2d documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
-        <script src="../../_static/docs-versions-menu.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=c0569671"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/docs-versions-menu.js?v=3d6a1aea"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -33,7 +35,7 @@
             transfocate
           </a>
               <div class="version">
-                0.5.7
+                0.5.9.dev3+g174dd2d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -85,7 +87,9 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="Calculator"><a class="viewcode-back" href="../../calculator.html#transfocate.calculator.Calculator">[docs]</a><span class="k">class</span> <span class="nc">Calculator</span><span class="p">:</span>
+<div class="viewcode-block" id="Calculator">
+<a class="viewcode-back" href="../../calculator.html#transfocate.calculator.Calculator">[docs]</a>
+<span class="k">class</span> <span class="nc">Calculator</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for the transfocator beryllium lens calculator.</span>
 
@@ -101,7 +105,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">xrt_lenses</span> <span class="o">=</span> <span class="n">xrt_lenses</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tfs_lenses</span> <span class="o">=</span> <span class="n">tfs_lenses</span>
 
-<div class="viewcode-block" id="Calculator.combinations"><a class="viewcode-back" href="../../calculator.html#transfocate.calculator.Calculator.combinations">[docs]</a>    <span class="k">def</span> <span class="nf">combinations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_prefocus</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Calculator.combinations">
+<a class="viewcode-back" href="../../calculator.html#transfocate.calculator.Calculator.combinations">[docs]</a>
+    <span class="k">def</span> <span class="nf">combinations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_prefocus</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        All possible combinations of the given lenses</span>
 
@@ -142,7 +148,10 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">%s</span><span class="s2"> total combinations of lenses&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">combos</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">combos</span></div>
 
-<div class="viewcode-block" id="Calculator.find_solution"><a class="viewcode-back" href="../../calculator.html#transfocate.calculator.Calculator.find_solution">[docs]</a>    <span class="k">def</span> <span class="nf">find_solution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">z_obj</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+
+<div class="viewcode-block" id="Calculator.find_solution">
+<a class="viewcode-back" href="../../calculator.html#transfocate.calculator.Calculator.find_solution">[docs]</a>
+    <span class="k">def</span> <span class="nf">find_solution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">z_obj</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
                       <span class="n">include_prefocus</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find a combination to reach a specific focus</span>
@@ -190,7 +199,9 @@
                     <span class="n">solution_diff</span> <span class="o">=</span> <span class="n">diff</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Result found with a focal plane </span><span class="si">{}</span><span class="s2"> from the requested &quot;</span>
                     <span class="s2">&quot;position&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">solution_diff</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">solution</span></div></div>
+        <span class="k">return</span> <span class="n">solution</span></div>
+</div>
+
 </pre></div>
 
            </div>
