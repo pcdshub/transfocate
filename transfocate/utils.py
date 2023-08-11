@@ -13,7 +13,8 @@ NA = pt.core.constants.avogadro_number  # Avogadro's Constant
 MFX_prefocus_energy_range = {
     (0, 7000): (None, None),
     (7000, 10000): (2, 750),
-    (10000, 12000): (1, 428)
+    (10000, 12000): (1, 428),
+    (12000, 16000): (0, 333)
 }
 
 
