@@ -92,6 +92,7 @@ class TFS_Calculator(object):
         """
 
         # Step 1
+        pre_focus_lens = self.get_pre_focus_lens(energy)
         if pre_focus_lens is None:
             combos = self.combos
         else:
