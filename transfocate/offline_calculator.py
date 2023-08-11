@@ -92,16 +92,15 @@ class TFS_Calculator(object):
         """
 
         # Step 1
-        if self.prefocus_lenses is not None:
+        if pre_focus_lens is None:
+            combos = self.combos
+        else:
             pre_focus_lens = self.get_pre_focus_lens(energy)
-            if pre_focus_lens is None:
-                combos = self.combos
-            else:
-                combos = []
-                for combo in self.combos:
-                    c = LensConnect(pre_focus_lens)
-                    lens_combo = LensConnect.connect(c, combo)
-                    combos.append(lens_combo)
+            combos = []
+            for combo in self.combos:
+                c = LensConnect(pre_focus_lens)
+                lens_combo = LensConnect.connect(c, combo)
+                combos.append(lens_combo)
 
         # Step 2
         diff = []
