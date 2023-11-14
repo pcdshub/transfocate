@@ -169,6 +169,19 @@ class MFXTransfocator(TransfocatorBase):
             return math.nan
         # Calculate the image from this set of lenses
         return LensConnect(*inserted).image(0.0) - self.nominal_sample
+    def remove_all(self):
+        """
+        Removes all tfs lenses.
+        """
+        self.tfs_02.remove()
+        self.tfs_03.remove()
+        self.tfs_04.remove()
+        self.tfs_05.remove()
+        self.tfs_06.remove()
+        self.tfs_07.remove()
+        self.tfs_08.remove()
+        self.tfs_09.remove()
+        self.tfs_10.remove()
 
     def find_best_combo(self, target=None, energy=None, show=True, **kwargs):
         """
