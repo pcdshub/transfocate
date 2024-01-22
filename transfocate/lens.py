@@ -87,7 +87,20 @@ class Lens(InOutPVStatePositioner):
         """
         return self._sig_focus.get()
 
-    def image_from_obj(self, z_obj):
+    @property
+    def req_focus(self):
+        """
+        Method converts the EPICS requested focal length signal of the lens
+        into a float
+
+        Returns
+        -------
+        float
+            Returns the focal length of the lens in meters
+        """
+        return self._req_focus.value
+
+    def image_from_obj(self, z_obj, requested=False):
         """
         Method calculates the image distance in meters along the beam pipeline
         from a point of origin given the focal length of the lens, location of
@@ -97,6 +110,10 @@ class Lens(InOutPVStatePositioner):
         ----------
         z_obj
             Location of object along the beamline in meters (m)
+
+        requested
+            Bool to select requested or current beam energy (and as a result
+            requested or current lens focus)
 
         Returns
         -------
@@ -114,11 +131,13 @@ class Lens(InOutPVStatePositioner):
         # If this happens, then the image location will be infinity.
         # Note, this should not effect the recursive calculations that occur
         # later in the code
-        if obj == self.focus:
+        if requested:
+            focus = self.req_focus
+        else:
+            focus = self.focus
+        if obj == focus:
             return np.inf
-        # Calculate the location of the focal plane
-        plane = 1/(1/self.focus - 1/obj)
-        # Find the position in accelerator coordinates
+        plane = 1/(1/focus - 1/obj)
         return plane + self.z
 
     def _do_move(self, state):
@@ -166,7 +185,7 @@ class LensConnect:
             return 0.0
         return 1 / np.sum(np.reciprocal([float(lens.radius) for lens in self.lenses]))
 
-    def image(self, z_obj):
+    def image(self, z_obj, requested=False):
         """
         Method recursively calculates the z location of the image of a system
         of lenses and returns it in meters (m)
@@ -177,6 +196,10 @@ class LensConnect:
             Location of the object along the beam pipline from a designated
             point of origin in meters (m)
 
+        requested
+            Bool to select requested or current beam energy (and as a result
+            requested or current lens focus)
+
         Returns
         -------
         float
@@ -186,7 +209,7 @@ class LensConnect:
         image = z_obj
         # Determine the final output by looping through lenses
         for lens in self.lenses:
-            image = lens.image_from_obj(image)
+            image = lens.image_from_obj(image, requested=requested)
         return image
 
     @property

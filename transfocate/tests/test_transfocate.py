@@ -22,12 +22,7 @@ def remove(lens):
     lens._inserted.sim_put(0)
 
 
-@pytest.fixture(scope='function')
-def transfocator():
-    return make_fake_transfocator()
-
-
-def make_fake_transfocator():
+def sim_transfocator():
     FakeTransfocator = make_fake_device(Transfocator)
     # Create our base transfocator
     trans = FakeTransfocator("TST:LENS", name='Transfocator')
@@ -36,23 +31,32 @@ def make_fake_transfocator():
         lens._sig_z.sim_put(100.0)
         lens._sig_focus.sim_put(1000.0)
         lens._sig_radius.sim_put(100.0)
+        lens._req_focus.sim_put(500.0)
         remove(lens)
     for lens, z in zip(trans.tfs_lenses,
                        np.linspace(250, 260, len(trans.tfs_lenses))):
         lens._sig_z.sim_put(z)
         lens._sig_focus.sim_put(1000.0)
         lens._sig_radius.sim_put(100.0)
+        lens._req_focus.sim_put(500.0)
         remove(lens)
     # Give two reasonable values so we can test calculations
     trans.prefocus_bot._sig_focus.sim_put(50.0)
+    trans.prefocus_bot._req_focus.sim_put(10.0)
     trans.tfs_02._sig_z.sim_put(275.)
     trans.tfs_02._sig_focus.sim_put(25.)
+    trans.tfs_02._req_focus.sim_put(5.)
     # Use a nominal sample position
     trans.nominal_sample = 300.0
     # Set a reasonable limit
     trans.interlock.limits.low.sim_put(0.0)
     trans.interlock.limits.low.sim_put(0.0)
     return trans
+
+
+@pytest.fixture(scope='function')
+def transfocator():
+    return sim_transfocator()
 
 
 def test_transfocator_current_focus(transfocator):
@@ -66,6 +70,7 @@ def test_transfocator_current_focus(transfocator):
 
 def test_transfocator_find_best_combo(transfocator):
     # A solution with a prefocus
+    transfocator.beam_energy.put(9536.5)
     combo = transfocator.find_best_combo(312.5)
     assert combo.nlens == 2
     assert np.isclose(312.5, combo.image(0.0), atol=0.1)
@@ -73,13 +78,15 @@ def test_transfocator_find_best_combo(transfocator):
     transfocator.interlock.limits.low.sim_put(0.)
     transfocator.interlock.limits.high.sim_put(1500.)
     combo = transfocator.find_best_combo(target=302.5)
-    assert combo.nlens == 2
-    assert np.isclose(302.5, combo.image(0.0), atol=0.2)
+    assert combo.nlens == 1
+    print(combo.image(0.0))
+    assert np.isclose(302.5, combo.image(0.0), atol=0.1)
 
 
 def test_transfocator_focus_at(transfocator):
     # test with tfs[0] and xrt[0]
-    # Set Transfocator lenses to the wrong state for this focus
+    # Insert Transfocator lenses so we can test that they are properly removed
+    transfocator.beam_energy.put(9536.5)
     for lens in transfocator.tfs_lenses:
         if lens == transfocator.tfs_02:
             remove(lens)
@@ -104,9 +111,10 @@ def test_constant_energy_no_change(transfocator):
     def nothing(transfocator):
         pass
 
-    wrapped_func = constant_energy(nothing)
-    wrapped_func(transfocator, 'req_energy', 0.1)
-    wrapped_func(transfocator, 'beam_energy', 0.1)
+    wrapped_func_req = constant_energy(nothing, transfocator, 'req_energy', 0.1)
+    wrapped_func_req(transfocator)
+    wrapped_func_beam = constant_energy(nothing, transfocator, 'beam_energy', 0.1)
+    wrapped_func_beam(transfocator)
 
 
 def test_constant_energy_with_change(transfocator):
@@ -122,14 +130,27 @@ def test_constant_energy_with_change(transfocator):
         transfocator.beam_energy.put(new_energy)
 
     with pytest.raises(TransfocatorEnergyInterrupt):
-        wrapped_func = constant_energy(change_energy)
-        wrapped_func(transfocator, 'req_energy', 0.1, new_energy)
-        wrapped_func(transfocator, 'beam_energy', 0.1, new_energy)
+        wrapped_func_req = constant_energy(change_energy, transfocator, 'req_energy', 0.1)
+        wrapped_func_req(transfocator, new_energy)
+        wrapped_func_beam = constant_energy(change_energy, transfocator, 'beam_energy', 0.1)
+        wrapped_func_beam(transfocator, new_energy)
 
 
 def test_constant_energy_bad_input(transfocator):
     def nothing(transfocator):
         pass
     with pytest.raises(AttributeError):
-        wrapped_func = constant_energy(nothing)
-        wrapped_func(transfocator, 'bad_input_string', 0.1)
+        wrapped_func = constant_energy(nothing, transfocator, 'bad_input_string', 0.1)
+        wrapped_func()
+
+
+def test_transfocator_find_best_combo_req(transfocator):
+    # A solution with a prefocus
+    combo = transfocator.find_best_combo(280.0, energy=9000.0)
+    assert combo.nlens == 4
+    assert np.isclose(280.0, combo.image(0.0, requested=True), atol=0.1)
+    # A solution where there are no valid prefocus
+    transfocator.xrt_limit.sim_put(1500.)
+    combo = transfocator.find_best_combo(target=280.0, energy=9000.0, include_prefocus=False)
+    assert combo.nlens == 3
+    assert np.isclose(280.0, combo.image(0.0, requested=True), atol=0.1)
