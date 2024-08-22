@@ -21,7 +21,7 @@ requirements:
   - pip
   run:
   - python >=3.9
-  - bluesky
+  - bluesky-base
   - databroker
   - matplotlib-base
   - numpy
