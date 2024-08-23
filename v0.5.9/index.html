@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transfocate &mdash; transfocate 0.5.9 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=9a3cda14"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/docs-versions-menu.js?v=3d6a1aea"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Lens Information" href="lens.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            transfocate
+          </a>
+              <div class="version">
+                0.5.9
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="lens.html">Lens Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calculator.html">Calculator Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="transfocator.html">Transfocator Information</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">transfocate</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Transfocate</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="transfocate">
+<h1>Transfocate<a class="headerlink" href="#transfocate" title="Link to this heading"></a></h1>
+<p>The Transfocator is a tunable apparatus that focuses X-rays through the
+application of compound refractive Beryllium lenses.  Normally, to operate the
+Transfocator, users must know the location of lenses within the device and
+their information, perform the math necessary to calculate the ideal focal
+length, and apply the lenses manually.  This code automates this entire process
+and requires only the sample location to calculate the optimal combination of
+prefocusing and Transfocator lenses.  Additionally, this code automatically
+takes hutch safety limits into account when applying lenses and will not apply
+a lens array with an effective radius that is outside the safety limits.</p>
+<p>Users will interact with the Transfocator Calculator database through :class:
+<cite>.Transfocator</cite> That will handle the information for individual
+lenses and systems of lenses, perform operations to find combinations, and
+apply appropriate lens systems. Information for the lenses include the radius,
+focal length, and z position along the beam and are all EPICS Read Only
+signals.  Additionally, all units of length are measured in meters.</p>
+<section id="creating-a-new-transfocator">
+<h2>Creating a New Transfocator<a class="headerlink" href="#creating-a-new-transfocator" title="Link to this heading"></a></h2>
+<p>The lens arrays in Transfocator will be handled as <a class="reference internal" href="lens.html#transfocate.lens.LensConnect" title="transfocate.lens.LensConnect"><code class="xref py py-class docutils literal notranslate"><span class="pre">LensConnect</span></code></a> to
+provide more functionality. The examples below use a simulated model so the
+tutorial does not affect the real Transfocator in MFX.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">transfocate</span>
+
+<span class="gp">In [2]: </span><span class="kn">import</span> <span class="nn">transfocate.tests</span>
+
+<span class="gp">In [3]: </span><span class="n">mfx_transfocator</span> <span class="o">=</span> <span class="n">transfocate</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">transfocator</span>
+</pre></div>
+</div>
+</section>
+<section id="manipulating-lenses">
+<h2>Manipulating Lenses<a class="headerlink" href="#manipulating-lenses" title="Link to this heading"></a></h2>
+<p>All of the lenses are sub-components of the Transfocator object. You can
+manipulate them by:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="n">mfx_transfocator</span><span class="o">.</span><span class="n">prefocus_bot</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span>
+<span class="gh">Out[4]: </span><span class="go">StateStatus(device=Transfocator_prefocus_bot, done=False, success=False)</span>
+
+<span class="gp">In [5]: </span><span class="n">mfx_transfocator</span><span class="o">.</span><span class="n">tfs_04</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span>
+<span class="gh">Out[5]: </span><span class="go">StateStatus(device=Transfocator_tfs_04, done=False, success=False)</span>
+</pre></div>
+</div>
+<p>You may also want to set the value of the <code class="docutils literal notranslate"><span class="pre">nominal_sample</span></code> this is the
+location that we believe the interaction point to be. In practice it varies
+based on the location of the sample table and the instrumentation on the table
+itself.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [6]: </span><span class="n">mfx_transfocator</span><span class="o">.</span><span class="n">nominal_sample</span>
+<span class="gh">Out[6]: </span><span class="go">300.0</span>
+</pre></div>
+</div>
+</section>
+<section id="finding-and-applying-optimal-combination">
+<h2>Finding and Applying Optimal Combination<a class="headerlink" href="#finding-and-applying-optimal-combination" title="Link to this heading"></a></h2>
+<p>First, you may want to find the current focus of the lenses inserted in the
+Transfocator. To do this, use <a class="reference internal" href="transfocator.html#transfocate.transfocator.Transfocator.current_focus" title="transfocate.transfocator.Transfocator.current_focus"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Transfocator.current_focus()</span></code></a></p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [7]: </span><span class="n">mfx_transfocator</span><span class="o">.</span><span class="n">current_focus</span>
+<span class="gh">Out[7]: </span><span class="go">2.3936170212766115</span>
+</pre></div>
+</div>
+<p>This command will find the difference between the current focus of the
+Transfocator and the position we have saved as <cite>nominal_sample</cite>.  This may be
+helpful if you want to see which lenses are currently inserted in the beamline
+or to make sure that your previous settings have not been tampered with.</p>
+<p>To find your optimal array of lenses, use <a class="reference internal" href="transfocator.html#transfocate.transfocator.Transfocator.find_best_combo" title="transfocate.transfocator.Transfocator.find_best_combo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Transfocator.find_best_combo()</span></code></a>
+and to find and apply your desired array of lenses, use
+<a class="reference internal" href="transfocator.html#transfocate.transfocator.Transfocator.focus_at" title="transfocate.transfocator.Transfocator.focus_at"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Transfocator.focus_at()</span></code></a>. By default this will try and place the focal
+plane to the interaction point, but you can adjust this using the <code class="docutils literal notranslate"><span class="pre">target</span></code>
+keyword. The command also supports all of the keywords to ignore prefocusing
+lenses, change the source point, that are present in
+<a class="reference internal" href="calculator.html#transfocate.calculator.Calculator.find_solution" title="transfocate.calculator.Calculator.find_solution"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Calculator.find_solution()</span></code></a>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="n">combo</span> <span class="o">=</span> <span class="n">mfx_transfocator</span><span class="o">.</span><span class="n">find_best_combo</span><span class="p">()</span>
+<span class="go">+-----------------+-----------+-----------+</span>
+<span class="go">| Prefix          | Radius    | Z         |</span>
+<span class="go">+-----------------+-----------+-----------+</span>
+<span class="go">| TST:LENS:DIA:03 | 100.00000 | 100.00000 |</span>
+<span class="go">| TST:LENS:TFS:09 | 100.00000 | 258.75000 |</span>
+<span class="go">| TST:LENS:TFS:10 | 100.00000 | 260.00000 |</span>
+<span class="go">| TST:LENS:TFS:02 | 100.00000 | 275.00000 |</span>
+<span class="go">+-----------------+-----------+-----------+</span>
+</pre></div>
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lens.html" class="btn btn-neutral float-right" title="Lens Information" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
