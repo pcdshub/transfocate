@@ -1,6 +1,7 @@
 import numpy as np
 
 
+
 def test_lens_properties(lens):
     assert np.isclose(500.0, lens.radius, atol=0.1)
     assert np.isclose(100.0, lens.z, atol=0.1)
